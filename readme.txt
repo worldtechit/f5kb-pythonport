@@ -43,17 +43,20 @@ outputs/last_week) and is git-ignored. Pass --out/--dump to override.
 
 ENRICH_BODIES.TS (article bodies for empty-content types)
 ---------------------------------------------------------
-    deno run --allow-net --allow-read --allow-write enrich_bodies.ts \
-        --dump=outputs/dump --types=Bug_Tracker
+    deno run --allow-net --allow-read --allow-write --allow-env enrich_bodies.ts \
+        --dump=outputs/dump --types=Bug_Tracker,F5_GitHub
 
   Walks outputs/dump/<Type>/*.json, fetches each article's page, and writes the
   extracted body into content.sections (title -> markdown) and content.body_text,
   plus content.bodySource and content.fetchedAt. Resumable: an article is skipped
   if it already has body_text or a recorded bodyError (use --refetch to force).
   Flags: --concurrency=N (default 4), --delay-ms=N (default 200), --limit=N.
-  Implemented types: Bug_Tracker. (Manual/Release_Note/Supplemental_Document via
-  host->selector HTML scrape, and F5_GitHub via the GitHub REST API, are TODO —
-  see TODO.txt.)
+
+  Implemented types: Bug_Tracker, F5_GitHub. For F5_GitHub, set GITHUB_TOKEN
+  (and pass --allow-env) to raise the GitHub API limit from 60 to 5,000 req/hr;
+  it also handles repo-root README and /blob/ raw-file links for the full corpus.
+  (Manual/Release_Note/Supplemental_Document via host->selector HTML scrape are
+  still TODO — see TODO.txt.)
 
 REQUIREMENTS
 ------------

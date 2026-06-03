@@ -12,8 +12,18 @@ STATUS
                   content.body_text; site header/footer/nav and the metadata-
                   duplicating header block are excluded. Resumable; records
                   content.bodyError on fetch/parse failure.
-[TODO]            F5 GitHub, Manual, Release Note, Supplemental Document
-                  (stubbed in enrich_bodies.ts TYPE_ENRICHERS).
+[DONE 2026-06-03] F5 GitHub — implemented in enrich_bodies.ts (see section 5).
+                  GitHub REST API; URL dispatcher handles /issues/N, /pull/N
+                  (body markdown), repo root (README, base64-decoded), and
+                  /blob/ref/path (raw file). Extracts ONLY the body (title/author
+                  already in metadata) into content.body_text + content.sections.
+                  Reads GITHUB_TOKEN (--allow-env) to raise the 60/hr limit to
+                  5000/hr; fails loudly with guidance when the unauth limit is
+                  hit. PRs with no description are recorded as a benign
+                  content.bodyError. Verified on the 6 articles in outputs/dump.
+[TODO]            Manual, Release Note, Supplemental Document
+                  (stubbed in enrich_bodies.ts TYPE_ENRICHERS — HTML scrape via
+                  host->selector map).
 
 NOTE: output directories were consolidated under outputs/ (outputs/dump,
 outputs/output, outputs/last_week) and git-ignored. The dump is now at

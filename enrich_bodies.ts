@@ -8,13 +8,18 @@
  * (no site header/footer/nav, and nothing that merely repeats the metadata the
  * dump already has), and writes it back into each article JSON's `content`.
  *
- * Status: Bug Tracker is implemented (deterministic static page on cdn.f5.com).
- * The remaining empty-body types (Manual, Release Note, Supplemental Document,
- * F5 GitHub) are stubbed in TYPE_ENRICHERS and not yet wired up — see TODO.txt.
+ * Status: Bug Tracker (deterministic static page on cdn.f5.com) and F5 GitHub
+ * (GitHub REST API) are implemented. The remaining empty-body types (Manual,
+ * Release Note, Supplemental Document) are stubbed in TYPE_ENRICHERS and not yet
+ * wired up — see TODO.txt.
+ *
+ * For F5 GitHub, set GITHUB_TOKEN (and pass --allow-env) to raise the GitHub API
+ * limit from 60 to 5,000 requests/hour; without it the run still works but is
+ * rate-limited.
  *
  * Usage:
- *   deno run --allow-net --allow-read --allow-write enrich_bodies.ts \
- *       --dump=outputs/dump [--types="Bug_Tracker"] [--concurrency=4] \
+ *   deno run --allow-net --allow-read --allow-write --allow-env enrich_bodies.ts \
+ *       --dump=outputs/dump [--types="Bug_Tracker,F5_GitHub"] [--concurrency=4] \
  *       [--limit=N] [--refetch]
  *
  * Options:
@@ -149,6 +154,48 @@ async function fetchText(url: string, attempt = 0): Promise<string> {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// GitHub token (optional) — set in main() from env. Raises the API limit from
+// 60 to 5,000 req/hr.
+let GITHUB_TOKEN: string | undefined;
+
+function githubHeaders(json: boolean): HeadersInit {
+  const h: Record<string, string> = {
+    "User-Agent": USER_AGENT,
+    Accept: json ? "application/vnd.github+json" : "application/vnd.github.raw",
+  };
+  if (GITHUB_TOKEN) h.Authorization = `Bearer ${GITHUB_TOKEN}`;
+  return h;
+}
+
+// GET the GitHub REST API and return parsed JSON. Retries 5xx/429/secondary
+// rate limits; surfaces a clear message on primary rate-limit exhaustion.
+async function githubApi(
+  path: string,
+  attempt = 0,
+): Promise<Record<string, unknown>> {
+  const MAX_RETRIES = 5;
+  const res = await fetch(`https://api.github.com${path}`, {
+    headers: githubHeaders(true),
+  });
+  if (res.ok) return await res.json();
+  const remaining = res.headers.get("x-ratelimit-remaining");
+  await res.body?.cancel();
+  // Primary rate limit hit and we'd have to wait an hour — fail loudly so the
+  // user knows to set GITHUB_TOKEN. (Resumable: re-run later fills the rest.)
+  if (res.status === 403 && remaining === "0") {
+    throw new Error(
+      GITHUB_TOKEN
+        ? "GitHub API rate limit exhausted (token present) — re-run later"
+        : "GitHub API rate limit hit (60/hr) — set GITHUB_TOKEN to raise to 5000/hr",
+    );
+  }
+  if ((res.status >= 500 || res.status === 429) && attempt < MAX_RETRIES) {
+    await sleep(750 * 2 ** attempt);
+    return githubApi(path, attempt + 1);
+  }
+  throw new Error(`HTTP ${res.status}`);
+}
+
 // ---------------------------------------------------------------------------
 // HTML -> markdown for inline/block body content
 // ---------------------------------------------------------------------------
@@ -272,12 +319,85 @@ const enrichBugTracker: Enricher = (article, nowIso) => {
 };
 
 // ---------------------------------------------------------------------------
+// F5 GitHub enricher
+// ---------------------------------------------------------------------------
+// The article body is the GitHub object's own description: the issue/PR body
+// markdown, a repo's README, or a referenced file's contents. The title and
+// author already live in the dump metadata, so we extract ONLY the body.
+interface GhTarget {
+  kind: "issue" | "pull" | "readme" | "file";
+  apiPath?: string; // for issue/pull/readme (JSON API)
+  rawUrl?: string; // for file (raw.githubusercontent.com)
+}
+
+function parseGithubUrl(rawUrl: string): GhTarget {
+  const u = new URL(rawUrl);
+  const parts = u.pathname.split("/").filter(Boolean);
+  const [owner, repo, kind, ...rest] = parts;
+  if (!owner || !repo) throw new Error(`unrecognized GitHub URL: ${rawUrl}`);
+  if (kind === "issues" && rest[0]) {
+    return { kind: "issue", apiPath: `/repos/${owner}/${repo}/issues/${rest[0]}` };
+  }
+  if (kind === "pull" && rest[0]) {
+    return { kind: "pull", apiPath: `/repos/${owner}/${repo}/pulls/${rest[0]}` };
+  }
+  if (kind === "blob" && rest.length >= 2) {
+    const ref = rest[0];
+    const path = rest.slice(1).join("/");
+    return {
+      kind: "file",
+      rawUrl: `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`,
+    };
+  }
+  if (!kind) {
+    return { kind: "readme", apiPath: `/repos/${owner}/${repo}/readme` };
+  }
+  throw new Error(`unsupported GitHub URL shape: ${rawUrl}`);
+}
+
+const enrichGithub: Enricher = async (article, nowIso) => {
+  const url = article.link;
+  if (!url) throw new Error("no link to derive GitHub target");
+  const target = parseGithubUrl(url);
+
+  let body: string;
+  if (target.kind === "file") {
+    body = await fetchText(target.rawUrl!);
+  } else if (target.kind === "readme") {
+    const data = await githubApi(target.apiPath!);
+    const b64 = (data.content as string ?? "").replace(/\n/g, "");
+    body = data.encoding === "base64" ? atob(b64) : (data.content as string ?? "");
+  } else {
+    const data = await githubApi(target.apiPath!);
+    body = (data.body as string) ?? "";
+  }
+
+  body = body.trim();
+  if (!body) {
+    // A real but empty description (some PRs have none). Record it as a benign
+    // marker so a re-run skips it instead of refetching forever.
+    return {
+      bodySource: url,
+      fetchedAt: nowIso,
+      bodyError: `empty GitHub ${target.kind} body (no description)`,
+    };
+  }
+  return {
+    sections: { [target.kind]: body },
+    body_text: body,
+    bodySource: url,
+    fetchedAt: nowIso,
+  };
+};
+
+// ---------------------------------------------------------------------------
 // Registry: type key (dump subdir name) -> enricher
 // ---------------------------------------------------------------------------
 const TYPE_ENRICHERS: Record<string, Enricher> = {
   Bug_Tracker: enrichBugTracker,
-  // TODO (see TODO.txt): Manual, Release_Note, Supplemental_Document (HTML
-  // scrape via host->selector map) and F5_GitHub (GitHub REST API).
+  F5_GitHub: enrichGithub,
+  // TODO (see TODO.txt): Manual, Release_Note, Supplemental_Document — HTML
+  // scrape via a host->selector map.
 };
 
 // ---------------------------------------------------------------------------
@@ -346,9 +466,7 @@ async function enrichType(typeKey: string, args: Args) {
       ok++;
     } catch (e) {
       result = {
-        bodySource: (() => {
-          try { return bugTrackerUrl(article); } catch { return article.link ?? ""; }
-        })(),
+        bodySource: article.link ?? "",
         fetchedAt: nowIso,
         bodyError: (e as Error).message,
       };
@@ -372,6 +490,12 @@ async function enrichType(typeKey: string, args: Args) {
 
 async function main() {
   const args = parseArgs();
+  try {
+    GITHUB_TOKEN = Deno.env.get("GITHUB_TOKEN") || undefined;
+  } catch {
+    // --allow-env not granted; GitHub enrichment will run unauthenticated.
+    GITHUB_TOKEN = undefined;
+  }
   const requested = args.types ?? Object.keys(TYPE_ENRICHERS);
   const toRun = requested.filter((t) => {
     if (!TYPE_ENRICHERS[t]) {
@@ -386,6 +510,9 @@ async function main() {
   }
   console.log(`Enriching bodies in ${args.dump} for: ${toRun.join(", ")}`);
   console.log(`(concurrency=${args.concurrency}, delay=${args.delayMs}ms, refetch=${args.refetch})`);
+  if (toRun.includes("F5_GitHub")) {
+    console.log(`GitHub auth: ${GITHUB_TOKEN ? "token present (5000/hr)" : "UNAUTHENTICATED (60/hr) — set GITHUB_TOKEN to raise"}`);
+  }
   for (const t of toRun) await enrichType(t, args);
   console.log("All done.");
 }
