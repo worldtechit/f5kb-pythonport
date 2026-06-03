@@ -32,15 +32,26 @@ STATUS
                     clouddocs.f5.com  -> [role=main] / article.docs-container  OK
                     techdocs.f5.com   -> div.pageContent                       OK
                     docs.nginx.com    -> [data-testid=content]                 OK
-                    docs.cloud.f5.com -> JS-RENDERED (server HTML is only the
-                       nav menu; body injected client-side) -> flagged with
-                       content.bodyError, needs a headless browser (out of scope).
+                    docs.cloud.f5.com -> via __NEXT_DATA__ (see below)         OK
                   Unmapped hosts fall back + are logged via console.warn.
-                  NOTE: Manual not yet run over the FULL corpus (3338 in the
-                  --days=7 dump); ~21% are docs.cloud.f5.com and will be flagged.
+                  FULL Manual corpus run 2026-06-03: 3336/3338 bodied (99.9%);
+                  the 2 misses are genuinely-empty stub pages.
 
-[REMAINING]       docs.cloud.f5.com bodies (JS-rendered) — would need a headless
-                  browser (e.g. astral/puppeteer). Separate, larger effort.
+[DONE 2026-06-03] docs.cloud.f5.com — NO headless browser needed after all. The
+                  page is a Next.js app: the body is embedded in the
+                  <script id="__NEXT_DATA__"> JSON, just not in the rendered DOM
+                  of API pages. enrich_bodies.ts now parses that JSON:
+                    pageProps.docData.compiledSource (prose) -> recover the raw
+                      MDX from its interleaved /* ... */ comment blocks.
+                    pageProps.docData.swaggerFile (API)      -> render OpenAPI
+                      (title/description + per-path operations) to markdown.
+                  Falls back to DOM scrape if the JSON is missing/short. Host rule
+                  flag changed from jsRendered:true to nextData:true. Recovered
+                  all 702 docs.cloud articles. Added --refetch-errors to re-process
+                  only previously-errored articles after mapping a new host.
+
+[NONE REMAINING]  All 15 doc types now have bodies (off-API for the 5 empty-index
+                  types). Headless browser was never required.
 
 NOTE: output directories were consolidated under outputs/ (outputs/dump,
 outputs/output, outputs/last_week) and git-ignored. The dump is now at

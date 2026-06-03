@@ -61,8 +61,15 @@ ENRICH_BODIES.TS (article bodies for empty-content types)
       HOST_RULES host->selector map (clouddocs.f5.com, techdocs.f5.com,
       docs.nginx.com) with a generic fallback for unmapped hosts (logged).
       Extracts ONLY the content container as markdown (headings/lists/code/links).
-      docs.cloud.f5.com is client-rendered (body not in the fetched HTML) and is
-      flagged with content.bodyError — it needs a headless browser (not done).
+      docs.cloud.f5.com (Next.js) renders its body client-side, so it is read
+      from the page's embedded <script id="__NEXT_DATA__"> JSON instead of the
+      DOM (prose from docData.compiledSource, API specs from docData.swaggerFile)
+      — no headless browser needed. Full Manual coverage: 99.9% (only genuinely
+      empty stub pages miss).
+
+  Re-running after mapping a new host: use --refetch-errors to re-process only
+  the articles that previously recorded a content.bodyError (already-bodied
+  articles stay skipped).
 
 REQUIREMENTS
 ------------

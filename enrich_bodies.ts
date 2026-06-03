@@ -30,6 +30,9 @@
  *   --delay-ms=N     Min delay between requests per worker (default: 200).
  *   --limit=N        Cap articles processed per type (default: no cap).
  *   --refetch        Re-fetch even if the article already has a body / error.
+ *   --refetch-errors Re-process ONLY articles that previously recorded a
+ *                    bodyError (e.g. after mapping a newly-supported host);
+ *                    already-bodied articles are still skipped.
  *
  * Resumability: by default an article is skipped if its content already has a
  * non-empty `body_text` or a recorded `bodyError`, so a re-run only fills gaps.
@@ -50,6 +53,7 @@ interface Args {
   delayMs: number;
   limit: number | null;
   refetch: boolean;
+  refetchErrors: boolean;
 }
 
 function parseArgs(): Args {
@@ -60,6 +64,7 @@ function parseArgs(): Args {
     delayMs: 200,
     limit: null,
     refetch: false,
+    refetchErrors: false,
   };
   for (const arg of Deno.args) {
     const [k, v] = arg.startsWith("--") ? arg.slice(2).split("=") : ["", ""];
@@ -81,6 +86,9 @@ function parseArgs(): Args {
         break;
       case "refetch":
         a.refetch = true;
+        break;
+      case "refetch-errors":
+        a.refetchErrors = true;
         break;
       default:
         if (arg.startsWith("--")) {
@@ -455,6 +463,12 @@ interface HostRule {
   selectors: string[];
   /** True when the body is client-rendered (not in the fetched HTML). */
   jsRendered?: boolean;
+  /**
+   * True for Next.js sites that embed the body in a <script id="__NEXT_DATA__">
+   * JSON blob rather than (only) the rendered DOM. We parse that JSON instead of
+   * scraping elements — no headless browser needed.
+   */
+  nextData?: boolean;
 }
 
 // Hosts observed across Manual/Release_Note/Supplemental_Document. Add new hosts
@@ -463,10 +477,12 @@ const HOST_RULES: Record<string, HostRule> = {
   "clouddocs.f5.com": { selectors: ["[role=main]", "article.docs-container"] },
   "techdocs.f5.com": { selectors: ["div.pageContent", "div.manual-chapter", "main"] },
   "docs.nginx.com": { selectors: ["[data-testid=content]", "main.content", "article"] },
-  // docs.cloud.f5.com server-renders only its nav menu; the article body is
-  // injected client-side, so a plain fetch can't see it (needs a headless
-  // browser — out of scope for this scraper).
-  "docs.cloud.f5.com": { selectors: [], jsRendered: true },
+  // docs.cloud.f5.com (Next.js) renders the article body client-side, so it is
+  // NOT in the rendered DOM of an API page. But the body IS embedded in the
+  // page's <script id="__NEXT_DATA__"> JSON (docData.compiledSource for prose
+  // pages, docData.swaggerFile for API pages) — so a plain fetch + JSON parse
+  // recovers it without a headless browser. selectors are a DOM fallback.
+  "docs.cloud.f5.com": { selectors: ["main"], nextData: true },
 };
 
 // Generic fallback for unmapped hosts.
@@ -537,6 +553,66 @@ function extractDocBody(html: string, finalUrl: string, rule: HostRule | undefin
   return md.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
+// --- Next.js __NEXT_DATA__ extraction (docs.cloud.f5.com) -------------------
+// The body is embedded as JSON in the page, not (reliably) in the rendered DOM.
+function parseNextData(html: string): Record<string, unknown> | null {
+  const m = html.match(
+    /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/,
+  );
+  if (!m) return null;
+  try {
+    return JSON.parse(m[1]) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+// next-mdx-remote keeps the authored MDX as /* ... */ comment blocks interleaved
+// with the compiled JS. Recover them and join → the original markdown body.
+function mdxFromCompiledSource(compiledSource: string): string {
+  const blocks = [...compiledSource.matchAll(/\/\*([\s\S]*?)\*\//g)]
+    .map((b) => b[1].trim())
+    .filter(Boolean)
+    // Drop MDX import/export plumbing lines that aren't body content.
+    .filter((b) => !/^(import|export)\s/.test(b));
+  return blocks.join("\n\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+// Render an OpenAPI/Swagger spec to a concise markdown body (API doc pages).
+function swaggerToMarkdown(sw: Record<string, any>): string {
+  const out: string[] = [];
+  const info = sw.info ?? {};
+  if (info.title) out.push(`# ${info.title}`);
+  if (info.description) out.push(info.description);
+  const paths = sw.paths ?? {};
+  for (const [path, ops] of Object.entries<Record<string, any>>(paths)) {
+    for (const [method, op] of Object.entries<any>(ops)) {
+      if (!["get", "post", "put", "delete", "patch"].includes(method)) continue;
+      out.push(`## ${method.toUpperCase()} ${path}`);
+      const summary = op.summary ?? op["x-displayname"];
+      if (summary) out.push(`**${summary}**`);
+      if (op.description) out.push(op.description);
+    }
+  }
+  return out.join("\n\n").trim();
+}
+
+// Extract a body from docs.cloud.f5.com via __NEXT_DATA__. Returns "" if the
+// JSON isn't present/usable so the caller can fall back to DOM scraping.
+function extractNextDataBody(html: string): string {
+  const data = parseNextData(html);
+  const pageProps = (data?.props as any)?.pageProps;
+  const docData = pageProps?.docData;
+  if (!docData) return "";
+  if (typeof docData.compiledSource === "string") {
+    return mdxFromCompiledSource(docData.compiledSource);
+  }
+  if (docData.swaggerFile) {
+    return swaggerToMarkdown(docData.swaggerFile);
+  }
+  return "";
+}
+
 const enrichDocPage: Enricher = async (article, nowIso) => {
   const url = article.link;
   if (!url) throw new Error("no link to fetch");
@@ -552,7 +628,19 @@ const enrichDocPage: Enricher = async (article, nowIso) => {
   if (!rule) console.warn(`  [doc] unmapped host: ${host} (using generic fallback) — ${url}`);
 
   const { html, finalUrl } = await fetchDoc(url);
-  const body_text = extractDocBody(html, finalUrl, rule);
+  let body_text = "";
+  if (rule?.nextData) {
+    body_text = extractNextDataBody(html);
+  }
+  // DOM scrape for non-nextData hosts, or as a fallback if __NEXT_DATA__ was
+  // missing/too short (some content pages also server-render into the DOM).
+  if (body_text.length < 40) {
+    try {
+      body_text = extractDocBody(html, finalUrl, rule);
+    } catch (e) {
+      if (!rule?.nextData) throw e; // for nextData hosts the JSON was the primary path
+    }
+  }
   if (body_text.length < 40) {
     throw new Error(`extracted body too short (${body_text.length} chars)`);
   }
@@ -626,7 +714,10 @@ async function enrichType(typeKey: string, args: Args) {
     const article: Article = JSON.parse(await Deno.readFile(file).then((b) =>
       new TextDecoder().decode(b)
     ));
-    if (!args.refetch && hasBody(article.content)) {
+    const hadError = typeof article.content?.bodyError === "string";
+    // Skip already-done articles unless forced. --refetch-errors re-processes
+    // only those that previously errored (e.g. after mapping a new host).
+    if (!args.refetch && !(args.refetchErrors && hadError) && hasBody(article.content)) {
       skipped++;
       return;
     }
@@ -642,7 +733,13 @@ async function enrichType(typeKey: string, args: Args) {
       };
       failed++;
     }
-    article.content = { ...(article.content ?? {}), ...result };
+    // Clear any keys a prior run set so a re-enrich (e.g. after fixing a
+    // JS-rendered host) doesn't leave a stale bodyError/body_text behind.
+    const base = { ...(article.content ?? {}) };
+    for (const k of ["sections", "body_text", "bodyError", "bodySource", "fetchedAt"]) {
+      delete (base as Record<string, unknown>)[k];
+    }
+    article.content = { ...base, ...result };
     await Deno.writeTextFile(file, JSON.stringify(article, null, 2) + "\n");
     done++;
     if ((done + skipped) % 25 === 0) {
