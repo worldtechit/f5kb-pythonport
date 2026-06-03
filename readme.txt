@@ -25,7 +25,35 @@ Five scripts are available:
                              objects driven by dump_config.yaml. Also emits a
                              per-type field catalogue. See its own section below.
 
+  enrich_bodies.ts           Post-processes a dump directory to fill in article
+                             BODIES for the types whose body is absent from the
+                             Coveo search index (content was left empty). Fetches
+                             each article's public page and extracts ONLY the body
+                             (no site chrome, nothing that just repeats metadata),
+                             writing content.sections + content.body_text back into
+                             the per-article JSON. Bug Tracker implemented; other
+                             empty-body types stubbed. See its own section below.
+
 Both fetch scripts handle all known Coveo API limits automatically (see NOTES below).
+
+OUTPUT LOCATIONS
+----------------
+Generated data lives under outputs/ (outputs/dump, outputs/output,
+outputs/last_week) and is git-ignored. Pass --out/--dump to override.
+
+ENRICH_BODIES.TS (article bodies for empty-content types)
+---------------------------------------------------------
+    deno run --allow-net --allow-read --allow-write enrich_bodies.ts \
+        --dump=outputs/dump --types=Bug_Tracker
+
+  Walks outputs/dump/<Type>/*.json, fetches each article's page, and writes the
+  extracted body into content.sections (title -> markdown) and content.body_text,
+  plus content.bodySource and content.fetchedAt. Resumable: an article is skipped
+  if it already has body_text or a recorded bodyError (use --refetch to force).
+  Flags: --concurrency=N (default 4), --delay-ms=N (default 200), --limit=N.
+  Implemented types: Bug_Tracker. (Manual/Release_Note/Supplemental_Document via
+  host->selector HTML scrape, and F5_GitHub via the GitHub REST API, are TODO —
+  see TODO.txt.)
 
 REQUIREMENTS
 ------------

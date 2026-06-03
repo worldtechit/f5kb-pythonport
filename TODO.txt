@@ -3,6 +3,22 @@ F5 ARTICLE DUMP — TODO: POPULATE BODIES FOR THE "content: []" TYPES
 Created: 2026-06-02   |   For: next working session
 Owner notes by: Claude (recon already done — see "FINDINGS" under each type)
 
+STATUS
+------
+[DONE 2026-06-03] Bug Tracker — implemented in enrich_bodies.ts (see section 1).
+                  Extracts ONLY the <div class="bug-content"> sections
+                  (Symptoms/Impact/Conditions/Workaround/Fix Information/
+                  Behavior Change/Guides & references) into content.sections +
+                  content.body_text; site header/footer/nav and the metadata-
+                  duplicating header block are excluded. Resumable; records
+                  content.bodyError on fetch/parse failure.
+[TODO]            F5 GitHub, Manual, Release Note, Supplemental Document
+                  (stubbed in enrich_bodies.ts TYPE_ENRICHERS).
+
+NOTE: output directories were consolidated under outputs/ (outputs/dump,
+outputs/output, outputs/last_week) and git-ignored. The dump is now at
+outputs/dump (the enrich_bodies.ts --dump default).
+
 WHY THIS EXISTS
 ---------------
 dump_articles.ts dumps one JSON per article with a "metadata" object and a
