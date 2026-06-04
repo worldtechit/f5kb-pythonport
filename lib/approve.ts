@@ -32,6 +32,8 @@ export interface ApproveOpts {
   reject?: boolean;
   /** restrict to these type dirs (null/undefined = all). */
   typeKeys?: string[] | null;
+  /** exclude these type dirs (applied after typeKeys). */
+  excludeTypeKeys?: string[] | null;
   /** restrict to these article ids (null/undefined = all). */
   ids?: string[] | null;
   /** archive the replaced live file to _replaced/ before overwriting (default true). */
@@ -64,6 +66,7 @@ export interface ApproveResult {
 
 function matches(e: PendingEntry, opts: ApproveOpts): boolean {
   if (opts.typeKeys && opts.typeKeys.length && !opts.typeKeys.includes(e.typeKey)) return false;
+  if (opts.excludeTypeKeys && opts.excludeTypeKeys.includes(e.typeKey)) return false;
   if (opts.ids && opts.ids.length && !opts.ids.includes(e.id)) return false;
   return true;
 }

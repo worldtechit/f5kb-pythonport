@@ -185,6 +185,8 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
 export interface EnrichDumpOpts {
   dump: string;
   types?: string[] | null;
+  /** type keys to exclude (after `types`); e.g. ["F5_GitHub"]. */
+  excludeTypes?: string[] | null;
   http: HttpClient;
   /** Read in the cmd layer (from env), never here; passed through to the github enricher. */
   githubToken?: string;
@@ -203,7 +205,9 @@ export interface EnrichDumpOpts {
 export async function enrichDump(opts: EnrichDumpOpts): Promise<TypeReport[]> {
   const logger = opts.logger ?? NULL_LOGGER;
   const requested = opts.types ?? Object.keys(TYPE_ENRICHERS);
+  const excluded = new Set(opts.excludeTypes ?? []);
   const toRun = requested.filter((t) => {
+    if (excluded.has(t)) return false; // --exclude-types
     if (!TYPE_ENRICHERS[t]) {
       logger.error(`  [${t}] no enricher implemented — skipping`);
       return false;

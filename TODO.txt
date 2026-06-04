@@ -114,7 +114,7 @@ sitemap_gap_ids.txt:
 DONE 2026-06-04: INCREMENTAL SYNC + DELETION RECONCILE + CHANGELOG
 -----------------------------------------------------------------
 The deferred "skip unchanged bodies" idea shipped as `f5kb sync`, plus deletion
-handling and a changelog. See README.txt (sync/reconcile + CHANGELOG FORMAT) and
+handling and a changelog. See README.md (sync/reconcile + CHANGELOG FORMAT) and
 OUTLINE.txt §2-3.
   - `f5kb sync` loads each article's prior metadata_hash from the DB and SKIPS
     rewriting unchanged articles; enrich's existing resumability then auto-limits
@@ -142,7 +142,7 @@ DONE 2026-06-04: OVERWRITE PROTECTION (APPROVAL GATE) + approve COMMAND
 ----------------------------------------------------------------------
 sync/dump/enrich no longer silently overwrite a live article that already holds
 good data (the "upstream reformats and we capture an empty body" risk). See
-README.txt "OVERWRITE PROTECTION" + "SUBCOMMAND — approve", OUTLINE.txt §2-3/§6,
+README.md "OVERWRITE PROTECTION" + "SUBCOMMAND — approve", OUTLINE.txt §2-3/§6,
 and HOWTO.txt.
   - An EDIT to an existing article is STAGED to <dump>/_pending/<type>/<id>.json
     (live untouched) and recorded in _pending/_manifest.json; new articles are
@@ -162,11 +162,28 @@ and re-dumps over an existing corpus only stage genuine edits. If mass-staging e
 bites, add a `--max-staged` guard that aborts like reconcile's threshold.
 
 
+DONE 2026-06-04: --exclude-types EVERYWHERE + README -> README.md
+----------------------------------------------------------------
+Every type-aware subcommand (dump/enrich/track/sync/reconcile/approve/recent) now
+takes `--exclude-types=A,B` alongside the existing `--types=A,B`. Include is applied
+first, then exclude (exclude wins on a conflict); unknown keys are warned + ignored.
+Resolution is the shared `applyTypeFilters` / `warnUnknownTypes` in lib/args.ts
+(cmd-side for the config-driven commands; `excludeTypes` params for enrich/track and
+`excludeTypeKeys` for approve). The canonical production selection is
+`--exclude-types=Community,F5_GitHub`. Tests: +5 (applyTypeFilters, warnUnknownTypes,
+track/enrich/approve exclude) -> 130 green.
+
+README.txt was converted to README.md (proper Markdown; GitHub-renderable) and is
+the doc format going forward; all cross-references updated. config.yaml is excluded
+from `deno fmt` (it reformats YAML) so the curated file isn't rewritten. The other
+docs (FINDINGS/OUTLINE/HOWTO/TODO) remain .txt per CLAUDE.md's conventions.
+
+
 COMPLETED
 ---------
 Body enrichment for all 5 empty-index types (Bug Tracker, F5 GitHub, Manual,
 Release Note, Supplemental Document) — see FINDINGS.txt "Body recovery" and
-README.txt. No headless browser needed (docs.cloud.f5.com bodies come from the
+README.md. No headless browser needed (docs.cloud.f5.com bodies come from the
 page's embedded __NEXT_DATA__ JSON).
 
 Pipeline hardening (2026-06-03): the dump path gained --all (full corpus),

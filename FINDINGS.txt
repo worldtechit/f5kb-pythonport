@@ -1070,7 +1070,7 @@ Supplemental_Document 135 (100%), Manual 46,572/46,811 (99%). The ~239 Manual
 no-body cases are all legitimate: 117 soft-404 dead links, 90 moved-to-landing
 redirects, ~31 image-only/empty stub pages, 1 KB cross-reference. A subagent audit
 of all 69,864 enriched bodies confirmed no junk/wrong-container content remains.
-All 13 dumped types' on-disk counts equal their live Coveo counts. See README.txt
+All 13 dumped types' on-disk counts equal their live Coveo counts. See README.md
 for usage and `f5kb track` for the SQLite change-tracking overview.
 
 Type-specific fields worth noting: Bug Tracker carries `f5_bug_*`

@@ -174,3 +174,28 @@ Deno.test("approve --list (dry-run): previews, changes nothing", async () => {
     await Deno.remove(out, { recursive: true });
   }
 });
+
+Deno.test("approve: --exclude-types skips that type's staged edits", async () => {
+  const out = await Deno.makeTempDir();
+  try {
+    await stage(out, "Policy", "P1", { body_text: "old" }, { body_text: "new" });
+    await stage(out, "Manual", "M1", { body_text: "old" }, { body_text: "new" });
+    await mergePending(out, [
+      { typeKey: "Policy", id: "P1", op: "edited", source: "sync", stagedAt: "t" },
+      { typeKey: "Manual", id: "M1", op: "edited", source: "sync", stagedAt: "t" },
+    ], "r");
+
+    const res = await approve({ dump: out, nowMs: NOW, excludeTypeKeys: ["Manual"] });
+    assertEquals(res.promoted, 1); // only Policy
+    assertEquals(res.remaining, 1); // Manual still pending
+    assertEquals(res.items.map((i) => `${i.typeKey}/${i.id}`), ["Policy/P1"]);
+    // Manual's pending file untouched, Policy's promoted.
+    assertExists(Deno.statSync(pendingPath(out, "Manual", "M1")));
+    assertEquals(
+      JSON.parse(await Deno.readTextFile(livePath(out, "Policy", "P1"))).content.body_text,
+      "new",
+    );
+  } finally {
+    await Deno.remove(out, { recursive: true });
+  }
+});

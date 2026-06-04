@@ -2,7 +2,7 @@ F5 KB Toolkit — How-To Guide
 ============================
 
 A task-oriented guide to f5kb: get started fast, then look up the exact commands for
-the things you'll actually want to do. For the full flag reference see README.txt;
+the things you'll actually want to do. For the full flag reference see README.md;
 for how the code works see OUTLINE.txt; for what we learned about F5's backend see
 FINDINGS.txt.
 
@@ -18,11 +18,14 @@ Coveo search backend is reached with a token fetched at runtime.
 
 1. Build the full local index (one JSON per article + a SQLite overview). This is
    three steps: dump (metadata + indexed bodies) -> enrich (the bodies the search
-   index leaves empty) -> track (the SQLite overview):
+   index leaves empty) -> track (the SQLite overview). We normally skip the two
+   big/low-value types, Community and F5_GitHub:
 
-       deno task dump --all --out=outputs/dump
-       deno task enrich --dump=outputs/dump
-       deno task track --dump=outputs/dump
+       deno task dump --all --out=outputs/dump --exclude-types=Community,F5_GitHub
+       deno task enrich --dump=outputs/dump --exclude-types=F5_GitHub
+       deno task track --dump=outputs/dump --exclude-types=Community,F5_GitHub
+
+   (Drop the `--exclude-types=...` to index everything.)
 
 2. See what you've got:
 
@@ -48,30 +51,57 @@ THE MENTAL MODEL
     body). Pass `--yes` to skip review when you trust the source.
   - `reconcile` is the only command that deletes anything on your side, and only
     when you ask it to with `--apply`.
+  - SELECTING TYPES: every type-aware command (dump/enrich/track/sync/reconcile/
+    approve/recent) takes `--types=A,B` (include only these) and `--exclude-types=A,B`
+    (drop these). We routinely exclude the two big/low-value types, Community and
+    F5_GitHub — see the task below.
 
 
 TASK: refresh the index (the everyday command)
 ----------------------------------------------
 Pull upstream changes and update your local copy. `sync` skips unchanged articles,
 re-fetches only what changed, updates the DB, and (under --all) reports anything
-deleted upstream:
+deleted upstream. The usual production run excludes Community and F5_GitHub:
+
+    deno task sync --all --exclude-types=Community,F5_GitHub
+
+Everything (no exclusions):
 
     deno task sync --all
 
 Faster catch-up since your last run (no deletion scan — a date window can't prove an
 article is gone):
 
-    deno task sync --since-last-run
+    deno task sync --since-last-run --exclude-types=Community,F5_GitHub
 
-Just one or a few types:
+Just one or a few types (include wins, then exclude prunes):
 
     deno task sync --all --types=Manual,Release_Note
 
 Preview what a sync WOULD do without writing anything:
 
-    deno task sync --all --dry-run
+    deno task sync --all --exclude-types=Community,F5_GitHub --dry-run
 
 If `sync` reports "N edited article(s) STAGED for review", go to the next task.
+
+
+TASK: include or exclude document types
+---------------------------------------
+`--types` keeps only the listed types; `--exclude-types` drops them; both can be
+combined (include is applied first, then exclude removes from the result, so exclude
+wins on a conflict). With neither flag you get all configured types. This works the
+same on dump, enrich, track, sync, reconcile, approve, and recent.
+
+    # build everything except Community + F5_GitHub (what we normally index)
+    deno task dump --all --out=outputs/dump --exclude-types=Community,F5_GitHub
+    deno task enrich --dump=outputs/dump --exclude-types=F5_GitHub
+    deno task track --dump=outputs/dump --exclude-types=Community,F5_GitHub
+
+    # only specific types
+    deno task sync --all --types=Manual,Release_Note,Bug_Tracker
+
+Unknown type names are warned about and ignored, so a typo won't silently select
+nothing surprising — check the warning if a run touches fewer types than expected.
 
 
 TASK: review and apply staged changes
@@ -178,7 +208,7 @@ Every change a command makes can be recorded to a JSONL changelog (on by default
     tail outputs/dump/_changelog.jsonl
 
 Each line is one JSON object: {runId, ts, op, documentType, id, …}. ops are
-added / edited / deleted / body-added / body-changed / body-error. See README.txt
+added / edited / deleted / body-added / body-changed / body-error. See README.md
 "CHANGELOG FORMAT" for the full schema.
 
 

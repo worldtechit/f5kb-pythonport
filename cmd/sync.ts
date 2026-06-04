@@ -23,7 +23,14 @@
 //   --delay-ms=N          enrich min delay per worker (default 200)
 
 import { type ParsedArgs } from "../lib/args.ts";
-import { flagBool, flagNum, flagStr } from "../lib/args.ts";
+import {
+  applyTypeFilters,
+  flagBool,
+  flagList,
+  flagNum,
+  flagStr,
+  warnUnknownTypes,
+} from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
 import { loadConfig } from "../lib/config/loader.ts";
 import { CoveoClient } from "../lib/coveo/client.ts";
@@ -72,9 +79,8 @@ export async function run(args: ParsedArgs, logger: Logger, deps: SyncDeps = {})
   // instead of overwriting good data. --yes bypasses it (overwrite in place, after
   // archiving the replaced file to _replaced/).
   const bypass = flagBool(flags, "yes");
-  const typeKeyFilter = typeof flags.types === "string"
-    ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
-    : null;
+  const includeTypes = flagList(flags, "types");
+  const excludeTypes = flagList(flags, "exclude-types");
 
   // Changelog defaults ON for sync (the whole point is recording what changed);
   // --no-changelog disables, --changelog=FILE redirects.
@@ -91,19 +97,16 @@ export async function run(args: ParsedArgs, logger: Logger, deps: SyncDeps = {})
     return 1;
   }
   const typeConfigs = config.types;
-  let typeKeys = Object.keys(typeConfigs);
-  if (!typeKeys.length) {
+  const allTypeKeys = Object.keys(typeConfigs);
+  if (!allTypeKeys.length) {
     logger.error(`config ${configPath} has no types`);
     return 1;
   }
-  if (typeKeyFilter) {
-    const unknown = typeKeyFilter.filter((k) => !typeKeys.includes(k));
-    if (unknown.length) logger.warn(`type key(s) not in config ignored: ${unknown.join(", ")}`);
-    typeKeys = typeKeys.filter((k) => typeKeyFilter.includes(k));
-    if (!typeKeys.length) {
-      logger.error("no valid type keys selected");
-      return 1;
-    }
+  warnUnknownTypes(allTypeKeys, includeTypes, excludeTypes, (m) => logger.warn(m));
+  const typeKeys = applyTypeFilters(allTypeKeys, includeTypes, excludeTypes);
+  if (!typeKeys.length) {
+    logger.error("no type keys selected (after --types / --exclude-types)");
+    return 1;
   }
   const descriptions = { ...config.fieldDescriptions };
 

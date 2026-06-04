@@ -13,7 +13,7 @@
 //   --refetch-errors  re-process only previously-errored articles
 
 import { type ParsedArgs } from "../lib/args.ts";
-import { flagBool, flagNum, flagStr } from "../lib/args.ts";
+import { flagBool, flagList, flagNum, flagStr } from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
 import { HttpClient } from "../lib/http/fetcher.ts";
 import { enrichDump } from "../lib/enrich/driver.ts";
@@ -23,9 +23,8 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const flags = args.flags;
 
   const dump = flagStr(flags, "dump", "outputs/dump")!;
-  const types = typeof flags.types === "string"
-    ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
-    : null;
+  const types = flagList(flags, "types");
+  const excludeTypes = flagList(flags, "exclude-types");
   const concurrency = Math.max(1, flagNum(flags, "concurrency", 4) || 4);
   const delayMs = Math.max(0, flagNum(flags, "delay-ms", 200) ?? 200);
   const limit = flags.limit ? (parseInt(String(flags.limit), 10) || null) : null;
@@ -52,6 +51,7 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const reports = await enrichDump({
     dump,
     types,
+    excludeTypes,
     concurrency,
     delayMs,
     limit,

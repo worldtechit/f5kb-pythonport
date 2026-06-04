@@ -13,7 +13,15 @@
 // ===========================================================================
 
 import { assertEquals } from "@std/assert";
-import { flagBool, flagList, flagNum, logLevelFromFlags, parseFlags } from "../../lib/args.ts";
+import {
+  applyTypeFilters,
+  flagBool,
+  flagList,
+  flagNum,
+  logLevelFromFlags,
+  parseFlags,
+  warnUnknownTypes,
+} from "../../lib/args.ts";
 
 Deno.test("parseFlags: --k=v, bare --flag, positionals", () => {
   const { positionals, flags } = parseFlags([
@@ -63,4 +71,38 @@ Deno.test("logLevelFromFlags: precedence + json-logs", () => {
     "trace",
   );
   assertEquals(logLevelFromFlags(parseFlags(["--json-logs"]).flags).json, true);
+});
+
+Deno.test("applyTypeFilters: include / exclude / both (exclude wins)", () => {
+  const all = ["Bug_Tracker", "Manual", "Release_Note", "Community", "F5_GitHub"];
+  // no filters -> everything, in `all` order
+  assertEquals(applyTypeFilters(all, null, null), all);
+  // include only
+  assertEquals(applyTypeFilters(all, ["Manual", "Release_Note"], null), ["Manual", "Release_Note"]);
+  // exclude only (the Community + F5_GitHub case)
+  assertEquals(applyTypeFilters(all, null, ["Community", "F5_GitHub"]), [
+    "Bug_Tracker",
+    "Manual",
+    "Release_Note",
+  ]);
+  // both: include subset, then drop an excluded member (exclude wins)
+  assertEquals(applyTypeFilters(all, ["Manual", "Release_Note"], ["Release_Note"]), ["Manual"]);
+  // empty inputs are treated as "no filter"
+  assertEquals(applyTypeFilters(all, [], []), all);
+  // exclude everything -> empty
+  assertEquals(applyTypeFilters(all, null, all), []);
+});
+
+Deno.test("warnUnknownTypes: flags unknown include/exclude keys once", () => {
+  const all = ["Manual", "Community", "F5_GitHub"];
+  const msgs: string[] = [];
+  const warn = (m: string) => msgs.push(m);
+
+  warnUnknownTypes(all, ["Manual"], ["Community", "F5_GitHub"], warn); // all known
+  assertEquals(msgs.length, 0);
+
+  warnUnknownTypes(all, ["Manuel"], ["Comunity"], warn); // two typos
+  assertEquals(msgs.length, 1);
+  assertEquals(msgs[0].includes("Manuel"), true);
+  assertEquals(msgs[0].includes("Comunity"), true);
 });

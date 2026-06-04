@@ -139,3 +139,34 @@ function countTypeFiles(dump: string, typeKey: string): number {
   }
   return n;
 }
+
+Deno.test("trackDump: --exclude-types drops a type from the index", async () => {
+  const { root, dump } = await copyDump();
+  const db = `${root}/articles.db`;
+  try {
+    const all = await trackDump({ dump, db, runId: "r1" });
+    // Exclude Knowledge on a fresh DB; its rows must be absent, others present.
+    const sub = await trackDump({
+      dump,
+      db: `${root}/sub.db`,
+      excludeTypes: ["Knowledge"],
+      runId: "r2",
+    });
+    assertEquals(all.perType["Knowledge"] !== undefined, true);
+    assertEquals(sub.perType["Knowledge"], undefined); // not scanned
+    assertEquals(sub.scanned < all.scanned, true);
+
+    const subDb = new DatabaseSync(`${root}/sub.db`);
+    const knowledge = (subDb.prepare(
+      "SELECT COUNT(*) c FROM articles WHERE document_type='Knowledge'",
+    ).get() as { c: number }).c;
+    const manual = (subDb.prepare(
+      "SELECT COUNT(*) c FROM articles WHERE document_type='Manual'",
+    ).get() as { c: number }).c;
+    subDb.close();
+    assertEquals(knowledge, 0); // excluded
+    assertEquals(manual > 0, true); // kept
+  } finally {
+    await Deno.remove(root, { recursive: true });
+  }
+});

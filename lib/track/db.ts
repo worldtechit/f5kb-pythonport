@@ -167,6 +167,8 @@ export interface TrackDumpOpts {
   dump: string;
   db?: string;
   types?: string[] | null;
+  /** type keys to exclude (applied after `types`); e.g. ["Community","F5_GitHub"]. */
+  excludeTypes?: string[] | null;
   runId?: string;
   logger?: Logger;
   /** optional changelog sink — records new->added / changed->edited for this run. */
@@ -179,6 +181,7 @@ export async function trackDump(opts: TrackDumpOpts): Promise<Summary> {
   const DB_PATH = opts.db ?? `${DUMP.replace(/\/+$/, "")}/../articles.db`;
   const RUN_ID = opts.runId ?? new Date().toISOString();
   const TYPE_FILTER = opts.types ?? null;
+  const EXCLUDE = new Set(opts.excludeTypes ?? []);
 
   // Discover type subdirs to index.
   let typeKeys: string[];
@@ -188,6 +191,7 @@ export async function trackDump(opts: TrackDumpOpts): Promise<Summary> {
     throw new Error(`Cannot read dump dir ${DUMP}: ${(e as Error).message}`);
   }
   if (TYPE_FILTER) typeKeys = typeKeys.filter((t) => TYPE_FILTER.includes(t));
+  if (EXCLUDE.size) typeKeys = typeKeys.filter((t) => !EXCLUDE.has(t));
   if (!typeKeys.length) {
     throw new Error(`No type directories to index under ${DUMP}.`);
   }

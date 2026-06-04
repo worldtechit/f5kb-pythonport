@@ -19,7 +19,14 @@
 //   --json                 print the result as JSON to STDOUT
 
 import { type ParsedArgs } from "../lib/args.ts";
-import { flagBool, flagNum, flagStr } from "../lib/args.ts";
+import {
+  applyTypeFilters,
+  flagBool,
+  flagList,
+  flagNum,
+  flagStr,
+  warnUnknownTypes,
+} from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
 import { loadConfig } from "../lib/config/loader.ts";
 import { CoveoClient } from "../lib/coveo/client.ts";
@@ -48,9 +55,8 @@ export async function run(
   const asJson = flagBool(flags, "json");
   const maxDeletePct = (flagNum(flags, "max-delete-pct", 10)!) / 100;
   const maxDeletes = flags["max-deletes"] !== undefined ? flagNum(flags, "max-deletes") : undefined;
-  const typeKeyFilter = typeof flags.types === "string"
-    ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
-    : null;
+  const includeTypes = flagList(flags, "types");
+  const excludeTypes = flagList(flags, "exclude-types");
 
   // ---- config ----
   let config;
@@ -61,19 +67,16 @@ export async function run(
     return 1;
   }
   const typeConfigs = config.types;
-  let typeKeys = Object.keys(typeConfigs);
-  if (!typeKeys.length) {
+  const allTypeKeys = Object.keys(typeConfigs);
+  if (!allTypeKeys.length) {
     logger.error(`config ${configPath} has no types`);
     return 1;
   }
-  if (typeKeyFilter) {
-    const unknown = typeKeyFilter.filter((k) => !typeKeys.includes(k));
-    if (unknown.length) logger.warn(`type key(s) not in config ignored: ${unknown.join(", ")}`);
-    typeKeys = typeKeys.filter((k) => typeKeyFilter.includes(k));
-    if (!typeKeys.length) {
-      logger.error("no valid type keys selected");
-      return 1;
-    }
+  warnUnknownTypes(allTypeKeys, includeTypes, excludeTypes, (m) => logger.warn(m));
+  const typeKeys = applyTypeFilters(allTypeKeys, includeTypes, excludeTypes);
+  if (!typeKeys.length) {
+    logger.error("no type keys selected (after --types / --exclude-types)");
+    return 1;
   }
 
   const dbPath = db ?? `${dump.replace(/\/+$/, "")}/../articles.db`;

@@ -7,7 +7,7 @@ war stories) for getting complete/correct data out of a hostile API.
 
 This file is about our code and approach. For discoveries about the thing we scrape
 (my.f5.com / Coveo internals, field meanings, counts), see FINDINGS.txt. For usage
-(subcommands, flags, examples), see README.txt.
+(subcommands, flags, examples), see README.md.
 
 1. THE BIG PICTURE
 ------------------
@@ -119,7 +119,8 @@ post-processors that read the dump directory and never re-hit the search API.
       logger.ts             leveled logger -> STDERR (text or NDJSON).
       progress.ts           progress reporting helper.
       args.ts               parseFlags + flagStr/flagNum/flagBool/flagList +
-                            logLevelFromFlags.
+                            logLevelFromFlags; applyTypeFilters + warnUnknownTypes
+                            (shared --types / --exclude-types resolution).
       fsutil.ts             readJson/writeJson, listTypeDirs, sanitizeName, exists.
       version.ts            VERSION constant.
     config.yaml             types: + field_descriptions: + products: (see README).
@@ -323,7 +324,7 @@ and are the only ones that touch the real API.
 7. TESTING APPROACH
 -------------------
 
-125 tests, all offline by default, under test/ in three categories:
+130 tests, all offline by default, under test/ in three categories:
 
   - unit (16 files) — one module's functions in isolation (paging, client,
     aura/config, dates, fields, the HTML parsers, hashing, args, logger, status,

@@ -20,7 +20,7 @@
 //   --json              print the result as JSON on STDOUT
 
 import { type ParsedArgs } from "../lib/args.ts";
-import { flagBool, flagStr } from "../lib/args.ts";
+import { flagBool, flagList, flagStr } from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
 import { approve } from "../lib/approve.ts";
 import { trackDump } from "../lib/track/db.ts";
@@ -39,9 +39,8 @@ export async function run(
   const dump = flagStr(flags, "dump", "outputs/dump")!;
   const db = flagStr(flags, "db");
   const dbPath = db ?? `${dump.replace(/\/+$/, "")}/../articles.db`;
-  const typeKeys = typeof flags.types === "string"
-    ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
-    : null;
+  const typeKeys = flagList(flags, "types");
+  const excludeTypeKeys = flagList(flags, "exclude-types");
   const ids = typeof flags.ids === "string"
     ? flags.ids.split(",").map((s) => s.trim()).filter(Boolean)
     : null;
@@ -59,6 +58,7 @@ export async function run(
     dump,
     reject,
     typeKeys,
+    excludeTypeKeys,
     ids,
     archive,
     includeRisky,

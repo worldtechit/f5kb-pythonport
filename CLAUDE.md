@@ -54,7 +54,7 @@ re-enriches articles whose `metadata_hash` changed (skips unchanged), and under
 is the only command that deletes on our side: report-only unless `--apply`
 (threshold guard + DB backup + soft-delete to `_deleted/`, or `--purge`). Any
 mutating op takes `--changelog[=FILE]` to append a JSONL change record (format in
-README.txt "CHANGELOG FORMAT"); `sync` writes one by default.
+README.md "CHANGELOG FORMAT"); `sync` writes one by default.
 
 **Overwrite protection (the approval gate).** `sync`/`dump`/`enrich` never silently
 overwrite a live article that already holds good data: an EDIT to an existing
@@ -72,7 +72,7 @@ Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
 
 ## Where the docs live (don't duplicate; update the right one)
 
-- **README.txt** — usage: every subcommand, its flags, examples, output layout.
+- **README.md** — usage: every subcommand, its flags, examples, output layout.
 - **FINDINGS.txt** — discoveries about the *scraped system* (Coveo token flow, API
   limits, field meanings, counts, deprecation/lifecycle). Appendix A is the full
   field inventory; the my.f5.com sitemap notes + gap analysis are in its "Sitemap"
@@ -90,12 +90,16 @@ Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
 
 ## Documentation file conventions (.txt rules)
 
-All human docs except this file (`CLAUDE.md`) are plain-text `.txt`. Keep them
-readable for humans AND unambiguous for LLMs. Rules — apply to every `.txt` now and
-going forward:
+Most human docs are plain-text `.txt`. The two Markdown exceptions are `CLAUDE.md`
+(the harness expects that name) and `README.md` (the user's entry-point doc —
+GitHub renders it). README.md uses normal Markdown (`#`/`##` headings, fenced code,
+tables, `**bold**`); keep it that way going forward. The remaining docs
+(`FINDINGS.txt`, `OUTLINE.txt`, `HOWTO.txt`, `TODO.txt`) stay `.txt` and follow the
+rules below — keep them readable for humans AND unambiguous for LLMs. Apply to every
+`.txt` now and going forward:
 
 - **Filename**: `CAPITAL_LETTERS.txt` (UPPER snake-case), e.g. `FINDINGS.txt`.
-  `CLAUDE.md` is the sole Markdown exception (the harness expects that name).
+  `CLAUDE.md` and `README.md` are the Markdown exceptions.
 - **Title**: first line is the title; underline it with `=` the same width; then a
   blank line and a 1–2 line purpose statement.
 - **Sections (H2)**: `UPPERCASE NAME` underlined with `-` (full width), one blank

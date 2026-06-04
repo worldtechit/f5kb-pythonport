@@ -143,3 +143,29 @@ Deno.test("enrichDump: writes bodies, report shape, resumability, --refetch-erro
     await Deno.remove(root, { recursive: true });
   }
 });
+
+Deno.test("enrichDump: --exclude-types removes a type from the run", async () => {
+  const root = await Deno.makeTempDir();
+  try {
+    // Empty dump (no type dirs) so nothing is fetched; we only assert which types
+    // enrichDump decides to RUN. http 404s but is never reached.
+    const http = new HttpClient({
+      fetch: () => Promise.resolve(new Response("", { status: 404 })),
+      sleep: noopSleep,
+    });
+    const reports = await enrichDump({
+      dump: `${root}/dump`,
+      types: ["Bug_Tracker", "Manual"],
+      excludeTypes: ["Manual"],
+      http,
+      concurrency: 1,
+      delayMs: 0,
+      limit: null,
+      refetch: false,
+      refetchErrors: false,
+    });
+    assertEquals(reports.map((r) => r.typeKey), ["Bug_Tracker"]); // Manual excluded
+  } finally {
+    await Deno.remove(root, { recursive: true });
+  }
+});

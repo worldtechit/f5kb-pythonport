@@ -3,7 +3,7 @@
 // (one JSON object per line) so the file is a greppable, streamable history across
 // runs. A null path makes it a no-op (the operation just doesn't log).
 //
-// The JSONL line schema is documented for users in README.txt.
+// The JSONL line schema is documented for users in README.md.
 
 export type ChangeOp =
   | "added" // a new article file written

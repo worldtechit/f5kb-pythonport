@@ -11,7 +11,7 @@
 //   --limit=N        cap articles per type (testing)
 
 import { type ParsedArgs } from "../lib/args.ts";
-import { flagNum, flagStr } from "../lib/args.ts";
+import { applyTypeFilters, flagList, flagNum, flagStr, warnUnknownTypes } from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
 import { CoveoClient } from "../lib/coveo/client.ts";
 import { fetchCoveoConfig, refreshConfig } from "../lib/coveo/aura.ts";
@@ -69,9 +69,8 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   }
   const pageSize = Math.min(flagNum(flags, "page-size", 500)!, 1000);
   const limit = flags.limit ? parseInt(String(flags.limit)) : Infinity;
-  const typesFilter = typeof flags.types === "string"
-    ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
-    : null;
+  const includeTypes = flagList(flags, "types");
+  const excludeTypes = flagList(flags, "exclude-types");
 
   const nowMs = Date.now();
   const cutoffMs = nowMs - days * 86400000;
@@ -90,22 +89,17 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   );
 
   const allTypes = await listDocumentTypes(client);
-  const allTypeNames = new Set(allTypes.map((t) => t.value));
-
-  let selected: string[];
-  if (typesFilter) {
-    const unknown = typesFilter.filter((t) => !allTypeNames.has(t));
-    if (unknown.length) {
-      logger.warn(`unknown type(s) ignored: ${unknown.join(", ")}`);
-      logger.warn(`Known types: ${[...allTypeNames].join(", ")}`);
-    }
-    selected = typesFilter.filter((t) => allTypeNames.has(t));
-    if (!selected.length) {
-      logger.error("no valid types selected");
-      return 1;
-    }
-  } else {
-    selected = allTypes.map((t) => t.value);
+  const allTypeNames = allTypes.map((t) => t.value);
+  if ((includeTypes || excludeTypes)) {
+    warnUnknownTypes(allTypeNames, includeTypes, excludeTypes, (m) => {
+      logger.warn(m);
+      logger.warn(`Known types: ${allTypeNames.join(", ")}`);
+    });
+  }
+  const selected = applyTypeFilters(allTypeNames, includeTypes, excludeTypes);
+  if (!selected.length) {
+    logger.error("no types selected (after --types / --exclude-types)");
+    return 1;
   }
 
   await Deno.mkdir(outDir, { recursive: true });

@@ -15,7 +15,14 @@
 
 import { type ParsedArgs } from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
-import { flagBool, flagNum, flagStr } from "../lib/args.ts";
+import {
+  applyTypeFilters,
+  flagBool,
+  flagList,
+  flagNum,
+  flagStr,
+  warnUnknownTypes,
+} from "../lib/args.ts";
 import { loadConfig, loadFieldDescriptionsFile } from "../lib/config/loader.ts";
 import { CoveoClient } from "../lib/coveo/client.ts";
 import { fetchCoveoConfig, refreshConfig } from "../lib/coveo/aura.ts";
@@ -52,9 +59,8 @@ export async function run(args: ParsedArgs, logger: Logger, deps: DumpDeps = {})
   const fieldsDocPath = flagStr(flags, "fields-doc");
   const pageSize = Math.min(flagNum(flags, "page-size", 200)!, 500);
   const limit = flags.limit ? parseInt(String(flags.limit)) : Infinity;
-  const typeKeyFilter = typeof flags.types === "string"
-    ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
-    : null;
+  const includeTypes = flagList(flags, "types");
+  const excludeTypes = flagList(flags, "exclude-types");
 
   // ---- config ----
   let config;
@@ -65,20 +71,16 @@ export async function run(args: ParsedArgs, logger: Logger, deps: DumpDeps = {})
     return 1;
   }
   const typeConfigs = config.types;
-  let typeKeys = Object.keys(typeConfigs);
-  if (!typeKeys.length) {
+  const allTypeKeys = Object.keys(typeConfigs);
+  if (!allTypeKeys.length) {
     logger.error(`config ${configPath} has no types`);
     return 1;
   }
-
-  if (typeKeyFilter) {
-    const unknown = typeKeyFilter.filter((k) => !typeKeys.includes(k));
-    if (unknown.length) logger.warn(`type key(s) not in config ignored: ${unknown.join(", ")}`);
-    typeKeys = typeKeys.filter((k) => typeKeyFilter.includes(k));
-    if (!typeKeys.length) {
-      logger.error("no valid type keys selected");
-      return 1;
-    }
+  warnUnknownTypes(allTypeKeys, includeTypes, excludeTypes, (m) => logger.warn(m));
+  const typeKeys = applyTypeFilters(allTypeKeys, includeTypes, excludeTypes);
+  if (!typeKeys.length) {
+    logger.error("no type keys selected (after --types / --exclude-types)");
+    return 1;
   }
 
   // Field descriptions: from config.yaml, with the deprecated --fields-doc merged on top.

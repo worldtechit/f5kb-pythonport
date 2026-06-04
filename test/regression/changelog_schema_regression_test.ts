@@ -1,5 +1,5 @@
 // ===========================================================================
-// TEST: changelog JSONL line schema is stable (documented in README.txt)
+// TEST: changelog JSONL line schema is stable (documented in README.md)
 // CATEGORY: regression
 // COVERS: lib/changelog.ts (Changelog.record/flush serialization)
 // FIXTURES: none
@@ -9,7 +9,7 @@
 //   - required keys runId, ts, op, documentType, id are ALWAYS present
 //   - optional keys appear only when supplied; no unexpected keys leak
 //   - the `op` value is drawn from the documented vocabulary
-// If this test fails, the changelog format changed — update README.txt's
+// If this test fails, the changelog format changed — update README.md's
 // "Changelog format" section and any downstream consumers in lockstep.
 // ===========================================================================
 
