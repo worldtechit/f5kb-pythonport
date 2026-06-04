@@ -1,49 +1,49 @@
 [
   {
     "product": "BIG-IP",
-    "count": 48453,
+    "count": 48476,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP LTM",
-    "count": 29260,
+    "count": 29276,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP APM",
-    "count": 24451,
+    "count": 24457,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP ASM",
-    "count": 21436,
+    "count": 21442,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP AFM",
-    "count": 15610,
+    "count": 15616,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP Link Controller",
-    "count": 14069,
+    "count": 14072,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP PEM",
-    "count": 13950,
+    "count": 13954,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP DNS",
-    "count": 13608,
+    "count": 13615,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -55,13 +55,13 @@
   },
   {
     "product": "BIG-IP Analytics",
-    "count": 12329,
+    "count": 12332,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP GTM",
-    "count": 9741,
+    "count": 9743,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -73,51 +73,75 @@
   },
   {
     "product": "BIG-IQ Centralized Management",
-    "count": 7764,
+    "count": 7793,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP FPS",
-    "count": 7715,
+    "count": 7718,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IQ",
-    "count": 6391,
+    "count": 6395,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "F5OS",
-    "count": 4875,
+    "count": 4882,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP WebAccelerator",
     "count": 4724,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Known Issue",
+      "Policy",
+      "Security Advisory",
+      "Video"
+    ]
   },
   {
     "product": "Traffix SDC",
-    "count": 4538,
+    "count": 4541,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP Edge Gateway",
     "count": 4292,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Known Issue",
+      "Policy",
+      "Security Advisory",
+      "Video"
+    ]
   },
   {
     "product": "BIG-IP PSM",
     "count": 3608,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker",
+      "Knowledge",
+      "Known Issue",
+      "Manual",
+      "Policy",
+      "Release Note",
+      "Security Advisory",
+      "Video"
+    ]
   },
   {
     "product": "BIG-IP TMOS",
@@ -130,27 +154,43 @@
   },
   {
     "product": "F5OS-C",
-    "count": 2780,
+    "count": 2787,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "F5OS-A",
-    "count": 2688,
+    "count": 2692,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP WOM",
     "count": 2678,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker",
+      "Knowledge",
+      "Known Issue",
+      "Policy",
+      "Security Advisory",
+      "Video"
+    ]
   },
   {
     "product": "Enterprise Manager",
     "count": 2530,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Known Issue",
+      "Policy",
+      "Release Note",
+      "Security Advisory",
+      "Video"
+    ]
   },
   {
     "product": "FirePass",
@@ -160,7 +200,7 @@
   },
   {
     "product": "F5 App Protect",
-    "count": 2316,
+    "count": 2311,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
@@ -174,18 +214,18 @@
   },
   {
     "product": "NGINX Plus",
-    "count": 2178,
+    "count": 2182,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "F5 SSL Orchestrator",
-    "count": 2169,
+    "count": 2168,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Known Issue",
+      "Manual",
       "Operations Guide",
       "Policy",
       "Release Note",
@@ -195,44 +235,51 @@
     ]
   },
   {
+    "product": "NGINX Products",
+    "count": 2098,
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
+  },
+  {
     "product": "ARX",
     "count": 2097,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
-    "product": "NGINX Products",
-    "count": 2093,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
-  },
-  {
     "product": "F5 Distributed Cloud Services",
-    "count": 1950,
+    "count": 1955,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "NGINX Open Source",
-    "count": 1919,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
-  },
-  {
-    "product": "F5 Distributed Cloud",
-    "count": 1786,
+    "count": 1922,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "NGINX Instance Manager",
-    "count": 1765,
+    "count": 1800,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
+    "product": "F5 Distributed Cloud",
+    "count": 1789,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Operations Guide",
+      "Policy",
+      "Security Advisory",
+      "Support Solution"
+    ]
+  },
+  {
     "product": "F5 DDoS Hybrid Defender",
-    "count": 1721,
+    "count": 1720,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
@@ -245,24 +292,13 @@
   },
   {
     "product": "NGINX Ingress Controller",
-    "count": 1681,
+    "count": 1686,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
-    "product": "BIG-IP Documentation",
-    "count": 1654,
-    "source": "manual_query",
-    "hiddenFromGlobalFacet": true,
-    "hiddenFromTypeFilteredFacets": true,
-    "discoveredViaTypes": [
-      "Manual"
-    ],
-    "notes": "TechComm/Sitemap source (not Salesforce). All articles are doc_type=Manual. Excluded from both global and type-filtered facets by Coveo admin config. Discoverable only via direct @f5_version==\"BIG-IP Documentation\" query."
-  },
-  {
     "product": "NGINX App Protect WAF",
-    "count": 1647,
+    "count": 1650,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -280,13 +316,13 @@
   },
   {
     "product": "BIG-IP Next",
-    "count": 1625,
+    "count": 1628,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP Platforms",
-    "count": 1613,
+    "count": 1612,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
@@ -299,10 +335,22 @@
     ]
   },
   {
-    "product": "BIG-IP Next SPK",
-    "count": 1591,
+    "product": "BIG_IP_NEXT(SPK)",
+    "count": 1594,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
+  },
+  {
+    "product": "BIG-IP Next SPK",
+    "count": 1594,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy",
+      "Security Advisory",
+      "Support Solution"
+    ]
   },
   {
     "product": "F5 iWorkflow",
@@ -324,7 +372,7 @@
   },
   {
     "product": "NGINX App Protect DoS",
-    "count": 1532,
+    "count": 1535,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -336,7 +384,7 @@
   },
   {
     "product": "BIG-IQ Device",
-    "count": 1489,
+    "count": 1490,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -351,13 +399,13 @@
   },
   {
     "product": "NGINX Agent",
-    "count": 1371,
+    "count": 1374,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "F5 Silverline",
-    "count": 1336,
+    "count": 1339,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -374,25 +422,24 @@
     ]
   },
   {
-    "product": "BIG-IP Next CNF",
-    "count": 1288,
+    "product": "BIG_IP_NEXT(CNF)",
+    "count": 1292,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
-  },
-  {
-    "product": "BIG_IP_NEXT(CNF)",
-    "count": 1288,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Bug Tracker"
-    ]
   },
   {
     "product": "BIG-IQ Cloud and Orchestration",
     "count": 1266,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy",
+      "Release Note",
+      "Security Advisory",
+      "Support Solution",
+      "Video"
+    ]
   },
   {
     "product": "NGINX Service Mesh",
@@ -402,25 +449,25 @@
   },
   {
     "product": "BIG-IP Next CGNAT CNF",
-    "count": 1238,
+    "count": 1242,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP Next DNS CNF",
-    "count": 1237,
+    "count": 1240,
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
+  },
+  {
+    "product": "BIG-IP Next Edge Firewall CNF",
+    "count": 1234,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "NGINX API Connectivity Manager",
     "count": 1232,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
-  },
-  {
-    "product": "BIG-IP Next Edge Firewall CNF",
-    "count": 1231,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -438,20 +485,21 @@
   },
   {
     "product": "Virtual Editions",
-    "count": 1156,
+    "count": 1157,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
       "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution",
       "Video"
     ]
   },
   {
     "product": "VIPRION Platforms",
-    "count": 1052,
+    "count": 1051,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
@@ -465,6 +513,12 @@
     ]
   },
   {
+    "product": "NGINX One Console",
+    "count": 962,
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
+  },
+  {
     "product": "F5 WebSafe",
     "count": 961,
     "source": "type_filtered_facet",
@@ -476,14 +530,8 @@
     ]
   },
   {
-    "product": "NGINX One Console",
-    "count": 956,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
-  },
-  {
     "product": "NGINX Gateway Fabric",
-    "count": 921,
+    "count": 924,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -502,8 +550,14 @@
   {
     "product": "BIG-IP 4",
     "count": 855,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Known Issue",
+      "Policy",
+      "Security Advisory"
+    ]
   },
   {
     "product": "BIG-IP Install/Upgrade",
@@ -521,44 +575,32 @@
     "hiddenFromGlobalFacet": false
   },
   {
-    "product": "APM Clients",
-    "count": 811,
+    "product": "BIG-IP SSL Orchestrator",
+    "count": 814,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "APM-Clients",
     "count": 811,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Bug Tracker"
-    ]
-  },
-  {
-    "product": "BIG-IP SSL Orchestrator",
-    "count": 809,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP DDoS Hybrid Defender",
-    "count": 769,
+    "count": 773,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
   {
     "product": "F5 BIG-IQ API",
     "count": 767,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Manual"
-    ]
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
   },
   {
     "product": "BIG-IP Next for Kubernetes",
-    "count": 713,
+    "count": 716,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -571,8 +613,7 @@
       "Knowledge",
       "Operations Guide",
       "Policy",
-      "Security Advisory",
-      "Support Solution"
+      "Security Advisory"
     ]
   },
   {
@@ -584,8 +625,7 @@
       "Knowledge",
       "Operations Guide",
       "Policy",
-      "Security Advisory",
-      "Support Solution"
+      "Security Advisory"
     ]
   },
   {
@@ -611,17 +651,8 @@
     ]
   },
   {
-    "product": "Service Proxy for Kubernetes",
-    "count": 523,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Manual"
-    ]
-  },
-  {
     "product": "F5 AI Gateway",
-    "count": 521,
+    "count": 524,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -681,7 +712,7 @@
   },
   {
     "product": "F5 WAF for NGINX",
-    "count": 376,
+    "count": 379,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -706,7 +737,8 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide"
+      "Operations Guide",
+      "Security Advisory"
     ]
   },
   {
@@ -715,7 +747,8 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide"
+      "Operations Guide",
+      "Security Advisory"
     ]
   },
   {
@@ -724,7 +757,8 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide"
+      "Operations Guide",
+      "Security Advisory"
     ]
   },
   {
@@ -733,12 +767,13 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide"
+      "Operations Guide",
+      "Security Advisory"
     ]
   },
   {
     "product": "F5 DoS for NGINX",
-    "count": 306,
+    "count": 309,
     "source": "global_facet",
     "hiddenFromGlobalFacet": false
   },
@@ -767,8 +802,15 @@
   {
     "product": "BIG-IP Cloud Edition",
     "count": 267,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy",
+      "Security Advisory",
+      "Support Solution",
+      "Video"
+    ]
   },
   {
     "product": "F5 Application Services 3 Extension",
@@ -791,9 +833,17 @@
       "Known Issue",
       "Operations Guide",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
+    ]
+  },
+  {
+    "product": "BIG-IP vCMP",
+    "count": 233,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
     ]
   },
   {
@@ -806,7 +856,6 @@
       "Known Issue",
       "Operations Guide",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -819,15 +868,40 @@
     "discoveredViaTypes": [
       "Knowledge",
       "Policy",
-      "Security Advisory",
       "Support Solution"
+    ]
+  },
+  {
+    "product": "BIG-IP MA-VE",
+    "count": 218,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
     ]
   },
   {
     "product": "F5 Access",
     "count": 201,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Known Issue",
+      "Operations Guide",
+      "Policy",
+      "Support Solution",
+      "Video"
+    ]
+  },
+  {
+    "product": "BIG-IP SPK",
+    "count": 198,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Security Advisory"
+    ]
   },
   {
     "product": "Private Cloud",
@@ -871,6 +945,7 @@
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -911,6 +986,15 @@
     ]
   },
   {
+    "product": "BIG_IP_NEXT(CM)",
+    "count": 128,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
+  },
+  {
     "product": "BIG-IP i2000 Series",
     "count": 122,
     "source": "type_filtered_facet",
@@ -919,7 +1003,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -943,7 +1026,6 @@
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
-      "Known Issue",
       "Operations Guide",
       "Support Solution",
       "Video"
@@ -958,7 +1040,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -972,7 +1053,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -986,7 +1066,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -1000,7 +1079,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -1023,7 +1101,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -1037,18 +1114,17 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
   },
   {
-    "product": "Cloud-Native Network Functions for OpenShift",
-    "count": 85,
+    "product": "BIG_IP_NEXT(VE/HW)",
+    "count": 87,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Manual"
+      "Bug Tracker"
     ]
   },
   {
@@ -1060,6 +1136,7 @@
       "Knowledge",
       "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1073,13 +1150,24 @@
     ]
   },
   {
+    "product": "F5 BIG-IP Image Generator Tool",
+    "count": 82,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Support Solution"
+    ]
+  },
+  {
     "product": "BIG-IP 5000 Series",
     "count": 76,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
+      "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1090,7 +1178,9 @@
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
+      "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1115,6 +1205,7 @@
       "Knowledge",
       "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1128,13 +1219,24 @@
     ]
   },
   {
+    "product": "BIG-IP WAM",
+    "count": 69,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
+  },
+  {
     "product": "BIG-IP 2000 Series",
     "count": 66,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
+      "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1145,7 +1247,9 @@
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
+      "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1155,6 +1259,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Known Issue",
       "Policy"
     ]
@@ -1186,17 +1291,10 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Known Issue",
       "Policy",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Apps",
-    "count": 61,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
+      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1208,8 +1306,7 @@
     "discoveredViaTypes": [
       "Knowledge",
       "Known Issue",
-      "Policy",
-      "Support Solution"
+      "Policy"
     ]
   },
   {
@@ -1221,7 +1318,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -1253,7 +1349,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -1267,7 +1362,6 @@
       "Knowledge",
       "Known Issue",
       "Policy",
-      "Security Advisory",
       "Support Solution",
       "Video"
     ]
@@ -1278,7 +1372,6 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
       "Policy",
       "Support Solution"
     ]
@@ -1291,9 +1384,7 @@
     "discoveredViaTypes": [
       "Knowledge",
       "Known Issue",
-      "Policy",
-      "Security Advisory",
-      "Support Solution"
+      "Policy"
     ]
   },
   {
@@ -1306,24 +1397,13 @@
     ]
   },
   {
-    "product": "F5 Distributed Cloud Multi-Cloud App Connect",
-    "count": 51,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
     "product": "VIPRION 2400",
     "count": 51,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Known Issue",
-      "Policy",
-      "Support Solution"
+      "Policy"
     ]
   },
   {
@@ -1342,7 +1422,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
+      "Knowledge",
       "Policy"
     ]
   },
@@ -1364,8 +1444,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide",
-      "Support Solution"
+      "Operations Guide"
     ]
   },
   {
@@ -1377,17 +1456,15 @@
       "Knowledge",
       "Known Issue",
       "Policy",
+      "Security Advisory",
       "Support Solution"
     ]
   },
   {
     "product": "F5 SDK",
     "count": 45,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Manual"
-    ]
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
   },
   {
     "product": "VIPRION B4340N Blade NEBS",
@@ -1395,6 +1472,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Known Issue",
       "Policy"
     ]
@@ -1407,7 +1485,6 @@
     "discoveredViaTypes": [
       "Knowledge",
       "Known Issue",
-      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1419,7 +1496,6 @@
     "discoveredViaTypes": [
       "Knowledge",
       "Known Issue",
-      "Security Advisory",
       "Support Solution"
     ]
   },
@@ -1446,6 +1522,15 @@
     ]
   },
   {
+    "product": "F5 Declarative Onboarding",
+    "count": 40,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
     "product": "BIG_IP_NEXT(CNF) CNF",
     "count": 39,
     "source": "type_filtered_facet",
@@ -1461,16 +1546,6 @@
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Policy",
-      "Security Advisory",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud DNS Management",
-    "count": 38,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
       "Support Solution"
     ]
   },
@@ -1480,6 +1555,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Known Issue",
       "Policy",
       "Support Solution"
@@ -1515,7 +1591,6 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Known Issue",
       "Policy",
       "Support Solution"
@@ -1527,8 +1602,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Policy",
-      "Support Solution"
+      "Policy"
     ]
   },
   {
@@ -1537,7 +1611,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
+      "Knowledge",
       "Policy",
       "Support Solution"
     ]
@@ -1572,6 +1646,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Known Issue",
       "Policy",
       "Support Solution"
@@ -1583,7 +1658,6 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Known Issue",
       "Policy"
     ]
@@ -1615,7 +1689,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
+      "Knowledge",
       "Policy",
       "Support Solution"
     ]
@@ -1635,10 +1709,8 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Known Issue",
-      "Policy",
-      "Support Solution"
+      "Policy"
     ]
   },
   {
@@ -1653,6 +1725,16 @@
     ]
   },
   {
+    "product": "KVM",
+    "count": 28,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Policy",
+      "Support Solution"
+    ]
+  },
+  {
     "product": "rSeries 12000",
     "count": 28,
     "source": "type_filtered_facet",
@@ -1662,16 +1744,6 @@
       "Known Issue",
       "Support Solution",
       "Video"
-    ]
-  },
-  {
-    "product": "KVM",
-    "count": 27,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy",
-      "Support Solution"
     ]
   },
   {
@@ -1696,12 +1768,12 @@
     ]
   },
   {
-    "product": "F5 Distributed Cloud DNS Load Balancer",
+    "product": "BIG_IP_NEXT(CM) Install/Upgrade",
     "count": 26,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Bug Tracker"
     ]
   },
   {
@@ -1720,7 +1792,6 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
       "Policy"
     ]
   },
@@ -1734,21 +1805,22 @@
     ]
   },
   {
+    "product": "BIG-IQ Access",
+    "count": 24,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
+  },
+  {
     "product": "BIG-IP 6400 Series",
     "count": 24,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Policy",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 BIG-IP Cloud Failover",
-    "count": 23,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
       "Support Solution"
     ]
   },
@@ -1762,6 +1834,15 @@
       "Known Issue",
       "Policy",
       "Video"
+    ]
+  },
+  {
+    "product": "BIG-IQ Config Mgmt Infrastructure",
+    "count": 22,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
     ]
   },
   {
@@ -1781,6 +1862,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Policy",
       "Support Solution"
     ]
@@ -1798,16 +1880,13 @@
     ]
   },
   {
-    "product": "F5 Insight",
+    "product": "Application Connector",
     "count": 20,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
-  },
-  {
-    "product": "NGINX ModSecurity WAF",
-    "count": 20,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
   },
   {
     "product": "BIG-IP 3400 Series",
@@ -1815,6 +1894,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Support Solution"
     ]
   },
@@ -1824,6 +1904,18 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
+      "Policy",
+      "Support Solution"
+    ]
+  },
+  {
+    "product": "NGINX ModSecurity WAF",
+    "count": 20,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
       "Policy",
       "Support Solution"
     ]
@@ -1840,12 +1932,22 @@
     ]
   },
   {
+    "product": "F5 Insight",
+    "count": 20,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy"
+    ]
+  },
+  {
     "product": "Herculon i2000 Series",
     "count": 20,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
+      "Knowledge",
       "Policy"
     ]
   },
@@ -1865,6 +1967,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy",
       "Support Solution"
     ]
@@ -1875,6 +1978,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Support Solution"
     ]
   },
@@ -1884,6 +1988,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Known Issue",
       "Policy",
       "Support Solution"
@@ -1895,7 +2000,17 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Support Solution"
+    ]
+  },
+  {
+    "product": "BIG-IQ Configuration - Local Traffic",
+    "count": 17,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
     ]
   },
   {
@@ -1904,6 +2019,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Support Solution"
     ]
   },
@@ -1913,6 +2029,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy",
       "Support Solution"
     ]
@@ -1923,6 +2040,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy",
       "Support Solution"
     ]
@@ -1933,15 +2051,17 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
       "Policy"
     ]
   },
   {
-    "product": "ARX Cloud Extender",
+    "product": "BIG-IP EM",
     "count": 16,
-    "source": "global_facet",
-    "hiddenFromGlobalFacet": false
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
   },
   {
     "product": "BIG-IP 10250v",
@@ -1949,16 +2069,27 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Support Solution"
     ]
   },
   {
-    "product": "F5 Distributed Multi-Cloud Network Connect",
+    "product": "BIG-IP 5250v",
     "count": 16,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Known Issue"
+    ]
+  },
+  {
+    "product": "BIG-IQ 7000",
+    "count": 16,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy"
     ]
   },
   {
@@ -1967,7 +2098,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
+      "Knowledge",
       "Policy"
     ]
   },
@@ -1977,18 +2108,8 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Known Issue",
+      "Knowledge",
       "Policy"
-    ]
-  },
-  {
-    "product": "BIG-IQ 7000",
-    "count": 16,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy",
-      "Security Advisory"
     ]
   },
   {
@@ -1999,6 +2120,15 @@
     "discoveredViaTypes": [
       "Release Note",
       "Supplemental Document"
+    ]
+  },
+  {
+    "product": "ARX Cloud Extender",
+    "count": 16,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Policy"
     ]
   },
   {
@@ -2013,10 +2143,44 @@
   {
     "product": "F5 Driver for OpenStack LBaaSv2",
     "count": 15,
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
+  },
+  {
+    "product": "BIG-IP SAM",
+    "count": 15,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Manual"
+      "Manual",
+      "Release Note"
+    ]
+  },
+  {
+    "product": "Application Connector TMOS",
+    "count": 15,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
+  },
+  {
+    "product": "BIG-IQ Monitoring - Dashboards & Reports",
+    "count": 15,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
+  },
+  {
+    "product": "BIG_IP_NEXT(VE/HW) LTM",
+    "count": 15,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
     ]
   },
   {
@@ -2025,17 +2189,9 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy",
       "Support Solution"
-    ]
-  },
-  {
-    "product": "BIG-IP SAM",
-    "count": 15,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Release Note"
     ]
   },
   {
@@ -2053,22 +2209,21 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Policy",
       "Support Solution"
     ]
   },
   {
-    "product": "F5 Distributed Cloud Routed DDoS",
+    "product": "BIG-IP 5200v",
     "count": 14,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Known Issue"
     ]
   },
   {
-    "product": "AGC",
+    "product": "BIG_IP_NEXT(CM) MA-CM",
     "count": 13,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2082,6 +2237,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Support Solution"
     ]
   },
@@ -2091,7 +2247,17 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy"
+    ]
+  },
+  {
+    "product": "BIG-IP 7250v",
+    "count": 13,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue"
     ]
   },
   {
@@ -2109,6 +2275,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Support Solution"
     ]
   },
@@ -2118,18 +2285,28 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy",
       "Support Solution"
     ]
   },
   {
-    "product": "F5 Distributed Cloud Web App Scanning",
+    "product": "BIG-IP 7200v",
     "count": 12,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide",
-      "Support Solution"
+      "Known Issue"
+    ]
+  },
+  {
+    "product": "BIG-IP 7200v FIPS",
+    "count": 12,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue",
+      "Policy"
     ]
   },
   {
@@ -2143,7 +2320,7 @@
     ]
   },
   {
-    "product": "BIG-IP 7200v FIPS",
+    "product": "SDK",
     "count": 12,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2152,12 +2329,21 @@
     ]
   },
   {
-    "product": "SDK",
+    "product": "F5 Distributed Cloud Web App Scanning",
     "count": 12,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Policy"
+      "Operations Guide"
+    ]
+  },
+  {
+    "product": "BIG-IQ SSL Orchestrator",
+    "count": 11,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
     ]
   },
   {
@@ -2170,11 +2356,21 @@
     ]
   },
   {
+    "product": "BIG_IP_NEXT(CM) DNS",
+    "count": 10,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Bug Tracker"
+    ]
+  },
+  {
     "product": "BIG-IP 10055s",
     "count": 10,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Policy",
       "Support Solution"
     ]
@@ -2185,7 +2381,18 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Known Issue",
       "Support Solution"
+    ]
+  },
+  {
+    "product": "Enterprise Manager Platforms",
+    "count": 10,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy"
     ]
   },
   {
@@ -2195,15 +2402,6 @@
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Release Note"
-    ]
-  },
-  {
-    "product": "Enterprise Manager Platforms",
-    "count": 10,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy"
     ]
   },
   {
@@ -2227,6 +2425,15 @@
     ]
   },
   {
+    "product": "BIG-IP 6900",
+    "count": 9,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue"
+    ]
+  },
+  {
     "product": "Legacy Platforms",
     "count": 9,
     "source": "type_filtered_facet",
@@ -2236,12 +2443,12 @@
     ]
   },
   {
-    "product": "SSLO Troubleshooting Guide",
+    "product": "BIG-IQ 1UX Monitor - Logs",
     "count": 8,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Manual"
+      "Bug Tracker"
     ]
   },
   {
@@ -2254,42 +2461,39 @@
     ]
   },
   {
-    "product": "AGC APM",
-    "count": 7,
+    "product": "BIG-IP 5000s",
+    "count": 8,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Bug Tracker"
+      "Known Issue"
     ]
   },
   {
-    "product": "rSeries 10900",
+    "product": "BIG-IP 5050s",
+    "count": 8,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue"
+    ]
+  },
+  {
+    "product": "Alibaba Cloud",
     "count": 7,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
       "Support Solution"
     ]
   },
   {
-    "product": "rSeries 5800",
+    "product": "BIG-IP 7050s",
     "count": 7,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "rSeries 5900",
-    "count": 7,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
+      "Known Issue"
     ]
   },
   {
@@ -2298,6 +2502,44 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
+      "Policy"
+    ]
+  },
+  {
+    "product": "rSeries 10900",
+    "count": 7,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
+    "product": "rSeries 5800",
+    "count": 7,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
+    "product": "rSeries 5900",
+    "count": 7,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
+    "product": "TrafficShield / BIG-IP ASM Platforms",
+    "count": 7,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
       "Policy"
     ]
   },
@@ -2311,31 +2553,10 @@
     ]
   },
   {
-    "product": "TrafficShield / BIG-IP ASM Platforms",
-    "count": 7,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy"
-    ]
-  },
-  {
     "product": "F5 BIG-IP Controller for Kubernetes",
     "count": 6,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Manual"
-    ]
-  },
-  {
-    "product": "BIG IP i5800",
-    "count": 6,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
+    "source": "global_facet",
+    "hiddenFromGlobalFacet": false
   },
   {
     "product": "Cisco APIC",
@@ -2347,17 +2568,43 @@
     ]
   },
   {
-    "product": "F5 Distributed Cloud Client-Side Defense",
+    "product": "F5 Ready Cloud Partners",
     "count": 6,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide",
       "Support Solution"
     ]
   },
   {
-    "product": "F5 Application Connector",
+    "product": "BIG-IP 6900s",
+    "count": 6,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue"
+    ]
+  },
+  {
+    "product": "BIG-IP 7000",
+    "count": 6,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue"
+    ]
+  },
+  {
+    "product": "BIG-IP 8900",
+    "count": 6,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Known Issue"
+    ]
+  },
+  {
+    "product": "ARX Platforms",
     "count": 6,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2367,7 +2614,7 @@
     ]
   },
   {
-    "product": "ARX Platforms",
+    "product": "F5 Application Connector",
     "count": 6,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2394,49 +2641,40 @@
     ]
   },
   {
-    "product": "BIG IP i10800",
+    "product": "F5 Distributed Cloud Client-Side Defense",
+    "count": 6,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Operations Guide"
+    ]
+  },
+  {
+    "product": "BIG-IQ App Visibility and Reporting (AVR)",
     "count": 5,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Bug Tracker"
     ]
   },
   {
-    "product": "BIG IP i11800",
+    "product": "BIG-IP 11050",
     "count": 5,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Known Issue"
     ]
   },
   {
-    "product": "BIG IP i15800",
-    "count": 5,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud Administration",
-    "count": 5,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "rSeries 5920-DF",
+    "product": "Enterprise Manager 4000",
     "count": 5,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
       "Knowledge",
-      "Support Solution"
+      "Policy"
     ]
   },
   {
@@ -2459,77 +2697,12 @@
     ]
   },
   {
-    "product": "Enterprise Manager 4000",
+    "product": "rSeries 5920-DF",
     "count": 5,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Policy"
-    ]
-  },
-  {
-    "product": "BIG IP i2800",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "BIG IP i4800",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "BIG IP i7800",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud Audit Logs & Alerts",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Operations Guide",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud Billing",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud Support",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 DNS Cloud Service",
-    "count": 4,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy",
-      "Support Solution"
+      "Knowledge"
     ]
   },
   {
@@ -2538,8 +2711,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
+      "Knowledge"
     ]
   },
   {
@@ -2548,8 +2720,7 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
+      "Knowledge"
     ]
   },
   {
@@ -2571,6 +2742,15 @@
     ]
   },
   {
+    "product": "F5 DNS Cloud Service",
+    "count": 4,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Policy"
+    ]
+  },
+  {
     "product": "WANJet Platforms",
     "count": 4,
     "source": "type_filtered_facet",
@@ -2580,72 +2760,43 @@
     ]
   },
   {
-    "product": "F5 Distributed Cloud Observability",
-    "count": 3,
+    "product": "F5 Distributed Cloud Audit Logs & Alerts",
+    "count": 4,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Operations Guide",
-      "Support Solution"
+      "Operations Guide"
     ]
   },
   {
-    "product": "F5 Distributed Cloud Shared Configuration",
+    "product": "AI Security",
     "count": 3,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 DNS Load Balancer Cloud Service",
-    "count": 3,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
+      "Knowledge",
       "Policy",
       "Support Solution"
     ]
   },
   {
-    "product": "F5 Essential App Protect Service",
+    "product": "F5 AI Guardrails",
     "count": 3,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Policy",
       "Support Solution"
     ]
   },
   {
-    "product": "rSeries 10920-DF",
+    "product": "BIG-IP 8950",
     "count": 3,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "rSeries 12800-DS",
-    "count": 3,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "rSeries 12900-DS",
-    "count": 3,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Knowledge",
-      "Support Solution"
+      "Known Issue"
     ]
   },
   {
@@ -2654,11 +2805,77 @@
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
+      "Knowledge",
       "Policy"
     ]
   },
   {
+    "product": "FirePass 4100",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy"
+    ]
+  },
+  {
+    "product": "FirePass 4300",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge",
+      "Policy"
+    ]
+  },
+  {
+    "product": "rSeries 10920-DF",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
+    "product": "rSeries 12800-DS",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
+    "product": "rSeries 12900-DS",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
+    ]
+  },
+  {
     "product": "BIG-IP 7055s",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Policy"
+    ]
+  },
+  {
+    "product": "F5 DNS Load Balancer Cloud Service",
+    "count": 3,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Policy"
+    ]
+  },
+  {
+    "product": "F5 Essential App Protect Service",
     "count": 3,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2712,21 +2929,12 @@
     ]
   },
   {
-    "product": "FirePass 4100",
+    "product": "F5 Distributed Cloud Observability",
     "count": 3,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Policy"
-    ]
-  },
-  {
-    "product": "FirePass 4300",
-    "count": 3,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy"
+      "Operations Guide"
     ]
   },
   {
@@ -2736,52 +2944,26 @@
     "hiddenFromGlobalFacet": false
   },
   {
-    "product": "BIG-IP MA-All",
+    "product": "F5 AI Red Team",
     "count": 2,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Bug Tracker"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud Content Delivery Network",
-    "count": 2,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
+      "Policy",
       "Support Solution"
     ]
   },
   {
-    "product": "F5 Distributed Cloud Delegated Access",
+    "product": "ARX 2500",
     "count": 2,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Knowledge"
     ]
   },
   {
-    "product": "F5 Distributed Cloud NGINX One",
-    "count": 2,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud Platform",
-    "count": 2,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Support Solution"
-    ]
-  },
-  {
-    "product": "AI Security",
+    "product": "ASM 4100",
     "count": 2,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2791,7 +2973,7 @@
     ]
   },
   {
-    "product": "F5 AI Guardrails",
+    "product": "TrafficShield 4100",
     "count": 2,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2802,15 +2984,6 @@
   },
   {
     "product": "ARX 1500",
-    "count": 2,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy"
-    ]
-  },
-  {
-    "product": "ASM 4100",
     "count": 2,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
@@ -2891,30 +3064,30 @@
     ]
   },
   {
-    "product": "TrafficShield 4100",
-    "count": 2,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy"
-    ]
-  },
-  {
-    "product": "F5 Distributed Cloud BIG-IP APM",
+    "product": "ARX 1000",
     "count": 1,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Knowledge"
     ]
   },
   {
-    "product": "F5 Distributed Cloud Managed Services",
+    "product": "ARX 6000",
     "count": 1,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,
     "discoveredViaTypes": [
-      "Support Solution"
+      "Knowledge"
+    ]
+  },
+  {
+    "product": "Enterprise Manager 500",
+    "count": 1,
+    "source": "type_filtered_facet",
+    "hiddenFromGlobalFacet": true,
+    "discoveredViaTypes": [
+      "Knowledge"
     ]
   },
   {
@@ -2946,15 +3119,6 @@
   },
   {
     "product": "Enterprise Manager 3000",
-    "count": 1,
-    "source": "type_filtered_facet",
-    "hiddenFromGlobalFacet": true,
-    "discoveredViaTypes": [
-      "Policy"
-    ]
-  },
-  {
-    "product": "F5 AI Red Team",
     "count": 1,
     "source": "type_filtered_facet",
     "hiddenFromGlobalFacet": true,

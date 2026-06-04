@@ -45,10 +45,21 @@ Scripts (typical full-dump pipeline: dump_articles -> enrich_bodies -> track_art
 
 Both fetch scripts handle all known Coveo API limits automatically (see NOTES below).
 
+DOCUMENTATION MAP
+-----------------
+  readme.txt     This file — usage: every script, its flags, examples, output.
+  outline.md     Our code: script flows, strategies, decisions, obstacles overcome.
+  findings.md    Discoveries about the scraped system (Coveo token flow, API limits,
+                 field meanings, counts, deprecation/lifecycle).
+  CLAUDE.md      Orientation for Claude Code working in this repo.
+  TODO.txt       Open work.
+  available_fields.txt  Field-name -> description reference (feeds the catalogue).
+  sitemap_note.txt      Notes on the my.f5.com sitemap (alternative discovery path).
+
 OUTPUT LOCATIONS
 ----------------
-Generated data lives under outputs/ (outputs/dump, outputs/output,
-outputs/last_week) and is git-ignored. Pass --out/--dump to override.
+Generated data lives under outputs/ (e.g. outputs/dump and the SQLite
+outputs/articles.db) and is git-ignored. Pass --out/--dump to override.
 
 ENRICH_BODIES.TS (article bodies for empty-content types)
 ---------------------------------------------------------
