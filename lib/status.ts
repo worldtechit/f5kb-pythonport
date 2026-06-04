@@ -16,6 +16,8 @@ export interface TypeStatus {
   typeKey: string;
   diskCount: number;
   expected: number | null;
+  /** articles present from the last run = written + skipped (incremental runs leave
+   *  unchanged articles in place without rewriting them, so WRIT counts both). */
   written: number | null;
   status: string | null; // dump status: ok/partial/failed
   bodied: number | null; // enriched bodies reported by enrich
@@ -64,6 +66,8 @@ interface IndexType {
   status?: string;
   expected?: number;
   written?: number;
+  /** incremental (sync) runs: unchanged articles left in place, not rewritten. */
+  skipped?: number;
 }
 interface IndexFile {
   types?: IndexType[];
@@ -177,11 +181,16 @@ export async function computeStatus(
     const diskCount = await countDiskJson(`${dump}/${typeKey}`);
     const idx = indexByType.get(typeKey);
     const enr = enrichByType.get(typeKey);
+    // WRIT = written + skipped: an incremental sync rewrites only changed articles
+    // (skipping unchanged ones in place), so "written" alone understates how many
+    // articles the run actually accounts for. Adding skipped makes WRIT line up with
+    // DISK/EXP. For a non-incremental dump skipped is absent (0), so this is a no-op.
+    const presentFromIndex = idx ? (idx.written ?? 0) + (idx.skipped ?? 0) : null;
     perType.push({
       typeKey,
       diskCount,
       expected: idx?.expected ?? null,
-      written: idx?.written ?? null,
+      written: presentFromIndex,
       status: idx?.status ?? null,
       bodied: enr?.enriched ?? null,
       errors: enr?.failed ?? null,

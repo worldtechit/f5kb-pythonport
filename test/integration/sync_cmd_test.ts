@@ -93,7 +93,7 @@ Deno.test("syncDump: first run adds, second run skips all", async () => {
     assertEquals(lines.every((l) => JSON.parse(l).runId === r1.runId), true);
 
     // DB seeded with 3 rows.
-    let db = new DatabaseSync(dbPath);
+    const db = new DatabaseSync(dbPath);
     assertEquals((db.prepare("SELECT COUNT(*) c FROM articles").get() as { c: number }).c, 3);
     db.close();
 
@@ -111,11 +111,13 @@ Deno.test("syncDump: first run adds, second run skips all", async () => {
     const lines2 = (await Deno.readTextFile(changelogPath)).trimEnd().split("\n");
     assertEquals(lines2.filter((l) => JSON.parse(l).runId === r2.runId).length, 0);
 
-    // status surfaces the changelog + the FIRST run's ops (latest run row).
-    db = new DatabaseSync(dbPath);
-    db.close();
+    // status surfaces the changelog, and after an incremental run WRIT counts
+    // written + skipped (run 2 wrote 0, skipped 3) so it lines up with DISK/EXP.
     const status = await computeStatus({ dump: out, db: dbPath });
     assertEquals(status.overall.changelogPath, changelogPath);
+    const policy = status.perType.find((t) => t.typeKey === "Policy")!;
+    assertEquals(policy.written, 3); // 0 written + 3 skipped this run
+    assertEquals(policy.diskCount, 3);
   } finally {
     await Deno.remove(root, { recursive: true });
   }
