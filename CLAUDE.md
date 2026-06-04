@@ -21,6 +21,30 @@ runtime from a Salesforce Aura endpoint.
 - Typical perms: `--allow-net --allow-read --allow-write` (+ `--allow-env` for
   `f5kb enrich` to read `GITHUB_TOKEN`). `deno task` bakes these in per subcommand.
 
+## Portability (keep the project zip-and-move-able)
+
+This is a hard project goal: the toolkit must stay self-contained — runnable on any OS
+after a plain `git clone` (code) or a zip-and-move (code + `outputs/`) with only Deno
+2.x installed and zero setup. Preserve these invariants when changing anything:
+
+- **No absolute or machine-specific paths in code.** Every path default is relative to
+  CWD (`outputs/dump`, `outputs/articles.db`) and overridable via flags (`--out`,
+  `--dump`). Never introduce `$HOME`, hardcoded `/home/…`/`/Users/…`/`C:\…`, or
+  `Deno.cwd()`-anchored absolutes. Build any new path with `@std/path` join, not string
+  concatenation, so it works cross-platform.
+- **No secrets in the repo or in `outputs/`.** The Coveo guest token is fetched at
+  runtime; `GITHUB_TOKEN` is read from env only. Nothing secret travels with the project
+  (see "Credentials" below).
+- **Deps are URL-pinned and locked.** `deno.json` imports + the committed `deno.lock`
+  are the entire dependency story; `node:sqlite` is built into Deno. Keep `deno.lock`
+  committed so a fresh machine resolves identical versions — no `node_modules`, no global
+  installs.
+- **`outputs/` is git-ignored but travels in the zip.** It's the only non-committed thing
+  a handoff carries: code + `config.yaml` + docs come from git, the data comes from the
+  zip, and either can be regenerated from the other (rebuild the pipeline, or re-clone).
+- **Offline-by-default tests.** The suite runs with no network (DI'd `fetch`); keep it
+  that way so `deno task check && deno task test` passes immediately on a new machine.
+
 ## The CLI
 
 Everything is one entry point, `f5kb.ts`, with subcommands. `f5kb --help` lists
