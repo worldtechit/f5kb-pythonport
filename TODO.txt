@@ -1,6 +1,10 @@
 F5 ARTICLE DUMP — TODO
 ======================
 
+This file tracks open work. See OUTLINE.txt for how the scripts work and
+FINDINGS.txt for what we learned about the scraped system.
+
+
 DONE 2026-06-04: FULL-CORPUS DUMP (13 types, all except Community + F5 GitHub)
 ------------------------------------------------------------------------------
 106,042 articles. dump_articles.ts --all -> enrich_bodies.ts -> track_articles.ts.
@@ -13,21 +17,22 @@ To REFRESH later (incremental change tracking): re-run the same 3-step pipeline;
 track_articles.ts will report new/changed/removed vs the prior run. Counts drift
 on the live corpus, so re-run any type whose dump shows a shortfall.
 
-The driven run found+fixed several real bugs (all committed) — see findings.md
+The driven run found+fixed several real bugs (all committed) — see FINDINGS.txt
 and `git log`: fetch timeout (no-hang), @rowid keyset (offset cap + dense @date
 second + null/out-of-window @date), --all whole-type keyset, nginx.org/unit.nginx.org
 hosts, plain-text changelog fallback, Bug Tracker CVE template, soft-404 + landing-
 redirect + F5-KB-redirect handling, guest-token refresh, per-type error isolation.
 
 
-FOLLOW-UP: sitemap gap (47 Coveo-unindexed K-articles)
+FOLLOW-UP: SITEMAP GAP (47 COVEO-UNINDEXED K-ARTICLES)
 ------------------------------------------------------
 The my.f5.com sitemap lists 47 K-article IDs that are absent from the Coveo index
-(so the pipeline can't reach them) — see findings.md "Sitemap" section and the
-saved list `sitemap_gap_ids.txt`. ~2 are recent (likely indexing lag → re-check
-on a future dump; if they appear in Coveo, no action). The other ~45 are old
-(2023–early 2026) and only reachable by scraping the my.f5.com Salesforce SPA
-per-article. TODO:
+(so the pipeline can't reach them) — see FINDINGS.txt "Sitemap" section for the
+method and analysis. ~2 are recent (likely indexing lag -> re-check on a future
+dump; if they appear in Coveo, no action). The other ~45 are old (2023-early 2026)
+and only reachable by scraping the my.f5.com Salesforce SPA per-article.
+
+TODO:
   - Periodically re-derive the gap (re-run the sitemap diff) and confirm the
     recent ones get picked up by Coveo over time.
   - DECIDE whether the ~45 old ones are worth a per-article my.f5.com SPA scrape
@@ -36,9 +41,60 @@ per-article. TODO:
   - Also re-check whether the sitemap's Security-Advisory under-listing matters
     for any external cross-checks (our dump has 252 SAs the sitemap omits).
 
+The 47 IDs (id and sitemap lastmod date), folded in from the former
+sitemap_gap_ids.txt:
 
-FUTURE IDEA (NOT now): skip unchanged bodies to cut API/scrape calls
---------------------------------------------------------------------
+  K000130602   2023-03-02
+  K000132222   2023-03-02
+  K000092630   2023-03-20
+  K000091342   2023-03-20
+  K000133545   2023-04-17
+  K000133617   2023-04-21
+  K000133767   2023-05-03
+  K000133455   2023-06-20
+  K000135570   2023-07-22
+  K000135481   2023-07-27
+  K000135713   2023-08-04
+  K000135540   2023-10-10
+  K000137165   2023-10-26
+  K000137438   2023-11-03
+  K000137983   2023-12-20
+  K000138204   2024-01-16
+  K000138116   2024-01-29
+  K000138580   2024-02-14
+  K000138860   2024-03-08
+  K000138939   2024-03-19
+  K000139023   2024-03-27
+  K000139671   2024-05-29
+  K000139855   2024-06-04
+  K000137213   2024-07-12
+  K000140692   2024-08-14
+  K000140750   2024-09-03
+  K000141072   2024-09-17
+  K000141424   2024-10-16
+  K000148237   2024-10-24
+  K000148468   2024-11-11
+  K000148834   2024-12-03
+  K000149522   2025-01-28
+  K000149624   2025-02-05
+  K000151148   2025-05-07
+  K000151676   2025-06-03
+  K000152918   2025-08-13
+  K000156974   2025-10-09
+  K000157017   2025-10-17
+  K000159585   2026-01-20
+  K000159835   2026-02-04
+  K000159836   2026-02-06
+  K000159943   2026-02-09
+  K000160047   2026-02-18
+  K000160425   2026-03-24
+  K000160490   2026-03-27
+  K000161231   2026-05-13
+  K000161322   2026-05-22
+
+
+FUTURE IDEA (NOT now): SKIP UNCHANGED BODIES TO CUT API/SCRAPE CALLS
+-------------------------------------------------------------------
 Use the tracking DB to avoid re-pulling expensive bodies. On a later dump, if an
 article's dates and metadata_hash are unchanged from the previous run (i.e. the
 record didn't change), skip re-fetching/re-scraping its body in enrich_bodies.ts
@@ -54,8 +110,8 @@ This was explicitly deferred — capture only, do not implement yet.
 COMPLETED
 ---------
 Body enrichment for all 5 empty-index types (Bug Tracker, F5 GitHub, Manual,
-Release Note, Supplemental Document) — see findings.md "Body recovery" and
-readme.txt. No headless browser needed (docs.cloud.f5.com bodies come from the
+Release Note, Supplemental Document) — see FINDINGS.txt "Body recovery" and
+README.txt. No headless browser needed (docs.cloud.f5.com bodies come from the
 page's embedded __NEXT_DATA__ JSON).
 
 Script hardening (2026-06-03): dump_articles.ts gained --all (full corpus),

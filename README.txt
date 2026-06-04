@@ -47,15 +47,18 @@ Both fetch scripts handle all known Coveo API limits automatically (see NOTES be
 
 DOCUMENTATION MAP
 -----------------
-  readme.txt     This file — usage: every script, its flags, examples, output.
-  outline.md     Our code: script flows, strategies, decisions, obstacles overcome.
-  findings.md    Discoveries about the scraped system (Coveo token flow, API limits,
-                 field meanings, counts, deprecation/lifecycle).
-  CLAUDE.md      Orientation for Claude Code working in this repo.
-  TODO.txt       Open work.
-  available_fields.txt  Field-name -> description reference (feeds the catalogue).
-  sitemap_gap_ids.txt   The 47 K-article IDs in the sitemap but absent from Coveo
-                        (see findings.md "Sitemap" for method + analysis).
+  README.txt     This file — usage: every script, its flags, examples, output.
+  OUTLINE.txt    Our code: script flows, strategies, decisions, obstacles overcome.
+  FINDINGS.txt   Discoveries about the scraped system (Coveo token flow, API limits,
+                 field meanings, counts, deprecation/lifecycle). Appendix A is the
+                 full field inventory; the sitemap gap list is in TODO.txt.
+  TODO.txt       Open work (incl. the 47-article sitemap gap list).
+  CLAUDE.md      Orientation for Claude Code working in this repo (+ txt-file rules).
+
+  Config the scripts read:
+  dump_config.yaml        Per-type metadata/content field keep-lists.
+  field_descriptions.yaml Field-name -> description (annotates the catalogue).
+  supplemental_products.json  Discovered product list (for --product filtering).
 
 OUTPUT LOCATIONS
 ----------------
@@ -247,7 +250,7 @@ This file can be used as a reference for all valid --product values instead
 of relying on --list-products. Run it periodically to pick up new products
 as F5 adds content to the portal.
 
-See findings.md for a full technical explanation of why the global facet is
+See FINDINGS.txt for a full technical explanation of why the global facet is
 incomplete, how the type-filtered technique works, the BIG-IP Documentation
 TechComm source, and the confirmed duplicate product tag pairs.
 
@@ -344,7 +347,7 @@ OPTIONS (dump_articles.ts)
   --out=DIR        REQUIRED. Output directory (created if missing).
   --config=FILE    Config YAML (default: dump_config.yaml).
   --fields-doc=F   Field-description reference used to annotate the catalogue
-                   (default: available_fields.txt). Optional.
+                   (default: field_descriptions.yaml). Optional.
   --types="A,B"    Subset of config type keys to dump (default: all in config).
   --page-size=N    Results per API call (default: 200, max: 500). Coveo caps
                    each response at 20 MB; if a page exceeds that, the script
@@ -441,14 +444,14 @@ NOTES
 - A 200ms delay is inserted between pages to avoid hammering the API.
 - Total article count in the API (~11,324) may differ slightly from the
   number shown in the browser UI (~10,616) due to filter differences.
-  See findings.md for details.
+  See FINDINGS.txt for details.
 - Field availability varies by document type. F5 uses three source backends:
   Salesforce Knowledge (Support Solution, Known Issue, Knowledge, Security
   Advisory, Operations Guide, Policy, Video), non-SF connectors (Manual,
   Release Note, Supplemental Document, Bug Tracker), and Zendesk (Education).
   The sf* fields and sfdetails__c are only present on Salesforce Knowledge
   types. Bug Tracker has its own f5_bug_* fields. Education articles have
-  zendesk* fields instead. See available_fields.txt for the full breakdown.
+  zendesk* fields instead. See FINDINGS.txt Appendix A for the full breakdown.
 
 API LIMITS (handled automatically)
 -----------------------------------
@@ -462,5 +465,5 @@ Coveo enforces two hard limits:
    list so only the fields actually used are returned, keeping responses small.
    --page-size=500 is safe with this in place.
 
-See findings.md for a full technical explanation of both limits and how they
+See FINDINGS.txt for a full technical explanation of both limits and how they
 are worked around.

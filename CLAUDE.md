@@ -40,13 +40,40 @@ Exploratory tools (pre-pipeline): `fetch_f5_articles.ts`,
 
 ## Where the docs live (don't duplicate; update the right one)
 
-- **readme.txt** — usage: every script, its flags, examples, output layout.
-- **findings.md** — discoveries about the *scraped system* (Coveo token flow, API
-  limits, field meanings, counts, deprecation/lifecycle).
-- **outline.md** — our *code*: script flows, strategies, decisions, obstacles overcome.
-- **TODO.txt** — open work (currently only the deferred "skip-unchanged bodies" idea).
-- **available_fields.txt** — field-name → description reference (feeds the catalogue).
-- (my.f5.com sitemap notes + gap analysis live in findings.md → "Sitemap".)
+- **README.txt** — usage: every script, its flags, examples, output layout.
+- **FINDINGS.txt** — discoveries about the *scraped system* (Coveo token flow, API
+  limits, field meanings, counts, deprecation/lifecycle). Appendix A is the full
+  field inventory; the my.f5.com sitemap notes + gap analysis are in its "Sitemap"
+  section.
+- **OUTLINE.txt** — our *code*: script flows, strategies, decisions, obstacles overcome.
+- **TODO.txt** — open work (sitemap-gap follow-up incl. the 47 IDs; the deferred
+  "skip-unchanged bodies" idea).
+- Machine-read config (not docs): `dump_config.yaml` (per-type field keep-lists),
+  `field_descriptions.yaml` (field → description, annotates the catalogue),
+  `supplemental_products.json` (discovered products).
+
+## Documentation file conventions (.txt rules)
+
+All human docs except this file (`CLAUDE.md`) are plain-text `.txt`. Keep them
+readable for humans AND unambiguous for LLMs. Rules — apply to every `.txt` now and
+going forward:
+
+- **Filename**: `CAPITAL_LETTERS.txt` (UPPER snake-case), e.g. `FINDINGS.txt`.
+  `CLAUDE.md` is the sole Markdown exception (the harness expects that name).
+- **Title**: first line is the title; underline it with `=` the same width; then a
+  blank line and a 1–2 line purpose statement.
+- **Sections (H2)**: `UPPERCASE NAME` underlined with `-` (full width), one blank
+  line before. **Subsections (H3)**: `Title Case` underlined with `~`.
+- **No Markdown syntax**: no leading `#`, no ``` fences, no `**bold**`/`*italic*`.
+  Set off code/commands/examples by indenting 4 spaces between blank lines. Inline
+  backticks for literals (field names, files, flags) are allowed (monospace-safe).
+- **Tables**: a header row, a dashed separator line, then rows; `|` separators OK.
+- **Lists**: `  - item` (2-space indent, hyphen); nest with deeper indent.
+- **Wrap** prose to ~88 cols; one blank line between paragraphs; never >1 blank line.
+- **Cross-reference** other docs by filename (e.g. "see FINDINGS.txt").
+- If a `.txt`'s content is also needed by a script, keep the machine-read copy in a
+  YAML/JSON config and have the script read that — never make a script parse prose.
+  (Example: `field_descriptions.yaml` is the machine copy of FINDINGS.txt Appendix A.)
 
 ## Conventions & gotchas
 
@@ -57,7 +84,7 @@ Exploratory tools (pre-pipeline): `fetch_f5_articles.ts`,
   sites embed it in JSON (`__NEXT_DATA__`) or render it server-side. Don't add Puppeteer.
 - **Beating Coveo's 5,000-offset cap:** `--all` uses **keyset pagination by `@rowid`**
   (the only sortable/unique field; `@date` is 1-second-resolution and misses
-  null/out-of-window docs). See outline.md §3.
+  null/out-of-window docs). See OUTLINE.txt §3.
 - **Live corpus drifts** — counts change between runs; that's expected. The dump
   validates written-vs-server and marks `partial`/`failed` in `_index.json`; re-run
   shortfalls with `--types=`. Enrichment failures land in `_enrich_report.json`; fix
@@ -78,4 +105,4 @@ Exploratory tools (pre-pipeline): `fetch_f5_articles.ts`,
 Coveo org `f5networksproduction5vkhn00h`; guest token fetched at runtime via
 `HeadlessController.getHeadlessConfiguration` (no auth needed). Optional
 `GITHUB_TOKEN` env raises the GitHub API limit for F5_GitHub enrichment. Full
-token/credential details in findings.md.
+token/credential details in FINDINGS.txt.

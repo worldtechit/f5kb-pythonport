@@ -21,7 +21,7 @@
  *   5. Builds a field catalogue (_catalogue.json + _catalogue.md) per type:
  *      every field seen, its source (top-level vs raw), observed type(s),
  *      occurrence count, a sample value, and a description pulled from
- *      available_fields.txt when documented. Use it to refine the config YAML.
+ *      field_descriptions.yaml when documented. Use it to refine the config YAML.
  *
  * Usage:
  *   deno run --allow-net --allow-read --allow-write dump_articles.ts \
@@ -33,7 +33,7 @@
  *                    --days or --all.
  *   --out=DIR        REQUIRED. Output directory (created if missing).
  *   --config=FILE    Config YAML (default: dump_config.yaml).
- *   --fields-doc=F   Field-description reference (default: available_fields.txt).
+ *   --fields-doc=F   Field-description YAML (default: field_descriptions.yaml).
  *                    Used only to annotate the catalogue; optional.
  *   --types="A,B"    Subset of config type keys to dump (default: all in config).
  *   --page-size=N    Results per API call (default: 200, max: 500). Coveo caps
@@ -175,31 +175,23 @@ function idOf(r: CoveoResult): string {
 }
 
 // ---------------------------------------------------------------------------
-// Field-description reference (available_fields.txt), best-effort parse
+// Field-description reference (field_descriptions.yaml)
 // ---------------------------------------------------------------------------
 
-// Parses lines like:
-//   title                    string   Full title including K-number prefix
-//   sfdetails__c             string   [sf]  Full article HTML body (can be large).
-// into { fieldName -> "description text" }. Templated names (containing "{")
-// and non-matching lines are skipped. First occurrence wins.
+// Loads { fieldName -> "description" } from a YAML file with a top-level
+// `descriptions:` map, used only to annotate the catalogue. Optional: a missing
+// or malformed file just yields no descriptions. (The human-readable field
+// inventory lives in FINDINGS.txt Appendix A; this YAML is the machine copy.)
 async function loadFieldDescriptions(path: string): Promise<Record<string, string>> {
-  const map: Record<string, string> = {};
-  let text: string;
   try {
-    text = await Deno.readTextFile(path);
+    const doc = parseYaml(await Deno.readTextFile(path)) as
+      | { descriptions?: Record<string, string> }
+      | null;
+    const map = doc?.descriptions ?? {};
+    return typeof map === "object" && map !== null ? map : {};
   } catch {
-    return map; // optional reference; absent is fine
+    return {}; // optional reference; absent/unparseable is fine
   }
-  const lineRe = /^\s{2,}([A-Za-z][A-Za-z0-9_]*(?:__c)?)\s{2,}(\w+)\s+(.+?)\s*$/;
-  for (const line of text.split("\n")) {
-    if (line.includes("{")) continue;
-    const m = line.match(lineRe);
-    if (!m) continue;
-    const [, name, , desc] = m;
-    if (!(name in map)) map[name] = desc;
-  }
-  return map;
 }
 
 // ---------------------------------------------------------------------------
@@ -659,7 +651,7 @@ function usage(msg?: string): never {
   console.error(
     "Usage: deno run --allow-net --allow-read --allow-write dump_articles.ts \\\n" +
       "         (--days=N | --all) --out=DIR [--config=dump_config.yaml] [--types=\"A,B\"] \\\n" +
-      "         [--fields-doc=available_fields.txt] [--page-size=N] [--limit=N]\n\n" +
+      "         [--fields-doc=field_descriptions.yaml] [--page-size=N] [--limit=N]\n\n" +
       "  --days=N   Only dump articles modified in the last N days.\n" +
       "  --all      Dump the entire corpus (no lower date bound). Use for a full dump.",
   );
@@ -678,7 +670,7 @@ const outDir = args.out;
 if (!outDir) usage("--out (output directory) is required");
 
 const configPath = args.config ?? "dump_config.yaml";
-const fieldsDocPath = args["fields-doc"] ?? "available_fields.txt";
+const fieldsDocPath = args["fields-doc"] ?? "field_descriptions.yaml";
 const pageSize = Math.min(parseInt(args["page-size"] ?? "200"), 500);
 const limit = args.limit ? parseInt(args.limit) : Infinity;
 const typeKeyFilter = args.types
