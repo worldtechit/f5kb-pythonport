@@ -326,6 +326,81 @@ async function fetchPaged(
   return out;
 }
 
+// Keyset (cursor) pagination by @rowid — the one sortable, unique, monotonic
+// system field. Unlike offset paging it has NO 5,000-result cap, so it can page
+// a window of any size. This is how we get past Coveo's offset limit when a date
+// window can't be split below 5,000 (e.g. a bulk re-index that stamped >5,000
+// articles with the SAME @date second — @date filtering is only 1s-resolution,
+// so such a second is irreducible). Returns full result objects (all fields).
+async function fetchKeyset(
+  config: CoveoConfig,
+  aq: string,
+  pageSize: number,
+  maxResults: number,
+  onProgress?: (n: number) => void,
+): Promise<CoveoResult[]> {
+  const out: CoveoResult[] = [];
+  const seen = new Set<string>(); // dedup the small overlap the safety margin re-fetches
+  let cursor: bigint | null = null;
+  let eff = pageSize;
+  // @rowid values (~1.8e18) exceed JS's safe-integer range, so JSON.parse rounds
+  // them (ULP ~256). A strict `@rowid>roundedCursor` could therefore skip a doc
+  // near a page boundary. Instead, back the cursor off by a margin well above the
+  // rounding error and use `>=`, then dedup by permanentid — boundary docs get
+  // re-fetched (and dropped) rather than skipped. The margin is tiny next to the
+  // per-doc rowid spacing, so each page still makes progress.
+  const CURSOR_MARGIN = 4096n;
+
+  while (out.length < maxResults) {
+    const toFetch = Math.min(eff, maxResults - out.length);
+    if (toFetch <= 0) break;
+    const cursorAq = cursor === null ? aq : `${aq} @rowid>=${cursor}`;
+
+    let data: Record<string, unknown>;
+    try {
+      data = await coveoPost(config, {
+        q: "",
+        aq: cursorAq || undefined,
+        numberOfResults: toFetch,
+        searchHub: "myF5",
+        sortCriteria: "@rowid ascending",
+        // No fieldsToInclude -> every field is returned.
+      });
+    } catch (e) {
+      if (eff > 1 && /maximum size|ResponseExceededMaximumSize/i.test((e as Error).message)) {
+        eff = Math.max(1, Math.floor(eff / 2));
+        continue;
+      }
+      throw e;
+    }
+
+    const batch = (data.results as CoveoResult[]) ?? [];
+    if (batch.length === 0) break;
+
+    const lastRow = (batch[batch.length - 1].raw as CoveoResult)?.rowid;
+    if (lastRow == null) throw new Error("keyset paging: result missing @rowid");
+
+    let added = 0;
+    for (const r of batch) {
+      const pid = ((r.raw as CoveoResult)?.permanentid as string) ?? (r.uniqueId as string) ?? "";
+      if (pid && seen.has(pid)) continue; // overlap re-fetched by the safety margin
+      if (pid) seen.add(pid);
+      out.push(r);
+      added++;
+    }
+    onProgress?.(out.length);
+
+    const nextCursor = BigInt(Math.trunc(lastRow as number)) - CURSOR_MARGIN;
+    // Stop if a full page yielded nothing new (would otherwise spin in place).
+    if (added === 0 && cursor !== null && nextCursor <= cursor) break;
+    cursor = nextCursor;
+    if (batch.length < toFetch) break; // last page
+    await new Promise((r) => setTimeout(r, 120));
+  }
+
+  return out;
+}
+
 // Recursively split a date window until each chunk fits within COVEO_MAX_OFFSET,
 // then page each leaf.
 async function fetchChunked(
@@ -347,7 +422,7 @@ async function fetchChunked(
   const total = await getCount(config, aq);
   if (total === 0) return;
 
-  if (total <= COVEO_MAX_OFFSET || depth >= 25) {
+  if (total <= COVEO_MAX_OFFSET) {
     const remaining = maxResults - collected.length;
     const batch = await fetchPaged(
       config,
@@ -360,9 +435,20 @@ async function fetchChunked(
     return;
   }
 
+  // total > 5,000: try to split the date window further. Coveo's @date filter is
+  // only 1-second resolution, so once a window is within a single second it can
+  // no longer be reduced by date — fall back to keyset paging (no offset cap),
+  // which handles a dense same-second cluster of any size. depth>=50 is a
+  // pathological-recursion backstop that also defers to keyset (never lossy).
   const midMs = Math.floor((startMs + endMs) / 2);
-  if (midMs === startMs) {
-    const batch = await fetchPaged(config, aq, pageSize, maxResults - collected.length);
+  if (toCoveoDate(startMs) === toCoveoDate(midMs) || depth >= 50) {
+    const batch = await fetchKeyset(
+      config,
+      aq,
+      pageSize,
+      maxResults - collected.length,
+      (n) => onProgress(collected.length + n),
+    );
     collected.push(...batch);
     return;
   }
@@ -379,12 +465,17 @@ async function fetchTypeSince(
   pageSize: number,
   limit: number,
   onProgress: (n: number) => void,
+  applyModFilter = true,
 ): Promise<CoveoResult[]> {
   const baseAq = `@f5_document_type=="${documentType}"`;
   const collected: CoveoResult[] = [];
   await fetchChunked(config, baseAq, cutoffMs, endMs, pageSize, limit, onProgress, collected);
   // @date (re-index date) is always >= the content modification date, so the
-  // server-side window is a superset. Filter to the exact window here.
+  // server-side window is a superset. For a --days window we refine it to the
+  // exact content-mod window here. For --all there is no lower bound to enforce,
+  // and an article with a genuine pre-2000 (or missing/epoch) mod date would be
+  // wrongly dropped — so skip the filter entirely.
+  if (!applyModFilter) return collected;
   return collected.filter((r) => {
     const m = modMsOf(r.raw as CoveoResult);
     return m === undefined || m >= cutoffMs;
@@ -678,7 +769,7 @@ for (const typeKey of typeKeys) {
     const windowAq = `@f5_document_type=="${cfg.documentType}" ${dateAq(cutoffMs, endMs)}`.trim();
     st.expected = await getCount(config, windowAq);
 
-    const results = await fetchTypeSince(config, cfg.documentType, cutoffMs, endMs, pageSize, limit, () => {});
+    const results = await fetchTypeSince(config, cfg.documentType, cutoffMs, endMs, pageSize, limit, () => {}, !allTime);
     st.fetched = results.length;
 
     const typeDir = `${outDir}/${dir}`;
