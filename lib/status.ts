@@ -10,6 +10,7 @@
 
 import { DatabaseSync } from "node:sqlite";
 import { exists, listTypeDirs, readJson } from "./fsutil.ts";
+import { CHANGELOG_BASENAME } from "./changelog.ts";
 
 export interface TypeStatus {
   typeKey: string;
@@ -38,6 +39,9 @@ export interface StatusReport {
     lastRun: LastRun | null;
     newestCapturedAt: string | null;
     stalenessMs: number | null; // now - newest(capturedAt, ran_at)
+    changelogPath: string | null; // <dump>/_changelog.jsonl if present
+    /** per-op tally of the last run's changelog records (added/edited/deleted/body-*). */
+    changelogLastRun: Record<string, number> | null;
   };
   errorClasses: ErrorClass[];
   notes: string[];
@@ -276,6 +280,33 @@ export async function computeStatus(
     }
   }
 
+  // --- changelog (optional) ---
+  let changelogPath: string | null = null;
+  let changelogLastRun: Record<string, number> | null = null;
+  const clPath = `${dump}/${CHANGELOG_BASENAME}`;
+  if (await exists(clPath)) {
+    changelogPath = clPath;
+    if (lastRun) {
+      try {
+        const text = await Deno.readTextFile(clPath);
+        const tally: Record<string, number> = {};
+        for (const line of text.split("\n")) {
+          if (!line.trim()) continue;
+          let rec: { runId?: string; op?: string };
+          try {
+            rec = JSON.parse(line);
+          } catch {
+            continue; // skip a malformed line rather than fail the whole report
+          }
+          if (rec.runId === lastRun.runId && rec.op) tally[rec.op] = (tally[rec.op] ?? 0) + 1;
+        }
+        changelogLastRun = tally;
+      } catch {
+        notes.push(`could not read changelog ${clPath}`);
+      }
+    }
+  }
+
   // --- staleness + health ---
   const now = Date.now();
   const stamps: number[] = [];
@@ -303,7 +334,16 @@ export async function computeStatus(
     db: dbPath,
     dbPresent,
     perType,
-    overall: { totalArticles, bodied, health, lastRun, newestCapturedAt, stalenessMs },
+    overall: {
+      totalArticles,
+      bodied,
+      health,
+      lastRun,
+      newestCapturedAt,
+      stalenessMs,
+      changelogPath,
+      changelogLastRun,
+    },
     errorClasses,
     notes,
   };
@@ -350,6 +390,14 @@ export function renderStatus(report: StatusReport): string {
   }
   if (o.newestCapturedAt) {
     lines.push(`  newest capturedAt: ${o.newestCapturedAt} (${fmtAge(o.stalenessMs)})`);
+  }
+  if (o.changelogPath) {
+    const cl = o.changelogLastRun;
+    const summary = cl && Object.keys(cl).length
+      ? Object.entries(cl).map(([op, n]) => `${op}=${n}`).join(" ")
+      : "(no records for last run)";
+    lines.push(`  changelog: ${o.changelogPath}`);
+    lines.push(`    last run: ${summary}`);
   }
 
   // Per-type table.

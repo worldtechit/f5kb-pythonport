@@ -12,8 +12,92 @@
 
 import { DatabaseSync } from "node:sqlite";
 import { type Logger, NULL_LOGGER } from "../logger.ts";
-import { listTypeDirs, walkArticleFiles } from "../fsutil.ts";
+import { exists, listTypeDirs, walkArticleFiles } from "../fsutil.ts";
 import { type Article, type Record_, toRecord } from "./hashing.ts";
+import type { Changelog } from "../changelog.ts";
+
+// Load { "<document_type> <id>" -> metadata_hash } from the DB so an incremental
+// dump can skip unchanged articles. Returns an empty map if the DB doesn't exist
+// yet (first run -> everything is "added"). Key matches lib/dump.ts dbKey().
+export async function loadHashIndex(dbPath: string): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  if (!(await exists(dbPath))) return map;
+  const db = new DatabaseSync(dbPath);
+  try {
+    const rows = db.prepare("SELECT document_type AS dt, id, metadata_hash AS mh FROM articles")
+      .all() as Array<{ dt: string; id: string; mh: string }>;
+    for (const r of rows) map.set(`${r.dt} ${r.id}`, r.mh);
+  } catch {
+    // fresh/empty DB without the table yet -> empty index
+  } finally {
+    db.close();
+  }
+  return map;
+}
+
+// Most recent run's id + ran_at (epoch ms) — used by `sync --since-last-run` to
+// derive the lower date bound. Returns null if the DB or runs table is empty.
+export async function loadLastRunAt(
+  dbPath: string,
+): Promise<{ runId: string; ranAtMs: number | null } | null> {
+  if (!(await exists(dbPath))) return null;
+  const db = new DatabaseSync(dbPath);
+  try {
+    const row = db.prepare("SELECT run_id, ran_at FROM runs ORDER BY ran_at DESC LIMIT 1")
+      .get() as { run_id: string; ran_at?: string } | undefined;
+    if (!row) return null;
+    const ms = row.ran_at ? Date.parse(row.ran_at) : NaN;
+    return { runId: row.run_id, ranAtMs: Number.isNaN(ms) ? null : ms };
+  } catch {
+    return null;
+  } finally {
+    db.close();
+  }
+}
+
+// Read current (document_type, id) pairs for a set of document types — used by
+// reconcile to diff the DB against the live Coveo id set.
+export async function loadIdsByType(
+  dbPath: string,
+  documentTypes: string[],
+): Promise<Map<string, string[]>> {
+  const out = new Map<string, string[]>();
+  for (const dt of documentTypes) out.set(dt, []);
+  if (!(await exists(dbPath))) return out;
+  const db = new DatabaseSync(dbPath);
+  try {
+    for (const dt of documentTypes) {
+      const rows = db.prepare("SELECT id FROM articles WHERE document_type=?").all(dt) as Array<
+        { id: string }
+      >;
+      out.set(dt, rows.map((r) => r.id));
+    }
+  } catch {
+    // table absent -> empty
+  } finally {
+    db.close();
+  }
+  return out;
+}
+
+// Delete article rows by (document_type, id). Returns the number removed.
+export function deleteRows(
+  dbPath: string,
+  rows: Array<{ documentType: string; id: string }>,
+): number {
+  if (rows.length === 0) return 0;
+  const db = new DatabaseSync(dbPath);
+  let n = 0;
+  try {
+    const del = db.prepare("DELETE FROM articles WHERE document_type=? AND id=?");
+    db.exec("BEGIN");
+    for (const r of rows) n += del.run(r.documentType, r.id).changes as number;
+    db.exec("COMMIT");
+  } finally {
+    db.close();
+  }
+  return n;
+}
 
 // ---------------------------------------------------------------------------
 // DB schema
@@ -85,6 +169,8 @@ export interface TrackDumpOpts {
   types?: string[] | null;
   runId?: string;
   logger?: Logger;
+  /** optional changelog sink — records new->added / changed->edited for this run. */
+  changelog?: Changelog;
 }
 
 export async function trackDump(opts: TrackDumpOpts): Promise<Summary> {
@@ -158,6 +244,13 @@ export async function trackDump(opts: TrackDumpOpts): Promise<Summary> {
         nNew++;
         perType[typeKey].new++;
         logChange.run(RUN_ID, rec.document_type, rec.id, "new", "");
+        opts.changelog?.record({
+          op: "added",
+          documentType: rec.document_type,
+          id: rec.id,
+          title: rec.title ?? undefined,
+          source: "track",
+        });
       } else {
         const diff = diffFields(prev, rec);
         if (diff.length) {
@@ -166,6 +259,14 @@ export async function trackDump(opts: TrackDumpOpts): Promise<Summary> {
           nChanged++;
           perType[typeKey].changed++;
           logChange.run(RUN_ID, rec.document_type, rec.id, "changed", diff.join(","));
+          opts.changelog?.record({
+            op: "edited",
+            documentType: rec.document_type,
+            id: rec.id,
+            title: rec.title ?? undefined,
+            changed: diff,
+            source: "track",
+          });
         } else {
           changeType = "unchanged";
           lastChanged = prev.last_changed_run ?? RUN_ID;

@@ -80,6 +80,7 @@ export async function fetchKeyset(
   pageSize: number,
   maxResults: number,
   onProgress?: (n: number) => void,
+  fields?: string[], // when set, restrict raw fields (smaller responses, e.g. IDs-only)
 ): Promise<CoveoResult[]> {
   const out: CoveoResult[] = [];
   const seen = new Set<string>(); // dedup the small overlap the safety margin re-fetches
@@ -99,7 +100,9 @@ export async function fetchKeyset(
         numberOfResults: toFetch,
         searchHub: "myF5",
         sortCriteria: "@rowid ascending",
-        // No fieldsToInclude -> every field is returned.
+        // fields restricts the raw bag (must keep rowid for the cursor + permanentid
+        // for dedup); omitted -> every field is returned.
+        ...(fields ? { fieldsToInclude: fields } : {}),
       });
     } catch (e) {
       if (eff > 1 && /maximum size|ResponseExceededMaximumSize/i.test((e as Error).message)) {
@@ -210,6 +213,24 @@ export async function fetchChunked(
     collected,
     depth + 1,
   );
+}
+
+// Cheap IDs-only sweep of an entire type (for deletion reconcile): keyset-page the
+// whole type requesting only the id-relevant raw fields, so responses are tiny and
+// a large page size is safe. Returns minimal result objects; the caller derives the
+// per-article id with fsutil.idOf (same id the dump/DB use).
+export async function fetchIds(
+  client: CoveoClient,
+  documentType: string,
+  pageSize = 2000,
+  onProgress?: (n: number) => void,
+): Promise<CoveoResult[]> {
+  const baseAq = `@f5_document_type=="${documentType}"`;
+  return await fetchKeyset(client, baseAq, pageSize, Infinity, onProgress, [
+    "rowid",
+    "permanentid",
+    "f5_kb_id",
+  ]);
 }
 
 export async function fetchTypeSince(

@@ -31,19 +31,32 @@ const COMMANDS: Record<string, CmdDef> = {
   dump: {
     desc: "Dump full metadata + content per article, one JSON per type.",
     flags:
-      "(--days=N | --all)  --out=DIR  [--config=config.yaml] [--types=A,B] [--page-size=200] [--limit=N] [--fields-doc=FILE(deprecated)]",
+      "(--days=N | --all)  --out=DIR  [--config=config.yaml] [--types=A,B] [--page-size=200] [--limit=N] [--db=FILE] [--changelog[=FILE]] [--fields-doc=FILE(deprecated)]",
     load: () => import("./cmd/dump.ts"),
   },
   enrich: {
     desc: "Fetch article bodies for types the search index leaves empty.",
     flags:
-      "[--dump=outputs/dump] [--types=A,B] [--concurrency=4] [--delay-ms=200] [--limit=N] [--refetch] [--refetch-errors]   (env: GITHUB_TOKEN)",
+      "[--dump=outputs/dump] [--types=A,B] [--concurrency=4] [--delay-ms=200] [--limit=N] [--refetch] [--refetch-errors] [--changelog[=FILE]]   (env: GITHUB_TOKEN)",
     load: () => import("./cmd/enrich.ts"),
   },
   track: {
     desc: "Index a dump into the SQLite overview; report new/changed/removed.",
-    flags: "[--dump=outputs/dump] [--db=FILE] [--types=A,B] [--run-id=ID] [--json]",
+    flags:
+      "[--dump=outputs/dump] [--db=FILE] [--types=A,B] [--run-id=ID] [--changelog[=FILE]] [--json]",
     load: () => import("./cmd/track.ts"),
+  },
+  sync: {
+    desc: "Incremental update: dump+enrich+track only changed; detect deletions.",
+    flags:
+      "(--all | --days=N | --since-last-run)  [--types=A,B] [--out=outputs/dump] [--config=config.yaml] [--db=FILE] [--no-enrich] [--changelog[=FILE]] [--no-changelog] [--dry-run] [--page-size=200] [--limit=N] [--concurrency=4] [--delay-ms=200]",
+    load: () => import("./cmd/sync.ts"),
+  },
+  reconcile: {
+    desc: "Remove articles deleted upstream (report-only unless --apply).",
+    flags:
+      "[--types=A,B] [--dump=outputs/dump] [--config=config.yaml] [--db=FILE] [--apply] [--purge] [--max-delete-pct=10] [--max-deletes=N] [--changelog[=FILE]] [--page-size=2000] [--json]",
+    load: () => import("./cmd/reconcile.ts"),
   },
   status: {
     desc: "Read-only health report for a dump + its tracking DB.",

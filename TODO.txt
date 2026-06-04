@@ -111,18 +111,31 @@ sitemap_gap_ids.txt:
   K000161322   2026-05-22
 
 
-FUTURE IDEA (NOT now): SKIP UNCHANGED BODIES TO CUT API/SCRAPE CALLS
--------------------------------------------------------------------
-Use the tracking DB to avoid re-pulling expensive bodies. On a later dump, if an
-article's dates and metadata_hash are unchanged from the previous run (i.e. the
-record didn't change), skip re-fetching/re-scraping its body in `f5kb enrich` and
-carry the existing content forward. Requires:
-  - `f5kb track` already stores metadata_hash + the dates (done).
-  - `f5kb enrich` would consult the DB per article and short-circuit when the
-    metadata_hash matches and a content_hash already exists.
-  - Decide cadence: run track BEFORE enrich (to know what changed), or have a
-    combined orchestration step.
-This was explicitly deferred — capture only, do not implement yet.
+DONE 2026-06-04: INCREMENTAL SYNC + DELETION RECONCILE + CHANGELOG
+-----------------------------------------------------------------
+The deferred "skip unchanged bodies" idea shipped as `f5kb sync`, plus deletion
+handling and a changelog. See README.txt (sync/reconcile + CHANGELOG FORMAT) and
+OUTLINE.txt §2-3.
+  - `f5kb sync` loads each article's prior metadata_hash from the DB and SKIPS
+    rewriting unchanged articles; enrich's existing resumability then auto-limits
+    body fetches to the rewritten (changed) files — so unchanged bodies are never
+    re-scraped. Modes: --all, --days=N, --since-last-run. Detection of upstream
+    deletions runs under --all only (needs the full live id set) and is REPORTED,
+    never executed.
+  - `f5kb reconcile` is the explicit, guarded executor for deletions (report-only
+    unless --apply; --max-delete-pct / --max-deletes guard; DB backup; soft-delete
+    to _deleted/<type>/ or --purge). It is the only command that removes data.
+  - `--changelog[=FILE]` on every mutating op (sync/dump/enrich/track/reconcile)
+    appends JSONL change records; sync writes one by default.
+  - Latent-bug guard: dbKey() must match loadHashIndex()'s "<document_type> <id>"
+    key byte-for-byte or skip-unchanged silently no-ops; locked by
+    test/integration/sync_cmd_test.ts (a real DB round-trip).
+
+Possible follow-ups (not now):
+  - body-only upstream changes that bump no date are not detected by metadata_hash
+    (rare); `enrich --refetch` remains the escape hatch.
+  - a combined "sync then reconcile --apply" wrapper, if the report-then-execute
+    two-step ever proves tedious in practice.
 
 
 COMPLETED

@@ -8,6 +8,7 @@
 import { type Logger, NULL_LOGGER } from "../logger.ts";
 import { HttpClient } from "../http/fetcher.ts";
 import { readJson, walkArticleFiles, writeJson } from "../fsutil.ts";
+import type { Changelog } from "../changelog.ts";
 import {
   type Article,
   type EnricherDeps,
@@ -56,6 +57,7 @@ export interface EnrichTypeOpts {
   refetchErrors: boolean;
   logger?: Logger;
   sleep?: (ms: number) => Promise<void>;
+  changelog?: Changelog;
 }
 
 async function listArticleFiles(dir: string): Promise<string[]> {
@@ -96,6 +98,7 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
       skipped++;
       return;
     }
+    const hadBodyBefore = hasBody(article.content);
     let result: EnrichResult;
     try {
       result = await enricher(article, nowIso, deps);
@@ -106,6 +109,14 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
       failed++;
       report.errors.push({ id: article.id ?? "", link: article.link ?? "", error });
     }
+    opts.changelog?.record({
+      op: result.bodyError ? "body-error" : (hadBodyBefore ? "body-changed" : "body-added"),
+      documentType: article.documentType ?? opts.typeKey,
+      id: article.id ?? "",
+      title: article.title,
+      source: "enrich",
+      detail: result.bodyError,
+    });
     // Clear any keys a prior run set so a re-enrich (e.g. after fixing a
     // JS-rendered host) doesn't leave a stale bodyError/body_text behind.
     const base = { ...(article.content ?? {}) };
@@ -147,6 +158,7 @@ export interface EnrichDumpOpts {
   refetchErrors: boolean;
   logger?: Logger;
   sleep?: (ms: number) => Promise<void>;
+  changelog?: Changelog;
 }
 
 export async function enrichDump(opts: EnrichDumpOpts): Promise<TypeReport[]> {
@@ -190,6 +202,7 @@ export async function enrichDump(opts: EnrichDumpOpts): Promise<TypeReport[]> {
         refetchErrors: opts.refetchErrors,
         logger: opts.logger,
         sleep: opts.sleep,
+        changelog: opts.changelog,
       }),
     );
   }

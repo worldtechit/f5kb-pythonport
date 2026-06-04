@@ -13,6 +13,7 @@ import { type ParsedArgs } from "../lib/args.ts";
 import { flagBool, flagStr } from "../lib/args.ts";
 import { type Logger, makeLogger } from "../lib/logger.ts";
 import { trackDump } from "../lib/track/db.ts";
+import { Changelog, changelogPathFromFlag } from "../lib/changelog.ts";
 
 export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const flags = args.flags;
@@ -22,7 +23,9 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const types = typeof flags.types === "string"
     ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
     : null;
-  const runId = flagStr(flags, "run-id");
+  // Pin one runId so the changelog records, the runs row, and the changes rows all
+  // share it (trackDump would otherwise default to its own fresh timestamp).
+  const runId = flagStr(flags, "run-id") ?? new Date().toISOString();
   const asJson = flagBool(flags, "json");
 
   // In --json mode, floor the logger at warn so the human info summary is dropped
@@ -30,10 +33,17 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   // surface on STDERR. Otherwise log the full human summary.
   const trackLogger = asJson ? makeLogger({ level: "warn", json: false, scope: "track" }) : logger;
 
-  const summary = await trackDump({ dump, db, types, runId, logger: trackLogger });
+  const changelogPath = changelogPathFromFlag(flags["changelog"], dump);
+  const changelog = new Changelog(changelogPath, runId);
+
+  const summary = await trackDump({ dump, db, types, runId, logger: trackLogger, changelog });
+
+  await changelog.flush();
 
   if (asJson) {
     console.log(JSON.stringify(summary, null, 2));
+  } else if (changelogPath) {
+    logger.info(`Changelog: ${changelogPath}`);
   }
   return 0;
 }

@@ -20,6 +20,8 @@ import { loadConfig, loadFieldDescriptionsFile } from "../lib/config/loader.ts";
 import { CoveoClient } from "../lib/coveo/client.ts";
 import { fetchCoveoConfig, refreshConfig } from "../lib/coveo/aura.ts";
 import { dumpTypes } from "../lib/dump.ts";
+import { Changelog, changelogPathFromFlag } from "../lib/changelog.ts";
+import { loadHashIndex } from "../lib/track/db.ts";
 
 // Optional injected dependencies — used by tests to drive the dump loop offline
 // with a mocked CoveoClient. Production callers omit this; the global-fetch path
@@ -114,6 +116,14 @@ export async function run(args: ParsedArgs, logger: Logger, deps: DumpDeps = {})
         `(last ${days} day${days === 1 ? "" : "s"})`,
   );
 
+  // Optional changelog: when --changelog is given, classify each written article as
+  // added/edited against the tracking DB's stored hashes (read-only; the dump still
+  // writes everything — incremental skip is `f5kb sync`'s job).
+  const dbPath = flagStr(flags, "db") ?? `${outDir.replace(/\/+$/, "")}/../articles.db`;
+  const changelogPath = changelogPathFromFlag(flags["changelog"], outDir);
+  const changelog = new Changelog(changelogPath, new Date(nowMs).toISOString());
+  const priorHashes = changelogPath ? await loadHashIndex(dbPath) : undefined;
+
   const { manifest, total } = await dumpTypes(client, {
     typeConfigs,
     typeKeys,
@@ -128,7 +138,11 @@ export async function run(args: ParsedArgs, logger: Logger, deps: DumpDeps = {})
     limit,
     configPath,
     logger,
+    priorHashes,
+    changelog,
   });
+  await changelog.flush();
+  if (changelogPath) logger.info(`Changelog: ${changelogPath}`);
 
   const failed = manifest.filter((m) => m.status === "failed");
   const partial = manifest.filter((m) => m.status === "partial");

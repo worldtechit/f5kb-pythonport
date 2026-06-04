@@ -19,6 +19,13 @@ import {
 } from "./coveo/fields.ts";
 import { idOf, sanitizeName } from "./fsutil.ts";
 import { makeProgress } from "./progress.ts";
+import { sha256 } from "./track/hashing.ts";
+import type { Changelog } from "./changelog.ts";
+
+// DB key for an article: matches the (document_type, id) primary key in articles.db.
+export function dbKey(documentType: string, id: string): string {
+  return `${documentType} ${id}`;
+}
 
 export interface TypeStatus {
   typeKey: string;
@@ -28,6 +35,8 @@ export interface TypeStatus {
   expected: number | null;
   fetched: number;
   written: number;
+  /** incremental mode: unchanged articles left untouched (not rewritten). */
+  skipped: number;
   writeErrors: number;
   error?: string;
 }
@@ -53,12 +62,22 @@ export interface DumpTypesOpts {
   limit: number;
   configPath: string;
   logger?: Logger;
+  /** incremental mode: skip rewriting articles whose metadata_hash is unchanged. */
+  incremental?: boolean;
+  /** dbKey(documentType,id) -> metadata_hash from the DB (loaded by the caller). */
+  priorHashes?: Map<string, string>;
+  /** optional changelog sink (records added/edited). */
+  changelog?: Changelog;
+  /** preview: classify + record changelog but write no files (no article/catalogue/_index). */
+  dryRun?: boolean;
 }
 
 export interface DumpTypesResult {
   manifest: TypeStatus[];
   indexPath: string;
   total: number;
+  /** typeKey -> set of article ids present in Coveo this run (for deletion reconcile). */
+  currentIds: Map<string, Set<string>>;
 }
 
 // Run the per-type dump loop and write _index.json. Returns the manifest so the
@@ -81,11 +100,16 @@ export async function dumpTypes(
     pageSize,
     limit,
     configPath,
+    incremental,
+    priorHashes,
+    changelog,
+    dryRun,
   } = opts;
 
-  await Deno.mkdir(outDir, { recursive: true });
+  if (!dryRun) await Deno.mkdir(outDir, { recursive: true });
 
   const manifest: TypeStatus[] = [];
+  const currentIds = new Map<string, Set<string>>();
 
   for (const typeKey of typeKeys) {
     const cfg: TypeConfig = normalizeType({
@@ -104,6 +128,7 @@ export async function dumpTypes(
         expected: null,
         fetched: 0,
         written: 0,
+        skipped: 0,
         writeErrors: 0,
         error: "no documentType in config",
       });
@@ -118,8 +143,11 @@ export async function dumpTypes(
       expected: null,
       fetched: 0,
       written: 0,
+      skipped: 0,
       writeErrors: 0,
     };
+    const idSet = new Set<string>();
+    currentIds.set(typeKey, idSet);
     const progress = makeProgress(logger);
     try {
       // Server-side count over the window — the target to validate against.
@@ -142,7 +170,7 @@ export async function dumpTypes(
       st.fetched = results.length;
 
       const typeDir = `${outDir}/${dir}`;
-      await Deno.mkdir(typeDir, { recursive: true });
+      if (!dryRun) await Deno.mkdir(typeDir, { recursive: true });
 
       const catalogue = new Map<string, CatalogueEntry>();
       const seenIds = new Map<string, number>();
@@ -159,11 +187,42 @@ export async function dumpTypes(
         seenIds.set(id, n);
         if (n > 1) id = `${id}__${n}`;
 
+        idSet.add(id); // present in Coveo this run (for deletion reconcile)
+
         const modMs = modMsOf(raw);
+        const title = (r.title as string) ?? "";
+
+        // Compare against the DB's stored metadata_hash when we have one (incremental
+        // skip and/or a changelog need it). Incremental: an unchanged article is left
+        // untouched (the existing, possibly-enriched file stays). Non-incremental with
+        // a changelog: we still rewrite, but only log genuinely added/edited articles.
+        if (priorHashes && (incremental || changelog)) {
+          const mh = await sha256(metadata);
+          const prior = priorHashes.get(dbKey(cfg.documentType, id));
+          const unchanged = prior !== undefined && prior === mh;
+          if (unchanged) {
+            if (incremental) {
+              st.skipped++;
+              continue; // skip write; enrich (resumable) won't touch it either
+            }
+            // non-incremental: rewritten but not a change — don't log it.
+          } else {
+            changelog?.record({
+              op: prior === undefined ? "added" : "edited",
+              documentType: cfg.documentType,
+              id,
+              title,
+              hashOld: prior,
+              hashNew: mh,
+              source: "dump",
+            });
+          }
+        }
+
         const entry = {
           id,
           documentType: cfg.documentType,
-          title: (r.title as string) ?? "",
+          title,
           link: (r.clickUri as string) ?? (raw.clickableuri as string) ?? "",
           modifiedMs: modMs ?? null,
           modified: modMs ? new Date(modMs).toISOString() : null,
@@ -172,7 +231,9 @@ export async function dumpTypes(
           content,
         };
         try {
-          await Deno.writeTextFile(`${typeDir}/${id}.json`, JSON.stringify(entry, null, 2));
+          if (!dryRun) {
+            await Deno.writeTextFile(`${typeDir}/${id}.json`, JSON.stringify(entry, null, 2));
+          }
           st.written++;
         } catch (e) {
           st.writeErrors++;
@@ -180,17 +241,24 @@ export async function dumpTypes(
         }
       }
 
-      await writeCatalogue(typeDir, typeKey, cfg.documentType, catalogue, results.length, cfg);
+      if (!dryRun) {
+        await writeCatalogue(typeDir, typeKey, cfg.documentType, catalogue, results.length, cfg);
+      }
 
-      // Undercount=partial only under --all (see dump_articles.ts rationale).
+      // Undercount=partial only under --all. In incremental mode unchanged articles
+      // are present-but-skipped, so completeness = written + skipped.
+      const present = st.written + st.skipped;
       const undercount = allTime && st.expected !== null && limit === Infinity &&
-        st.written < st.expected;
+        present < st.expected;
       if (st.writeErrors > 0 || undercount) st.status = "partial";
 
       const flag = st.status === "ok" ? "" : `  [${st.status.toUpperCase()}]`;
       const exp = st.expected !== null ? `/${st.expected}` : "";
+      const skip = st.skipped ? ` (${st.skipped} unchanged)` : "";
       progress.done(
-        `${st.written}${exp} article${st.written === 1 ? "" : "s"} -> ${typeDir}/${flag}`,
+        `${st.written}${exp} written${skip} article${
+          st.written === 1 ? "" : "s"
+        } -> ${typeDir}/${flag}`,
       );
     } catch (e) {
       st.status = "failed";
@@ -205,27 +273,29 @@ export async function dumpTypes(
   const total = manifest.reduce((a, m) => a + m.written, 0);
 
   const indexPath = `${outDir}/_index.json`;
-  await Deno.writeTextFile(
-    indexPath,
-    JSON.stringify(
-      {
-        mode,
-        cutoff: new Date(cutoffMs).toISOString(),
-        generatedAt: new Date(nowMs).toISOString(),
-        config: configPath,
-        totalArticles: total,
-        counts: {
-          types: manifest.length,
-          ok: manifest.filter((m) => m.status === "ok").length,
-          partial: partial.length,
-          failed: failed.length,
+  if (!dryRun) {
+    await Deno.writeTextFile(
+      indexPath,
+      JSON.stringify(
+        {
+          mode,
+          cutoff: new Date(cutoffMs).toISOString(),
+          generatedAt: new Date(nowMs).toISOString(),
+          config: configPath,
+          totalArticles: total,
+          counts: {
+            types: manifest.length,
+            ok: manifest.filter((m) => m.status === "ok").length,
+            partial: partial.length,
+            failed: failed.length,
+          },
+          types: manifest,
         },
-        types: manifest,
-      },
-      null,
-      2,
-    ),
-  );
+        null,
+        2,
+      ),
+    );
+  }
 
-  return { manifest, indexPath, total };
+  return { manifest, indexPath, total, currentIds };
 }

@@ -104,6 +104,14 @@ Flags:
                    halved for that request and retried, so large content types
                    degrade gracefully.
   --limit=N        Cap articles per type (default: none). For testing.
+  --db=FILE        Tracking DB consulted (read-only) to classify changelog
+                   entries (default: <out>/../articles.db). Only used with
+                   --changelog.
+  --changelog[=FILE]  Record each written article as added/edited (classified
+                   against the tracking DB) to a JSONL changelog (default
+                   <out>/_changelog.jsonl). See CHANGELOG FORMAT. NOTE: a plain
+                   dump still writes every article; for incremental skip-unchanged
+                   use `sync`.
   --fields-doc=F   Deprecated no-op (catalogue annotations now come from
                    config.yaml's field_descriptions: section).
 
@@ -164,6 +172,9 @@ Flags:
   --refetch-errors  Re-process only articles that recorded a content.bodyError
                     (already-bodied articles stay skipped). Use after mapping a
                     new host or fixing a parser.
+  --changelog[=FILE]  Record body-added / body-changed / body-error events to a
+                    JSONL changelog (default <dump>/_changelog.jsonl). See
+                    CHANGELOG FORMAT.
 
 Env: GITHUB_TOKEN (pass --allow-env) raises the GitHub API limit from 60 to 5,000
 req/hr for F5_GitHub enrichment.
@@ -206,6 +217,9 @@ Flags:
   --db=FILE        SQLite file (default: <dump>/../articles.db).
   --types="A,B"    Subset of document types (scopes "removed" detection too).
   --run-id=ID      Label for this run (default: a timestamp).
+  --changelog[=FILE]  Also record new->added / changed->edited to a JSONL
+                   changelog (default <dump>/_changelog.jsonl). See CHANGELOG
+                   FORMAT below.
   --json           Emit the run summary as JSON on STDOUT.
 
 Example:
@@ -220,13 +234,151 @@ body_error; first_seen_run / last_seen_run / last_changed_run. Changes are logge
 to a `changes` table and a per-run summary to a `runs` table. Removed articles
 (rows in the scanned types absent from this dump) are logged, not deleted.
 
+SUBCOMMAND — sync
+-----------------
+Incremental update of a dump + its tracking DB. Instead of re-dumping and
+re-enriching everything in the window, sync runs the dump/enrich/track pipeline
+but only TOUCHES what actually changed:
+
+  1. Loads the prior metadata_hash of every article from the tracking DB.
+  2. Dumps the window, but SKIPS rewriting any article whose metadata_hash is
+     unchanged (so its existing, possibly-enriched file is left intact).
+  3. Enriches only the rewritten files (enrich is resumable — already-bodied
+     files are skipped), for the five enrichable types.
+  4. Updates the tracking DB (track).
+  5. Under --all only, DETECTS upstream deletions (DB ids no longer present in
+     the live Coveo id set) and REPORTS them. Sync NEVER removes anything; use
+     `reconcile --apply` to act on detected deletions.
+
+"Changed" means the metadata_hash differs. metadata includes the published/
+updated dates, so a content edit that bumps f5_updated_published_date is caught;
+a body-only upstream change that bumps no date is not (re-run `enrich --refetch`
+to force those). A changelog is written by default (see CHANGELOG FORMAT).
+
+Flags:
+
+  --all              Full corpus. REQUIRED for deletion detection.
+  --days=N           Only articles modified in the last N days (no deletion
+                     detection — a window can't prove an id is gone).
+  --since-last-run   Window starting at the tracking DB's most recent run time
+                     (falls back to --days=7 if there is no prior run).
+  --types="A,B"      Subset of config type keys.
+  --out=DIR          Dump directory (default: outputs/dump).
+  --config=FILE      Config YAML (default: config.yaml).
+  --db=FILE          SQLite file (default: <out>/../articles.db).
+  --no-enrich        Skip the body-enrichment step.
+  --changelog[=FILE] Changelog path (default <out>/_changelog.jsonl). ON by
+                     default for sync.
+  --no-changelog     Disable the changelog.
+  --dry-run          Classify + report only: write no files, DB rows, or
+                     changelog. Useful to preview what a sync would change.
+  --page-size=N      Results per call (default: 200, max: 500).
+  --limit=N          Cap articles per type (testing).
+  --concurrency=N    Enrich parallelism (default: 4).
+  --delay-ms=N       Enrich min delay per worker (default: 200).
+
+Example — nightly incremental over everything:
+
+    deno run --allow-net --allow-read --allow-write --allow-env \
+        f5kb.ts sync --all
+
+Example — quick catch-up since the last run, no deletion scan:
+
+    deno run --allow-net --allow-read --allow-write f5kb.ts sync --since-last-run
+
+SUBCOMMAND — reconcile
+----------------------
+Removes articles that exist in our dump/DB but no longer exist upstream in Coveo.
+This is the EXECUTION counterpart to sync's detect-and-report: reconcile is the
+only command that deletes on our side, and it is report-only unless you pass
+--apply. Detection is a cheap IDs-only keyset sweep of each type's current Coveo
+id set, diffed against the DB.
+
+Safety, when --apply is given:
+  - a deletion-threshold guard aborts (no changes) if a type's deletions exceed
+    --max-delete-pct of its DB rows, or total deletions exceed --max-deletes —
+    so a bad/empty Coveo response can't wipe the index;
+  - the tracking DB is copied to <db>.bak-<timestamp> before any change;
+  - soft-delete by default: the article file is MOVED to
+    <dump>/_deleted/<type>/ (recoverable) and its DB row dropped;
+  - --purge hard-removes the file instead of archiving.
+
+Flags:
+
+  --types="A,B"        Subset of config type keys (default: all in config).
+  --dump=DIR           Dump directory (default: outputs/dump).
+  --config=FILE        Config YAML (default: config.yaml).
+  --db=FILE            SQLite file (default: <dump>/../articles.db).
+  --apply              Actually remove. Without it, reconcile only reports.
+  --purge              Hard-remove files instead of archiving to _deleted/.
+  --max-delete-pct=N   Abort if a type's deletions exceed N% of its DB rows
+                       (default: 10).
+  --max-deletes=N      Abort if total deletions exceed N (optional absolute cap).
+  --changelog[=FILE]   Record deletions to a JSONL changelog (default
+                       <dump>/_changelog.jsonl).
+  --page-size=N        IDs-only sweep page size (default: 2000).
+  --json               Emit the result as JSON on STDOUT.
+
+Example — see what would be removed (safe, no changes):
+
+    deno run --allow-net --allow-read f5kb.ts reconcile --all 2>&1 | tail
+
+Example — apply, archiving removed articles, with a changelog:
+
+    deno run --allow-net --allow-read --allow-write \
+        f5kb.ts reconcile --apply --changelog
+
+A tripped threshold guard exits non-zero (so a wrapper script notices the abort)
+and makes no changes; re-run with a higher --max-delete-pct if the deletions are
+genuinely real.
+
+CHANGELOG FORMAT
+----------------
+Mutating subcommands (sync, dump, enrich, track, reconcile) can append a
+structured changelog via --changelog[=FILE]. It is JSONL: one JSON object per
+line, append-only, so it is a greppable, streamable history across runs (default
+file: <dump>/_changelog.jsonl). sync writes it by default; the others opt in.
+
+Each line has these keys (required first, then optional):
+
+  runId         string  the run this record belongs to (an ISO timestamp; the
+                        same id the runs/changes tables use for that run)
+  ts            string  ISO timestamp when the record was written
+  op            string  one of: added | edited | deleted |
+                        body-added | body-changed | body-error
+  documentType  string  the article's document type (e.g. "Bug Tracker")
+  id            string  the article id (matches the per-article filename)
+  title         string  (optional) article title
+  changed       array   (optional) field names that changed, for op="edited"
+                        (e.g. ["metadata","updated_published"])
+  hashOld       string  (optional) prior metadata_hash (absent => newly added)
+  hashNew       string  (optional) new metadata_hash
+  source        string  (optional) which command produced it: dump | enrich |
+                        track | reconcile | sync
+  detail        string  (optional) free text (a bodyError message, an archive
+                        path, or "detected upstream ..." for a sync deletion)
+
+op meanings: added/edited come from the dump/track classification; body-added
+(an empty body filled), body-changed (an existing body replaced), and body-error
+(a bodyError recorded instead of a body) come from enrich; deleted comes from
+reconcile --apply (actually removed) or from sync (detected upstream, reported
+only — its detail says so and nothing is removed).
+
+A minimal line carries only the five required keys; optionals appear only when
+set. Example lines:
+
+    {"runId":"2026-06-04T00:00:00.000Z","ts":"2026-06-04T00:00:01.2Z","op":"added","documentType":"Policy","id":"K12345","source":"dump"}
+    {"runId":"2026-06-04T00:00:00.000Z","ts":"2026-06-04T00:00:09.8Z","op":"deleted","documentType":"Manual","id":"K98","source":"reconcile","detail":"archived to _deleted/Manual/"}
+
 SUBCOMMAND — status
 -------------------
 Read-only health report for a dump and its tracking DB. Aggregates four sources,
 each handled gracefully when absent: `<dump>/_index.json` (per-type
 expected/written/status), `<dump>/_enrich_report.json` (per-type
 enriched/failed/skipped), on-disk per-type file counts, and the tracking DB
-(articles/runs tables). Never writes.
+(articles/runs tables). If a `<dump>/_changelog.jsonl` exists it is surfaced too,
+with the most recent run's per-op tally (added/edited/deleted/body-*). Never
+writes.
 
 Flags:
 

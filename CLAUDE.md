@@ -25,8 +25,9 @@ runtime from a Salesforce Aura endpoint.
 
 Everything is one entry point, `f5kb.ts`, with subcommands. `f5kb --help` lists
 them; `f5kb <sub> --help` shows that subcommand's flags. Subcommands: `dump`,
-`enrich`, `track`, `status`, `fetch`, `recent`, `list-types`, `list-products`,
-`discover`. Global flags: `--verbose`/`--debug`/`--quiet`/`--json-logs`/`--help`/
+`enrich`, `track`, `sync`, `reconcile`, `status`, `fetch`, `recent`, `list-types`,
+`list-products`, `discover`. Global flags:
+`--verbose`/`--debug`/`--quiet`/`--json-logs`/`--help`/
 `--version`. Logs/progress go to STDERR; any `--json` payload goes to STDOUT.
 
 `deno task` shortcuts (see `deno.json`): `dump`, `enrich`, `track`, `status`,
@@ -45,6 +46,14 @@ f5kb dump  →  f5kb enrich  →  f5kb track     (then f5kb status for a health 
    `--dump`, `--types`, `--refetch-errors`, `--concurrency`.
 3. **`f5kb track`** — SQLite master overview (`outputs/articles.db`): per-article
    dates + metadata/content hashes; new/changed/unchanged/removed across runs.
+
+**Incremental refresh: `f5kb sync`** runs all three steps but only rewrites/
+re-enriches articles whose `metadata_hash` changed (skips unchanged), and under
+`--all` DETECTS + reports upstream deletions (never removes). **`f5kb reconcile`**
+is the only command that deletes on our side: report-only unless `--apply`
+(threshold guard + DB backup + soft-delete to `_deleted/`, or `--purge`). Any
+mutating op takes `--changelog[=FILE]` to append a JSONL change record (format in
+README.txt "CHANGELOG FORMAT"); `sync` writes one by default.
 
 Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
 `list-products`, `discover`.
@@ -108,8 +117,13 @@ going forward:
 - Subcommands are resumable and idempotent; never assume a clean restart is required.
 - **Network is dependency-injected.** `CoveoClient` (`lib/coveo/client.ts`) and
   `HttpClient` (`lib/http/fetcher.ts`) each take a `fetch` fn; tests pass a mock
-  (`test/_helpers/mock_fetch.ts`), which is why the 102-test suite runs offline.
+  (`test/_helpers/mock_fetch.ts`), which is why the 116-test suite runs offline.
   Don't reach for the global `fetch` directly in lib code.
+- **Incremental skip hinges on one string.** `dbKey(documentType,id)` in
+  `lib/dump.ts` must produce the EXACT same `"<document_type> <id>"` key that
+  `loadHashIndex` builds from the DB — a separator mismatch makes every lookup miss,
+  silently disabling skip-unchanged (every article looks new). Covered by
+  `test/integration/sync_cmd_test.ts` (a real DB round-trip, not a self-built map).
 
 ## Git
 

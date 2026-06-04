@@ -17,6 +17,7 @@ import { flagBool, flagNum, flagStr } from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
 import { HttpClient } from "../lib/http/fetcher.ts";
 import { enrichDump } from "../lib/enrich/driver.ts";
+import { Changelog, changelogPathFromFlag } from "../lib/changelog.ts";
 
 export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const flags = args.flags;
@@ -41,6 +42,9 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
 
   const http = new HttpClient({ logger: logger.child("http") });
 
+  const changelogPath = changelogPathFromFlag(flags["changelog"], dump);
+  const changelog = new Changelog(changelogPath, new Date().toISOString());
+
   await enrichDump({
     dump,
     types,
@@ -52,7 +56,11 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
     http,
     githubToken,
     logger,
+    changelog,
   });
+
+  await changelog.flush();
+  if (changelogPath) logger.info(`Changelog: ${changelogPath}`);
 
   return 0;
 }

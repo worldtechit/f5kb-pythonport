@@ -50,8 +50,8 @@ post-processors that read the dump directory and never re-hit the search API.
                             dispatch, top-level try/catch -> exit code.
     cmd/                    one thin wrapper per subcommand (parse subcommand flags,
                             call into lib, return an exit code):
-      dump.ts enrich.ts track.ts status.ts fetch.ts recent.ts
-      list_types.ts list_products.ts discover.ts
+      dump.ts enrich.ts track.ts sync.ts reconcile.ts status.ts fetch.ts
+      recent.ts list_types.ts list_products.ts discover.ts
     lib/
       coveo/
         aura.ts             fetch the guest token from the Aura endpoint
@@ -60,7 +60,9 @@ post-processors that read the dump directory and never re-hit the search API.
         client.ts           CoveoClient: post() (retry/backoff/refresh/timeout),
                             getCount(), listFacetValues(). Takes an injected fetch.
         paging.ts           fetchPaged (offset), fetchKeyset (@rowid cursor),
-                            fetchChunked (date-window split). The §4 strategy.
+                            fetchChunked (date-window split), fetchIds (cheap
+                            IDs-only keyset sweep for deletion reconcile). The §4
+                            strategy.
         dates.ts            @date <-> ms helpers (toCoveoDate, the 1s resolution).
         fields.ts           split a Coveo result into metadata/content per config;
                             build the per-type field catalogue.
@@ -84,14 +86,30 @@ post-processors that read the dump directory and never re-hit the search API.
       track/
         hashing.ts          canonicalize + SHA-256 metadata/content hashes
                             (volatile keys excluded).
-        db.ts               node:sqlite schema + upsert + classify + runs/changes.
+        db.ts               node:sqlite schema + upsert + classify + runs/changes;
+                            plus read helpers loadHashIndex (prior metadata_hash
+                            map for incremental skip), loadIdsByType + deleteRows
+                            (reconcile), loadLastRunAt (--since-last-run).
       config/
         loader.ts           load+normalize config.yaml; refreshConfig helper.
         types.ts            TypeConfig / ProductEntry / config shapes.
       dump.ts               the dump orchestration (count -> page -> split ->
-                            write per-article + catalogue + _index.json).
+                            write per-article + catalogue + _index.json). Optional
+                            incremental mode: skip rewriting unchanged articles
+                            (prior metadata_hash match) + classify added/edited.
+      changelog.ts          Changelog: append-only JSONL recorder of every change
+                            a mutating op makes (added/edited/deleted/body-*);
+                            no-op when no path. changelogPathFromFlag resolves the
+                            --changelog[=FILE] flag.
+      sync.ts               incremental orchestrator: loadHashIndex -> dumpTypes
+                            (incremental) -> enrichDump (changed-only) -> trackDump
+                            -> detect+report upstream deletions. Never removes.
+      reconcile.ts          deletion executor: fetchIds vs DB diff; report-only
+                            unless apply; threshold guard + DB backup + soft-delete
+                            (archive to _deleted/) or --purge.
       status.ts             aggregate _index.json + _enrich_report.json + on-disk
-                            counts + DB into a StatusReport.
+                            counts + DB + _changelog.jsonl (last-run tally) into a
+                            StatusReport.
       logger.ts             leveled logger -> STDERR (text or NDJSON).
       progress.ts           progress reporting helper.
       args.ts               parseFlags + flagStr/flagNum/flagBool/flagList +
@@ -156,6 +174,36 @@ f5kb track (cmd/track.ts -> lib/track/db.ts)
    classify new / changed / unchanged; log every change to a changes table and a
    per-run summary to a runs table. Removed = rows in the scanned types absent from
    this dump (logged, not deleted).
+
+f5kb sync (cmd/sync.ts -> lib/sync.ts)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Incremental update — the same dump/enrich/track building blocks, wired to touch
+only what changed:
+1. loadHashIndex(db) -> a { "<document_type> <id>" -> metadata_hash } map (empty on
+   first run). The map key is dbKey(); it MUST match loadHashIndex's "<dt> <id>"
+   format exactly (a separator mismatch silently disables every skip).
+2. dumpTypes({incremental:true, priorHashes, changelog}) — for each article recompute
+   sha256(metadata); if it equals the prior hash, SKIP the write (leave the existing,
+   possibly-enriched file) and count it skipped; else write + changelog added/edited.
+3. enrichDump over the enrichable types — resumability means already-bodied (i.e.
+   not-rewritten) files are skipped, so enrich auto-limits to the rewritten ones.
+4. trackDump updates the DB exactly as a normal track run.
+5. Deletion DETECTION (only under --all, where dumpTypes returns the full currentIds
+   set): DB ids per document_type that are absent from currentIds are recorded as
+   changelog op="deleted" source="sync" and reported — never removed.
+A changelog is on by default; --dry-run classifies + reports but writes nothing.
+
+f5kb reconcile (cmd/reconcile.ts -> lib/reconcile.ts)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The execution counterpart to sync's detect-and-report — the ONLY command that
+deletes on our side. fetchIds (cheap IDs-only @rowid keyset) gives the live Coveo id
+set per type; diff vs the DB (baseId() strips the "__n" dedup suffix) = deletions.
+Report-only unless --apply. On apply: a threshold guard (--max-delete-pct per type,
+optional --max-deletes) aborts on a suspicious mass-deletion; the DB is copied to
+<db>.bak-<stamp>; then each article is soft-deleted (file moved to _deleted/<type>/,
+DB row dropped, changelog op="deleted") or hard-removed with --purge.
 
 f5kb status (cmd/status.ts -> lib/status.ts)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -245,7 +293,7 @@ and are the only ones that touch the real API.
 7. TESTING APPROACH
 -------------------
 
-102 tests, all offline by default, under test/ in three categories:
+116 tests, all offline by default, under test/ in three categories:
 
   - unit (16 files) — one module's functions in isolation (paging, client,
     aura/config, dates, fields, the HTML parsers, hashing, args, logger, status,
