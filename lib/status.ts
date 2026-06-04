@@ -11,6 +11,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { exists, listTypeDirs, readJson } from "./fsutil.ts";
 import { CHANGELOG_BASENAME } from "./changelog.ts";
+import { loadPendingManifest } from "./staging.ts";
 
 export interface TypeStatus {
   typeKey: string;
@@ -44,6 +45,8 @@ export interface StatusReport {
     changelogPath: string | null; // <dump>/_changelog.jsonl if present
     /** per-op tally of the last run's changelog records (added/edited/deleted/body-*). */
     changelogLastRun: Record<string, number> | null;
+    /** edits staged by the approval gate awaiting `f5kb approve` (_pending/). */
+    pendingApproval: number;
   };
   errorClasses: ErrorClass[];
   notes: string[];
@@ -316,6 +319,14 @@ export async function computeStatus(
     }
   }
 
+  // --- pending approval (_pending/_manifest.json) ---
+  let pendingApproval = 0;
+  try {
+    pendingApproval = (await loadPendingManifest(dump)).entries.length;
+  } catch {
+    // no/unreadable manifest -> 0
+  }
+
   // --- staleness + health ---
   const now = Date.now();
   const stamps: number[] = [];
@@ -352,6 +363,7 @@ export async function computeStatus(
       stalenessMs,
       changelogPath,
       changelogLastRun,
+      pendingApproval,
     },
     errorClasses,
     notes,
@@ -407,6 +419,12 @@ export function renderStatus(report: StatusReport): string {
       : "(no records for last run)";
     lines.push(`  changelog: ${o.changelogPath}`);
     lines.push(`    last run: ${summary}`);
+  }
+  if (o.pendingApproval > 0) {
+    lines.push(
+      `  PENDING APPROVAL: ${o.pendingApproval} staged edit(s) in ${report.dump}/_pending/ ` +
+        `— review then \`f5kb approve\``,
+    );
   }
 
   // Per-type table.

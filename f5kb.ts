@@ -31,13 +31,13 @@ const COMMANDS: Record<string, CmdDef> = {
   dump: {
     desc: "Dump full metadata + content per article, one JSON per type.",
     flags:
-      "(--days=N | --all)  --out=DIR  [--config=config.yaml] [--types=A,B] [--page-size=200] [--limit=N] [--db=FILE] [--changelog[=FILE]] [--fields-doc=FILE(deprecated)]",
+      "(--days=N | --all)  --out=DIR  [--config=config.yaml] [--types=A,B] [--page-size=200] [--limit=N] [--db=FILE] [--changelog[=FILE]] [--yes] [--fields-doc=FILE(deprecated)]",
     load: () => import("./cmd/dump.ts"),
   },
   enrich: {
     desc: "Fetch article bodies for types the search index leaves empty.",
     flags:
-      "[--dump=outputs/dump] [--types=A,B] [--concurrency=4] [--delay-ms=200] [--limit=N] [--refetch] [--refetch-errors] [--changelog[=FILE]]   (env: GITHUB_TOKEN)",
+      "[--dump=outputs/dump] [--types=A,B] [--concurrency=4] [--delay-ms=200] [--limit=N] [--refetch] [--refetch-errors] [--changelog[=FILE]] [--yes]   (env: GITHUB_TOKEN)",
     load: () => import("./cmd/enrich.ts"),
   },
   track: {
@@ -49,7 +49,7 @@ const COMMANDS: Record<string, CmdDef> = {
   sync: {
     desc: "Incremental update: dump+enrich+track only changed; detect deletions.",
     flags:
-      "(--all | --days=N | --since-last-run)  [--types=A,B] [--out=outputs/dump] [--config=config.yaml] [--db=FILE] [--no-enrich] [--changelog[=FILE]] [--no-changelog] [--dry-run] [--page-size=200] [--limit=N] [--concurrency=4] [--delay-ms=200]",
+      "(--all | --days=N | --since-last-run)  [--types=A,B] [--out=outputs/dump] [--config=config.yaml] [--db=FILE] [--no-enrich] [--changelog[=FILE]] [--no-changelog] [--dry-run] [--yes] [--page-size=200] [--limit=N] [--concurrency=4] [--delay-ms=200]",
     load: () => import("./cmd/sync.ts"),
   },
   reconcile: {
@@ -57,6 +57,12 @@ const COMMANDS: Record<string, CmdDef> = {
     flags:
       "[--types=A,B] [--dump=outputs/dump] [--config=config.yaml] [--db=FILE] [--apply] [--purge] [--max-delete-pct=10] [--max-deletes=N] [--changelog[=FILE]] [--page-size=2000] [--json]",
     load: () => import("./cmd/reconcile.ts"),
+  },
+  approve: {
+    desc: "Review + apply (or reject) overwrites staged in _pending/ by the gate.",
+    flags:
+      "[--dump=outputs/dump] [--db=FILE] [--types=A,B] [--ids=K1,K2] [--list] [--reject] [--include-risky] [--no-archive] [--changelog[=FILE]] [--json]",
+    load: () => import("./cmd/approve.ts"),
   },
   status: {
     desc: "Read-only health report for a dump + its tracking DB.",

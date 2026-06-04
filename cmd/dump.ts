@@ -15,13 +15,14 @@
 
 import { type ParsedArgs } from "../lib/args.ts";
 import { type Logger } from "../lib/logger.ts";
-import { flagNum, flagStr } from "../lib/args.ts";
+import { flagBool, flagNum, flagStr } from "../lib/args.ts";
 import { loadConfig, loadFieldDescriptionsFile } from "../lib/config/loader.ts";
 import { CoveoClient } from "../lib/coveo/client.ts";
 import { fetchCoveoConfig, refreshConfig } from "../lib/coveo/aura.ts";
 import { dumpTypes } from "../lib/dump.ts";
 import { Changelog, changelogPathFromFlag } from "../lib/changelog.ts";
 import { loadHashIndex } from "../lib/track/db.ts";
+import { mergePending } from "../lib/staging.ts";
 
 // Optional injected dependencies — used by tests to drive the dump loop offline
 // with a mocked CoveoClient. Production callers omit this; the global-fetch path
@@ -116,15 +117,18 @@ export async function run(args: ParsedArgs, logger: Logger, deps: DumpDeps = {})
         `(last ${days} day${days === 1 ? "" : "s"})`,
   );
 
-  // Optional changelog: when --changelog is given, classify each written article as
-  // added/edited against the tracking DB's stored hashes (read-only; the dump still
-  // writes everything — incremental skip is `f5kb sync`'s job).
+  // Approval gate ON by default: an article that already exists and changed is an
+  // OVERWRITE of saved data, so it is staged to _pending/ for review instead of
+  // clobbering the live file (unchanged articles are skipped; new ones written
+  // directly). --yes bypasses: overwrite in place, archiving the replaced file to
+  // _replaced/. Classification needs prior hashes (DB, with a live-file fallback).
+  const bypass = flagBool(flags, "yes");
   const dbPath = flagStr(flags, "db") ?? `${outDir.replace(/\/+$/, "")}/../articles.db`;
   const changelogPath = changelogPathFromFlag(flags["changelog"], outDir);
   const changelog = new Changelog(changelogPath, new Date(nowMs).toISOString());
-  const priorHashes = changelogPath ? await loadHashIndex(dbPath) : undefined;
+  const priorHashes = await loadHashIndex(dbPath);
 
-  const { manifest, total } = await dumpTypes(client, {
+  const { manifest, total, pending } = await dumpTypes(client, {
     typeConfigs,
     typeKeys,
     descriptions,
@@ -140,9 +144,19 @@ export async function run(args: ParsedArgs, logger: Logger, deps: DumpDeps = {})
     logger,
     priorHashes,
     changelog,
+    approval: !bypass,
+    archiveOnOverwrite: bypass,
   });
   await changelog.flush();
   if (changelogPath) logger.info(`Changelog: ${changelogPath}`);
+  if (pending.length) {
+    await mergePending(outDir, pending, new Date(nowMs).toISOString());
+    logger.warn(
+      `${pending.length} edited article(s) STAGED to ${outDir}/_pending/ (live data not ` +
+        `overwritten). Run enrich to fill their bodies, then \`f5kb approve\` ` +
+        `(or re-dump with --yes to overwrite in place).`,
+    );
+  }
 
   const failed = manifest.filter((m) => m.status === "failed");
   const partial = manifest.filter((m) => m.status === "partial");

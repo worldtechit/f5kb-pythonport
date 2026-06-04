@@ -50,8 +50,8 @@ post-processors that read the dump directory and never re-hit the search API.
                             dispatch, top-level try/catch -> exit code.
     cmd/                    one thin wrapper per subcommand (parse subcommand flags,
                             call into lib, return an exit code):
-      dump.ts enrich.ts track.ts sync.ts reconcile.ts status.ts fetch.ts
-      recent.ts list_types.ts list_products.ts discover.ts
+      dump.ts enrich.ts track.ts sync.ts reconcile.ts approve.ts status.ts
+      fetch.ts recent.ts list_types.ts list_products.ts discover.ts
     lib/
       coveo/
         aura.ts             fetch the guest token from the Aura endpoint
@@ -107,6 +107,12 @@ post-processors that read the dump directory and never re-hit the search API.
       reconcile.ts          deletion executor: fetchIds vs DB diff; report-only
                             unless apply; threshold guard + DB backup + soft-delete
                             (archive to _deleted/) or --purge.
+      staging.ts            overwrite-protection primitive: _pending/_replaced paths,
+                            the pending manifest (load/merge/save), computeRisk
+                            (body-dropped/body-error/body-shrank), archiveReplaced.
+      approve.ts            promote/reject staged overwrites: archive replaced live
+                            file -> _replaced/, move _pending -> live; HOLD risky
+                            edits unless includeRisky; records op="edited".
       status.ts             aggregate _index.json + _enrich_report.json + on-disk
                             counts + DB + _changelog.jsonl (last-run tally) into a
                             StatusReport.
@@ -183,13 +189,19 @@ only what changed:
 1. loadHashIndex(db) -> a { "<document_type> <id>" -> metadata_hash } map (empty on
    first run). The map key is dbKey(); it MUST match loadHashIndex's "<dt> <id>"
    format exactly (a separator mismatch silently disables every skip).
-2. dumpTypes({incremental:true, priorHashes, changelog}) — for each article recompute
-   sha256(metadata); if it equals the prior hash, SKIP the write (leave the existing,
-   possibly-enriched file) and count it skipped; else write + changelog added/edited.
-3. enrichDump over the enrichable types — resumability means already-bodied (i.e.
-   not-rewritten) files are skipped, so enrich auto-limits to the rewritten ones.
-4. trackDump updates the DB exactly as a normal track run.
-5. Deletion DETECTION (only under --all, where dumpTypes returns the full currentIds
+2. dumpTypes({incremental:true, priorHashes, changelog, approval}) — recompute
+   sha256(metadata) per article; equal to the prior hash -> SKIP (leave the file);
+   absent -> NEW -> write live; differs -> EDIT. With the approval gate on (default)
+   an EDIT is staged to _pending/<type>/<id>.json (live untouched) and returned in
+   `pending`; with --yes it overwrites in place after archiving the old file.
+3. enrichDump over the enrichable types — resumability skips already-bodied files, so
+   enrich auto-limits to new/rewritten ones; it ALSO fills the bodies of any staged
+   _pending/ articles so a reviewer sees the complete new version.
+4. mergePending records the staged edits in _pending/_manifest.json (after enrich).
+5. trackDump updates the DB from the LIVE dump only (listTypeDirs skips _-prefixed
+   dirs, so _pending/_replaced/_deleted are never indexed). Staged edits stay out of
+   the DB until approved.
+6. Deletion DETECTION (only under --all, where dumpTypes returns the full currentIds
    set): DB ids per document_type that are absent from currentIds are recorded as
    changelog op="deleted" source="sync" and reported — never removed.
 A changelog is on by default; --dry-run classifies + reports but writes nothing.
@@ -205,12 +217,24 @@ optional --max-deletes) aborts on a suspicious mass-deletion; the DB is copied t
 <db>.bak-<stamp>; then each article is soft-deleted (file moved to _deleted/<type>/,
 DB row dropped, changelog op="deleted") or hard-removed with --purge.
 
+f5kb approve (cmd/approve.ts -> lib/approve.ts)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The human checkpoint behind the approval gate (see §6). Reads _pending/_manifest.json
+and, for each selected entry, recomputes risk fresh from the actual files
+(computeRisk: body-dropped / body-error / body-shrank). --list previews; --reject
+deletes the pending file; otherwise PROMOTE: archive the live file to _replaced/, move
+the pending file into place, record changelog op="edited" source="approve". Edits with
+a risk flag are HELD (left pending) unless --include-risky. cmd/approve then runs
+trackDump so the DB matches the promoted live files.
+
 f5kb status (cmd/status.ts -> lib/status.ts)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Read-only. Aggregates _index.json, _enrich_report.json, on-disk per-type counts,
-and the DB (articles/runs) into a StatusReport; renders a table or, with --json, a
-JSON payload. Each source is handled gracefully when absent.
+the DB (articles/runs), the changelog (last-run tally), and the count of edits
+staged in _pending/ (awaiting approve) into a StatusReport; renders a table or, with
+--json, a JSON payload. Each source is handled gracefully when absent.
 
 4. PAGINATION STRATEGY (THE CORE OBSTACLE)
 ------------------------------------------
@@ -289,11 +313,17 @@ and are the only ones that touch the real API.
     scraping.
   - Output discipline. Logs/progress -> STDERR (lib/logger.ts); machine output
     (--json) -> STDOUT, so a --json payload can be piped cleanly.
+  - Overwrite protection (the approval gate; lib/staging.ts + approve.ts). sync /
+    dump / enrich never silently replace a good live article: an edit is staged to
+    _pending/ for review and applied only by `f5kb approve`, which archives the
+    replaced file to _replaced/ and HOLDS edits whose body would regress
+    (body-dropped/body-error) unless --include-risky. --yes bypasses the gate. This
+    is what stops an upstream reformat (good body -> empty) from poisoning the index.
 
 7. TESTING APPROACH
 -------------------
 
-116 tests, all offline by default, under test/ in three categories:
+125 tests, all offline by default, under test/ in three categories:
 
   - unit (16 files) — one module's functions in isolation (paging, client,
     aura/config, dates, fields, the HTML parsers, hashing, args, logger, status,

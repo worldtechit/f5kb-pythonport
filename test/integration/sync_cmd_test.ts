@@ -65,6 +65,7 @@ function baseOpts(outDir: string, dbPath: string, nowMs: number) {
     enrich: true, // Policy isn't enrichable -> enrich is a no-op
     concurrency: 2,
     delayMs: 0,
+    approval: false, // these tests validate the non-gated incremental mechanics
   };
 }
 

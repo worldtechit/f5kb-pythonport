@@ -37,7 +37,9 @@ export async function* walkArticleFiles(typeDir: string): AsyncGenerator<string>
 export async function listTypeDirs(dumpDir: string): Promise<string[]> {
   const dirs: string[] = [];
   for await (const e of Deno.readDir(dumpDir)) {
-    if (e.isDirectory) dirs.push(e.name);
+    // Skip bookkeeping dirs (_pending/, _replaced/, _deleted/): a real type dir is a
+    // sanitized type key, which never starts with "_" (sanitizeName strips it).
+    if (e.isDirectory && !e.name.startsWith("_")) dirs.push(e.name);
   }
   dirs.sort();
   return dirs;

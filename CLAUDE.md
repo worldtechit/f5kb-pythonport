@@ -25,13 +25,14 @@ runtime from a Salesforce Aura endpoint.
 
 Everything is one entry point, `f5kb.ts`, with subcommands. `f5kb --help` lists
 them; `f5kb <sub> --help` shows that subcommand's flags. Subcommands: `dump`,
-`enrich`, `track`, `sync`, `reconcile`, `status`, `fetch`, `recent`, `list-types`,
-`list-products`, `discover`. Global flags:
+`enrich`, `track`, `sync`, `reconcile`, `approve`, `status`, `fetch`, `recent`,
+`list-types`, `list-products`, `discover`. Global flags:
 `--verbose`/`--debug`/`--quiet`/`--json-logs`/`--help`/
 `--version`. Logs/progress go to STDERR; any `--json` payload goes to STDOUT.
 
-`deno task` shortcuts (see `deno.json`): `dump`, `enrich`, `track`, `status`,
-`discover`, `check`, `test`, `test:live`, `fmt`, `lint`.
+`deno task` shortcuts (see `deno.json`): `dump`, `enrich`, `track`, `sync`,
+`reconcile`, `approve`, `status`, `discover`, `check`, `test`, `test:live`, `fmt`,
+`lint`.
 
 ## The pipeline (run in order)
 
@@ -55,6 +56,17 @@ is the only command that deletes on our side: report-only unless `--apply`
 mutating op takes `--changelog[=FILE]` to append a JSONL change record (format in
 README.txt "CHANGELOG FORMAT"); `sync` writes one by default.
 
+**Overwrite protection (the approval gate).** `sync`/`dump`/`enrich` never silently
+overwrite a live article that already holds good data: an EDIT to an existing
+article is staged to `<dump>/_pending/<type>/<id>.json` (live untouched) and recorded
+in `_pending/_manifest.json`; new articles write directly, unchanged are skipped.
+**`f5kb approve`** promotes staged edits (archiving each replaced file to
+`<dump>/_replaced/`, then reindexing the DB) and HOLDS BACK edits flagged risky (body
+would be dropped/errored) unless `--include-risky`; `--list` previews, `--reject`
+discards. Pass `--yes` to sync/dump/enrich to bypass the gate (overwrite in place,
+still archiving to `_replaced/`). Code: `lib/staging.ts` + `lib/approve.ts`; the
+day-to-day workflow is in HOWTO.txt.
+
 Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
 `list-products`, `discover`.
 
@@ -67,8 +79,10 @@ Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
   section.
 - **OUTLINE.txt** — our *code*: module tree, the dump→enrich→track flow, the
   network-injection design, strategies, decisions, obstacles overcome.
-- **TODO.txt** — open work (sitemap-gap follow-up incl. the 47 IDs; the deferred
-  "skip-unchanged bodies" idea).
+- **HOWTO.txt** — task-oriented USER guide: quick start + the common workflows (full
+  build, incremental refresh, reviewing/approving changes, deletions) with examples.
+- **TODO.txt** — open work (sitemap-gap follow-up incl. the 47 IDs) + a log of
+  shipped work.
 - Machine-read config (not docs): `config.yaml` — three sections: `types:`
   (per-type field keep-lists, read by `f5kb dump`), `field_descriptions:`
   (field → description, annotates the catalogue), `products:` (read-only discovered-
@@ -117,13 +131,24 @@ going forward:
 - Subcommands are resumable and idempotent; never assume a clean restart is required.
 - **Network is dependency-injected.** `CoveoClient` (`lib/coveo/client.ts`) and
   `HttpClient` (`lib/http/fetcher.ts`) each take a `fetch` fn; tests pass a mock
-  (`test/_helpers/mock_fetch.ts`), which is why the 116-test suite runs offline.
+  (`test/_helpers/mock_fetch.ts`), which is why the 125-test suite runs offline.
   Don't reach for the global `fetch` directly in lib code.
 - **Incremental skip hinges on one string.** `dbKey(documentType,id)` in
   `lib/dump.ts` must produce the EXACT same `"<document_type> <id>"` key that
   `loadHashIndex` builds from the DB — a separator mismatch makes every lookup miss,
   silently disabling skip-unchanged (every article looks new). Covered by
   `test/integration/sync_cmd_test.ts` (a real DB round-trip, not a self-built map).
+- **`listTypeDirs` skips `_`-prefixed dirs.** The gate/reconcile add `_pending/`,
+  `_replaced/`, `_deleted/` under the dump; `lib/fsutil.ts listTypeDirs` excludes any
+  dir starting with `_` so `track`/`status` never index them as article types (a real
+  type dir is a sanitized type key, which never starts with `_`).
+- **The gate stages; `approve` applies.** A staged edit is NOT in the DB and NOT
+  logged as applied to the changelog until `approve` promotes it; `approve` recomputes
+  risk fresh from the files and holds body-dropped/body-error edits unless
+  `--include-risky`.
+- **`config.yaml` is curated — excluded from `deno fmt`.** `deno fmt` reformats YAML;
+  `config.yaml` is in the fmt `exclude` so a bare `deno fmt` won't rewrite it. Don't
+  reformat it; hand-edit only.
 
 ## Git
 

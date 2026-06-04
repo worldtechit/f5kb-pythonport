@@ -68,6 +68,10 @@ export async function run(args: ParsedArgs, logger: Logger, deps: SyncDeps = {})
   const delayMs = Math.max(0, flagNum(flags, "delay-ms", 200) ?? 200);
   const enrich = !flagBool(flags, "no-enrich");
   const dryRun = flagBool(flags, "dry-run");
+  // Approval gate ON by default: edited articles are staged to _pending/ for review
+  // instead of overwriting good data. --yes bypasses it (overwrite in place, after
+  // archiving the replaced file to _replaced/).
+  const bypass = flagBool(flags, "yes");
   const typeKeyFilter = typeof flags.types === "string"
     ? flags.types.split(",").map((s) => s.trim()).filter(Boolean)
     : null;
@@ -180,16 +184,24 @@ export async function run(args: ParsedArgs, logger: Logger, deps: SyncDeps = {})
     delayMs,
     changelogPath,
     dryRun,
+    approval: !bypass,
+    archiveOnOverwrite: bypass,
     logger,
   });
 
   // ---- summary ----
   logger.info(
     `Sync ${result.dryRun ? "(dry-run) " : ""}done [${result.mode}]: ` +
-      `written=${result.written} skipped=${result.skipped} ` +
+      `written=${result.written} skipped=${result.skipped} staged=${result.staged} ` +
       `added=${result.added} edited=${result.edited} ` +
       `body(added=${result.bodyAdded} changed=${result.bodyChanged} err=${result.bodyError})`,
   );
+  if (result.staged) {
+    logger.warn(
+      `${result.staged} edited article(s) STAGED for review (good data not overwritten). ` +
+        `Inspect ${outDir}/_pending/, then: f5kb approve  (or re-run sync with --yes to skip review)`,
+    );
+  }
   if (result.deletionDetectionRan) {
     logger.info(
       `Upstream deletions detected: ${result.deletionsDetected} ` +

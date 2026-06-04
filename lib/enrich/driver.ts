@@ -7,8 +7,9 @@
 
 import { type Logger, NULL_LOGGER } from "../logger.ts";
 import { HttpClient } from "../http/fetcher.ts";
-import { readJson, walkArticleFiles, writeJson } from "../fsutil.ts";
+import { exists, readJson, walkArticleFiles, writeJson } from "../fsutil.ts";
 import type { Changelog } from "../changelog.ts";
+import { mergePending, pendingDir, type PendingEntry, pendingPath } from "../staging.ts";
 import {
   type Article,
   type EnricherDeps,
@@ -23,6 +24,8 @@ export interface TypeReport {
   enriched: number;
   failed: number;
   skipped: number;
+  /** approval gate: re-fetches that would overwrite a live body were staged instead. */
+  staged: number;
   missingDir?: boolean;
   errors: Array<{ id: string; link: string; error: string }>;
 }
@@ -58,6 +61,11 @@ export interface EnrichTypeOpts {
   logger?: Logger;
   sleep?: (ms: number) => Promise<void>;
   changelog?: Changelog;
+  /** approval gate: a --refetch that would overwrite an existing body is written to
+   *  _pending/ instead of the live file. */
+  approval?: boolean;
+  /** collector for staged entries (the caller merges them into the manifest). */
+  pending?: PendingEntry[];
 }
 
 async function listArticleFiles(dir: string): Promise<string[]> {
@@ -71,7 +79,15 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
   const logger = opts.logger ?? NULL_LOGGER;
   const sleep = opts.sleep ?? defaultSleep;
   const { typeKey } = opts;
-  const report: TypeReport = { typeKey, files: 0, enriched: 0, failed: 0, skipped: 0, errors: [] };
+  const report: TypeReport = {
+    typeKey,
+    files: 0,
+    enriched: 0,
+    failed: 0,
+    skipped: 0,
+    staged: 0,
+    errors: [],
+  };
   const enricher = TYPE_ENRICHERS[typeKey];
   const deps: EnricherDeps = { http: opts.http, githubToken: opts.githubToken };
   const dir = `${opts.dump}/${typeKey}`;
@@ -86,7 +102,7 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
   if (opts.limit) files = files.slice(0, opts.limit);
   report.files = files.length;
 
-  let done = 0, skipped = 0, ok = 0, failed = 0;
+  let done = 0, skipped = 0, ok = 0, failed = 0, staged = 0;
   const nowIso = new Date().toISOString();
 
   await runPool(files, opts.concurrency, async (file) => {
@@ -124,7 +140,26 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
       delete (base as Record<string, unknown>)[k];
     }
     article.content = { ...base, ...result };
-    await writeJson(file, article);
+    // Approval gate: a --refetch that would OVERWRITE an existing live body is
+    // routed to _pending/ instead, leaving the good live file for review. Articles
+    // with no prior body (new fills, error-stub retries) are written in place —
+    // there is no good data to lose.
+    if (opts.approval && opts.refetch && hadBodyBefore) {
+      const pp = pendingPath(opts.dump, typeKey, article.id ?? "");
+      await Deno.mkdir(pp.slice(0, pp.lastIndexOf("/")), { recursive: true });
+      await writeJson(pp, article);
+      opts.pending?.push({
+        typeKey,
+        id: article.id ?? "",
+        title: article.title,
+        op: "edited",
+        source: "enrich",
+        stagedAt: nowIso,
+      });
+      staged++;
+    } else {
+      await writeJson(file, article);
+    }
     done++;
     if ((done + skipped) % 25 === 0) {
       logger.info(
@@ -139,8 +174,10 @@ export async function enrichType(opts: EnrichTypeOpts): Promise<TypeReport> {
   report.enriched = ok;
   report.failed = failed;
   report.skipped = skipped;
+  report.staged = staged;
+  const stg = staged ? ` staged=${staged}` : "";
   logger.info(
-    `  [${typeKey}] DONE: ${files.length} files — enriched=${ok} failed=${failed} skipped=${skipped}`,
+    `  [${typeKey}] DONE: ${files.length} files — enriched=${ok} failed=${failed} skipped=${skipped}${stg}`,
   );
   return report;
 }
@@ -159,6 +196,8 @@ export interface EnrichDumpOpts {
   logger?: Logger;
   sleep?: (ms: number) => Promise<void>;
   changelog?: Changelog;
+  /** approval gate: stage --refetch overwrites instead of clobbering live bodies. */
+  approval?: boolean;
 }
 
 export async function enrichDump(opts: EnrichDumpOpts): Promise<TypeReport[]> {
@@ -187,6 +226,7 @@ export async function enrichDump(opts: EnrichDumpOpts): Promise<TypeReport[]> {
       }`,
     );
   }
+  const staged: PendingEntry[] = [];
   const reports: TypeReport[] = [];
   for (const t of toRun) {
     reports.push(
@@ -203,9 +243,38 @@ export async function enrichDump(opts: EnrichDumpOpts): Promise<TypeReport[]> {
         logger: opts.logger,
         sleep: opts.sleep,
         changelog: opts.changelog,
+        approval: opts.approval,
+        pending: staged,
       }),
     );
   }
+
+  // Fill bodies of articles that an earlier dump/sync STAGED into _pending/ (so a
+  // reviewer sees the complete new article, body included, before approving). This
+  // pass is never gated — _pending/ is a staging area, not protected live data.
+  if (await exists(pendingDir(opts.dump))) {
+    for (const t of toRun) {
+      const r = await enrichType({
+        typeKey: t,
+        dump: pendingDir(opts.dump),
+        http: opts.http,
+        githubToken: opts.githubToken,
+        concurrency: opts.concurrency,
+        delayMs: opts.delayMs,
+        limit: opts.limit,
+        refetch: false,
+        refetchErrors: false,
+        logger: opts.logger,
+        sleep: opts.sleep,
+      });
+      if (!r.missingDir && (r.enriched || r.failed)) {
+        logger.info(`  [${t}] (_pending) filled ${r.enriched} body(ies), ${r.failed} failed`);
+      }
+    }
+  }
+
+  // Record any --refetch overwrites that were staged this run.
+  if (staged.length) await mergePending(opts.dump, staged, new Date().toISOString());
 
   // Write a machine-readable report so a long driven run can be inspected and
   // re-run (re-process the failures with --refetch-errors).

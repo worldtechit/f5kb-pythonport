@@ -20,6 +20,7 @@ import { dumpTypes } from "./dump.ts";
 import { enrichDump } from "./enrich/driver.ts";
 import { loadHashIndex, loadIdsByType, trackDump } from "./track/db.ts";
 import { Changelog } from "./changelog.ts";
+import { mergePending } from "./staging.ts";
 
 // type keys whose body lives off-API and so benefits from enrich.
 const ENRICHABLE = new Set([
@@ -52,6 +53,12 @@ export interface SyncOpts {
   delayMs: number;
   changelogPath: string | null;
   dryRun: boolean;
+  /** approval gate ON (default): edited articles are staged to _pending/ for review
+   *  instead of overwriting live data. */
+  approval: boolean;
+  /** bypass (--yes): overwrite edited articles in place, archiving the replaced file
+   *  to _replaced/ first. */
+  archiveOnOverwrite?: boolean;
   logger?: Logger;
 }
 
@@ -66,6 +73,8 @@ export interface SyncResult {
   bodyAdded: number;
   bodyChanged: number;
   bodyError: number;
+  /** edited articles staged to _pending/ this run (awaiting `f5kb approve`). */
+  staged: number;
   deletionsDetected: number;
   deletions: Record<string, string[]>; // typeKey -> ids detected as deleted upstream
   deletionDetectionRan: boolean;
@@ -101,6 +110,8 @@ export async function syncDump(opts: SyncOpts): Promise<SyncResult> {
     priorHashes,
     changelog,
     dryRun: opts.dryRun,
+    approval: opts.approval,
+    archiveOnOverwrite: opts.archiveOnOverwrite,
   });
 
   // 3. enrich only the rewritten (resumability skips already-bodied) — live + writes,
@@ -124,7 +135,18 @@ export async function syncDump(opts: SyncOpts): Promise<SyncResult> {
     }
   }
 
-  // 4. track (update DB) — skipped in dry-run.
+  // 3b. record the staged overwrites in the pending manifest (after enrich filled
+  //     their bodies). Only meaningful when the gate is on and not a dry run.
+  if (opts.approval && !opts.dryRun && dump.pending.length) {
+    await mergePending(opts.outDir, dump.pending, runId);
+    log.warn(
+      `${dump.pending.length} edited article(s) STAGED for review (not applied). ` +
+        `Inspect ${opts.outDir}/_pending/ then run: f5kb approve`,
+    );
+  }
+
+  // 4. track (update DB) — skipped in dry-run. Indexes the LIVE dump only; staged
+  //    (_pending) edits are excluded until approved.
   if (!opts.dryRun) {
     await trackDump({ dump: opts.outDir, db: dbPath, types: opts.typeKeys, runId, logger: log });
   }
@@ -179,6 +201,7 @@ export async function syncDump(opts: SyncOpts): Promise<SyncResult> {
     bodyAdded: by["body-added"] ?? 0,
     bodyChanged: by["body-changed"] ?? 0,
     bodyError: by["body-error"] ?? 0,
+    staged: dump.manifest.reduce((a, m) => a + m.staged, 0),
     deletionsDetected,
     deletions,
     deletionDetectionRan,

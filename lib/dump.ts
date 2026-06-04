@@ -21,6 +21,13 @@ import { idOf, sanitizeName } from "./fsutil.ts";
 import { makeProgress } from "./progress.ts";
 import { sha256 } from "./track/hashing.ts";
 import type { Changelog } from "./changelog.ts";
+import {
+  archiveReplaced,
+  liveArticle,
+  nowStamp,
+  type PendingEntry,
+  pendingPath,
+} from "./staging.ts";
 
 // DB key for an article: matches the (document_type, id) primary key in articles.db.
 export function dbKey(documentType: string, id: string): string {
@@ -37,6 +44,10 @@ export interface TypeStatus {
   written: number;
   /** incremental mode: unchanged articles left untouched (not rewritten). */
   skipped: number;
+  /** approval gate: edited articles routed to _pending/ instead of overwriting live. */
+  staged: number;
+  /** bypass (--yes): edited live files archived to _replaced/ before overwriting. */
+  replaced: number;
   writeErrors: number;
   error?: string;
 }
@@ -70,6 +81,12 @@ export interface DumpTypesOpts {
   changelog?: Changelog;
   /** preview: classify + record changelog but write no files (no article/catalogue/_index). */
   dryRun?: boolean;
+  /** approval gate: route edited (would-overwrite) articles to _pending/ instead of
+   *  overwriting the live file. Implies classification + skip-unchanged. */
+  approval?: boolean;
+  /** bypass: when NOT staging, archive the live file to _replaced/ before overwriting
+   *  an edited article (set when --yes is used on a gated command). */
+  archiveOnOverwrite?: boolean;
 }
 
 export interface DumpTypesResult {
@@ -78,6 +95,9 @@ export interface DumpTypesResult {
   total: number;
   /** typeKey -> set of article ids present in Coveo this run (for deletion reconcile). */
   currentIds: Map<string, Set<string>>;
+  /** approval gate: edited articles staged to _pending/ this run (caller merges the
+   *  manifest, after any enrich pass that fills their bodies). */
+  pending: PendingEntry[];
 }
 
 // Run the per-type dump loop and write _index.json. Returns the manifest so the
@@ -104,12 +124,17 @@ export async function dumpTypes(
     priorHashes,
     changelog,
     dryRun,
+    approval,
+    archiveOnOverwrite,
   } = opts;
 
   if (!dryRun) await Deno.mkdir(outDir, { recursive: true });
 
   const manifest: TypeStatus[] = [];
   const currentIds = new Map<string, Set<string>>();
+  const pending: PendingEntry[] = [];
+  const stamp = nowStamp(nowMs);
+  const capturedIso = new Date(nowMs).toISOString();
 
   for (const typeKey of typeKeys) {
     const cfg: TypeConfig = normalizeType({
@@ -129,6 +154,8 @@ export async function dumpTypes(
         fetched: 0,
         written: 0,
         skipped: 0,
+        staged: 0,
+        replaced: 0,
         writeErrors: 0,
         error: "no documentType in config",
       });
@@ -144,6 +171,8 @@ export async function dumpTypes(
       fetched: 0,
       written: 0,
       skipped: 0,
+      staged: 0,
+      replaced: 0,
       writeErrors: 0,
     };
     const idSet = new Set<string>();
@@ -192,23 +221,90 @@ export async function dumpTypes(
         const modMs = modMsOf(raw);
         const title = (r.title as string) ?? "";
 
-        // Compare against the DB's stored metadata_hash when we have one (incremental
-        // skip and/or a changelog need it). Incremental: an unchanged article is left
-        // untouched (the existing, possibly-enriched file stays). Non-incremental with
-        // a changelog: we still rewrite, but only log genuinely added/edited articles.
-        if (priorHashes && (incremental || changelog)) {
-          const mh = await sha256(metadata);
-          const prior = priorHashes.get(dbKey(cfg.documentType, id));
-          const unchanged = prior !== undefined && prior === mh;
-          if (unchanged) {
-            if (incremental) {
-              st.skipped++;
-              continue; // skip write; enrich (resumable) won't touch it either
-            }
-            // non-incremental: rewritten but not a change — don't log it.
-          } else {
-            changelog?.record({
-              op: prior === undefined ? "added" : "edited",
+        const entry = {
+          id,
+          documentType: cfg.documentType,
+          title,
+          link: (r.clickUri as string) ?? (raw.clickableuri as string) ?? "",
+          modifiedMs: modMs ?? null,
+          modified: modMs ? new Date(modMs).toISOString() : null,
+          capturedAt: capturedIso,
+          metadata,
+          content,
+        };
+
+        // Classify this article vs the saved state when any consumer needs it:
+        // incremental skip, the changelog, or the approval gate. The approval gate
+        // also falls back to the live FILE's metadata when the DB has no entry, so a
+        // would-overwrite is protected even without a tracking DB.
+        // The gate (stage on edit) and bypass (archive+overwrite on edit) both need
+        // edited-vs-unchanged classification; so do incremental skip and the changelog.
+        const gated = approval || archiveOnOverwrite;
+        const classify = incremental || changelog || gated;
+        let unchanged = false, isEdited = false, isNew = false;
+        let mh: string | undefined, prior: string | undefined;
+        if (classify) {
+          mh = await sha256(metadata);
+          prior = priorHashes?.get(dbKey(cfg.documentType, id));
+          if (prior === undefined && gated) {
+            // protect/recognize an edit even without a DB entry: hash the live file
+            const lf = await liveArticle(outDir, dir, id);
+            if (lf) prior = await sha256(lf.metadata ?? {});
+          }
+          unchanged = prior !== undefined && prior === mh;
+          isEdited = prior !== undefined && prior !== mh;
+          isNew = prior === undefined;
+        }
+
+        // Unchanged: leave the existing (possibly-enriched) file alone. Skip under
+        // incremental OR the gate/bypass (all protect/needn't-rewrite saved data); a
+        // plain changelog-only dump still rewrites it (byte-identical) without logging.
+        if (unchanged && (incremental || gated)) {
+          st.skipped++;
+          continue;
+        }
+        // A new article is applied immediately (nothing to overwrite) -> log it now.
+        if (isNew && changelog) {
+          changelog.record({
+            op: "added",
+            documentType: cfg.documentType,
+            id,
+            title,
+            hashNew: mh,
+            source: "dump",
+          });
+        }
+
+        // Approval gate: an edit would OVERWRITE saved data -> stage to _pending/
+        // instead, leaving the live file untouched for review. NOT recorded to the
+        // changelog here — it isn't applied yet; `approve` logs it on promotion.
+        if (isEdited && approval) {
+          if (!dryRun) {
+            const pp = pendingPath(outDir, dir, id);
+            await Deno.mkdir(pp.slice(0, pp.lastIndexOf("/")), { recursive: true });
+            await Deno.writeTextFile(pp, JSON.stringify(entry, null, 2));
+          }
+          st.staged++;
+          pending.push({
+            typeKey: dir,
+            id,
+            title,
+            op: "edited",
+            changed: ["metadata"],
+            source: "dump",
+            hashOld: prior,
+            hashNew: mh,
+            stagedAt: capturedIso,
+          });
+          continue;
+        }
+
+        // Edit being APPLIED in place (no gate, or --yes bypass): log it, and under
+        // bypass archive the live file first so a bad overwrite stays recoverable.
+        if (isEdited) {
+          if (changelog) {
+            changelog.record({
+              op: "edited",
               documentType: cfg.documentType,
               id,
               title,
@@ -217,19 +313,12 @@ export async function dumpTypes(
               source: "dump",
             });
           }
+          if (archiveOnOverwrite && !dryRun) {
+            const arch = await archiveReplaced(outDir, dir, id, stamp);
+            if (arch) st.replaced++;
+          }
         }
 
-        const entry = {
-          id,
-          documentType: cfg.documentType,
-          title,
-          link: (r.clickUri as string) ?? (raw.clickableuri as string) ?? "",
-          modifiedMs: modMs ?? null,
-          modified: modMs ? new Date(modMs).toISOString() : null,
-          capturedAt: new Date(nowMs).toISOString(),
-          metadata,
-          content,
-        };
         try {
           if (!dryRun) {
             await Deno.writeTextFile(`${typeDir}/${id}.json`, JSON.stringify(entry, null, 2));
@@ -245,9 +334,9 @@ export async function dumpTypes(
         await writeCatalogue(typeDir, typeKey, cfg.documentType, catalogue, results.length, cfg);
       }
 
-      // Undercount=partial only under --all. In incremental mode unchanged articles
-      // are present-but-skipped, so completeness = written + skipped.
-      const present = st.written + st.skipped;
+      // Undercount=partial only under --all. Unchanged articles are present-but-
+      // skipped and staged ones are present-but-pending, so completeness counts all.
+      const present = st.written + st.skipped + st.staged;
       const undercount = allTime && st.expected !== null && limit === Infinity &&
         present < st.expected;
       if (st.writeErrors > 0 || undercount) st.status = "partial";
@@ -255,8 +344,9 @@ export async function dumpTypes(
       const flag = st.status === "ok" ? "" : `  [${st.status.toUpperCase()}]`;
       const exp = st.expected !== null ? `/${st.expected}` : "";
       const skip = st.skipped ? ` (${st.skipped} unchanged)` : "";
+      const stg = st.staged ? ` (${st.staged} staged for approval)` : "";
       progress.done(
-        `${st.written}${exp} written${skip} article${
+        `${st.written}${exp} written${skip}${stg} article${
           st.written === 1 ? "" : "s"
         } -> ${typeDir}/${flag}`,
       );
@@ -297,5 +387,5 @@ export async function dumpTypes(
     );
   }
 
-  return { manifest, indexPath, total, currentIds };
+  return { manifest, indexPath, total, currentIds, pending };
 }

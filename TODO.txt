@@ -138,6 +138,30 @@ Possible follow-ups (not now):
     two-step ever proves tedious in practice.
 
 
+DONE 2026-06-04: OVERWRITE PROTECTION (APPROVAL GATE) + approve COMMAND
+----------------------------------------------------------------------
+sync/dump/enrich no longer silently overwrite a live article that already holds
+good data (the "upstream reformats and we capture an empty body" risk). See
+README.txt "OVERWRITE PROTECTION" + "SUBCOMMAND — approve", OUTLINE.txt §2-3/§6,
+and HOWTO.txt.
+  - An EDIT to an existing article is STAGED to <dump>/_pending/<type>/<id>.json
+    (live untouched) and recorded in _pending/_manifest.json; new articles are
+    written directly, unchanged are skipped.
+  - `f5kb approve` promotes staged edits: archive the replaced live file to
+    <dump>/_replaced/<type>/<id>.<ts>.json, move pending -> live, reindex the DB.
+    Edits flagged risky (body-dropped / body-error, recomputed fresh from the files)
+    are HELD unless --include-risky; --list previews, --reject discards.
+  - `--yes` on sync/dump/enrich bypasses the gate (overwrite in place, still
+    archiving to _replaced/).
+  - listTypeDirs now skips _-prefixed dirs so _pending/_replaced/_deleted are never
+    indexed as article types. Tests: +9 (staging, approve, gate) -> 125 green.
+
+Idea considered, NOT built: gating a full `dump` of 100k+ articles can stage a huge
+_pending/ — acceptable because a first dump (empty dir) is all-new (nothing staged)
+and re-dumps over an existing corpus only stage genuine edits. If mass-staging ever
+bites, add a `--max-staged` guard that aborts like reconcile's threshold.
+
+
 COMPLETED
 ---------
 Body enrichment for all 5 empty-index types (Bug Tracker, F5 GitHub, Manual,

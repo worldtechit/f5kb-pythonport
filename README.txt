@@ -60,6 +60,9 @@ deno.json defines these shortcuts (each is `deno run <perms> f5kb.ts <sub>`):
   deno task dump  f5kb dump
   deno task enrich  f5kb enrich (includes --allow-env for GITHUB_TOKEN)
   deno task track  f5kb track
+  deno task sync   f5kb sync (incremental refresh; includes --allow-env)
+  deno task reconcile  f5kb reconcile (remove upstream-deleted articles)
+  deno task approve  f5kb approve (apply staged overwrites)
   deno task status  f5kb status
   deno task discover  f5kb discover
   deno task check  deno check over f5kb.ts + cmd/*.ts + lib/**/*.ts
@@ -83,11 +86,47 @@ Output discipline: human-readable progress and logs go to STDERR; machine output
 (any `--json` payload) goes to STDOUT, so `f5kb track --json > out.json` captures
 only the JSON.
 
+OVERWRITE PROTECTION (THE APPROVAL GATE)
+----------------------------------------
+sync, dump, and enrich can REWRITE an article that already holds good data. If an
+upstream change makes the new version worse (a reformatted page that now extracts to
+an empty body, say), an unguarded rewrite would silently replace good data with bad.
+To prevent that, those three commands run an approval gate BY DEFAULT:
+
+  - a NEW article (no existing file) is written straight to the live dump;
+  - an UNCHANGED article is left exactly as-is (not rewritten);
+  - an EDIT that would OVERWRITE an existing file is written to
+    `<dump>/_pending/<type>/<id>.json` instead — the live file is untouched — and
+    recorded in `<dump>/_pending/_manifest.json`.
+
+You then review the staged files (diff each against its live counterpart) and run
+`f5kb approve` to apply them. On approval each replaced live file is first archived
+to `<dump>/_replaced/<type>/<id>.<timestamp>.json` (recoverable), then the pending
+version is moved into place and the tracking DB is updated. `approve` HOLDS BACK any
+edit flagged risky (its body would be dropped or errored) unless you pass
+--include-risky — so a regression cannot be approved by accident.
+
+Bypass: pass `--yes` to sync/dump/enrich to skip staging and overwrite in place
+(each replaced file is still archived to _replaced/ first). Use it for unattended
+runs where you trust the source.
+
+Layout the gate adds under the dump dir (all gitignored with the rest of outputs/):
+
+    _pending/_manifest.json        index of staged edits (what + why)
+    _pending/<type>/<id>.json      the staged new version (review vs live)
+    _replaced/<type>/<id>.<ts>.json archived previous version after an approval
+
+See SUBCOMMAND — approve below, and HOWTO.txt for the day-to-day workflow.
+
 SUBCOMMAND — dump
 -----------------
 Full-fidelity dumper. Writes ONE JSON file per article, grouped by document type,
 splitting each article's fields into "metadata" vs "content" objects per
-config.yaml. Also emits a per-type field catalogue.
+config.yaml. Also emits a per-type field catalogue. Protected by the approval gate
+(see OVERWRITE PROTECTION): new articles are written, unchanged ones are skipped,
+and edits to existing articles are staged to _pending/ for `f5kb approve` rather
+than overwriting in place. The first dump into an empty directory is all-new, so it
+writes everything with nothing to approve. Pass --yes to overwrite in place.
 
 Flags:
 
@@ -109,9 +148,10 @@ Flags:
                    --changelog.
   --changelog[=FILE]  Record each written article as added/edited (classified
                    against the tracking DB) to a JSONL changelog (default
-                   <out>/_changelog.jsonl). See CHANGELOG FORMAT. NOTE: a plain
-                   dump still writes every article; for incremental skip-unchanged
-                   use `sync`.
+                   <out>/_changelog.jsonl). See CHANGELOG FORMAT.
+  --yes            Bypass the approval gate: overwrite edited articles in place
+                   (after archiving the replaced file to _replaced/) instead of
+                   staging them to _pending/. See OVERWRITE PROTECTION.
   --fields-doc=F   Deprecated no-op (catalogue annotations now come from
                    config.yaml's field_descriptions: section).
 
@@ -175,6 +215,9 @@ Flags:
   --changelog[=FILE]  Record body-added / body-changed / body-error events to a
                     JSONL changelog (default <dump>/_changelog.jsonl). See
                     CHANGELOG FORMAT.
+  --yes             Bypass the approval gate: a --refetch that would overwrite an
+                    existing body overwrites in place instead of staging it to
+                    _pending/. (Filling empty/errored bodies is never gated.)
 
 Env: GITHUB_TOKEN (pass --allow-env) raises the GitHub API limit from 60 to 5,000
 req/hr for F5_GitHub enrichment.
@@ -201,7 +244,10 @@ Edge cases are recorded as `content.bodyError` (never captured as a body): soft
 URLs that 302 into the F5 KB (captured under the Salesforce type instead).
 Resumable: an article is skipped if it already has body_text or a bodyError. Each
 run writes `outputs/dump/_enrich_report.json` (per-type enriched/failed/skipped +
-the errored articles).
+the errored articles). If a `<dump>/_pending/` tree exists (edits staged by a gated
+dump/sync), enrich also fills the bodies of those staged articles so a reviewer sees
+the complete new version before approving. A `--refetch` over an article that
+already has a body is itself an overwrite, so it is gated (staged unless --yes).
 
 SUBCOMMAND — track
 ------------------
@@ -242,18 +288,24 @@ but only TOUCHES what actually changed:
 
   1. Loads the prior metadata_hash of every article from the tracking DB.
   2. Dumps the window, but SKIPS rewriting any article whose metadata_hash is
-     unchanged (so its existing, possibly-enriched file is left intact).
-  3. Enriches only the rewritten files (enrich is resumable — already-bodied
-     files are skipped), for the five enrichable types.
-  4. Updates the tracking DB (track).
+     unchanged (so its existing, possibly-enriched file is left intact). An article
+     that CHANGED is staged to _pending/ for review (the approval gate) rather than
+     overwriting the live file; a brand-new article is written directly.
+  3. Enriches the new/staged files (enrich is resumable — already-bodied files are
+     skipped), for the five enrichable types — including the staged ones, so a
+     reviewer sees the complete new article before approving.
+  4. Updates the tracking DB (track) from the LIVE dump (staged edits are excluded
+     until approved).
   5. Under --all only, DETECTS upstream deletions (DB ids no longer present in
      the live Coveo id set) and REPORTS them. Sync NEVER removes anything; use
      `reconcile --apply` to act on detected deletions.
 
-"Changed" means the metadata_hash differs. metadata includes the published/
-updated dates, so a content edit that bumps f5_updated_published_date is caught;
-a body-only upstream change that bumps no date is not (re-run `enrich --refetch`
-to force those). A changelog is written by default (see CHANGELOG FORMAT).
+After a gated sync, run `f5kb approve` to apply the staged edits (or --yes to skip
+staging and overwrite in place). "Changed" means the metadata_hash differs.
+metadata includes the published/updated dates, so a content edit that bumps
+f5_updated_published_date is caught; a body-only upstream change that bumps no date
+is not (re-run `enrich --refetch` to force those). A changelog is written by default
+(see CHANGELOG FORMAT).
 
 Flags:
 
@@ -272,6 +324,9 @@ Flags:
   --no-changelog     Disable the changelog.
   --dry-run          Classify + report only: write no files, DB rows, or
                      changelog. Useful to preview what a sync would change.
+  --yes              Bypass the approval gate: overwrite edited articles in place
+                     (after archiving each replaced file to _replaced/) instead of
+                     staging them to _pending/. See OVERWRITE PROTECTION.
   --page-size=N      Results per call (default: 200, max: 500).
   --limit=N          Cap articles per type (testing).
   --concurrency=N    Enrich parallelism (default: 4).
@@ -332,9 +387,53 @@ A tripped threshold guard exits non-zero (so a wrapper script notices the abort)
 and makes no changes; re-run with a higher --max-delete-pct if the deletions are
 genuinely real.
 
+SUBCOMMAND — approve
+--------------------
+The human checkpoint for the approval gate (see OVERWRITE PROTECTION). A gated
+sync/dump/enrich stages would-overwrite edits under `<dump>/_pending/`; `approve`
+applies them to the live dump. For each promoted edit the replaced live file is
+archived to `<dump>/_replaced/<type>/<id>.<timestamp>.json`, the pending version is
+moved into place, and the tracking DB is reindexed to match.
+
+Safety default: an edit flagged risky (body-dropped or body-error — the new version
+would lose or fail to capture a body the live file has) is HELD BACK and reported;
+pass --include-risky to apply those too. Risk is recomputed fresh from the actual
+files at approve time, so it reflects reality after any enrich pass.
+
+Flags:
+
+  --dump=DIR          Dump directory (default: outputs/dump).
+  --db=FILE           SQLite file (default: <dump>/../articles.db).
+  --types="A,B"       Only act on these type dirs.
+  --ids="K1,K2"       Only act on these article ids.
+  --list              Preview: show each pending edit + its risk flags, change
+                      nothing.
+  --reject            Discard the staged files instead of promoting them (the live
+                      data is left as-is).
+  --include-risky     Also promote edits flagged risky (default: hold them back).
+  --no-archive        Don't keep a _replaced/ copy of overwritten files.
+  --changelog[=FILE]  Record promotions (op="edited", source="approve") to a JSONL
+                      changelog. See CHANGELOG FORMAT.
+  --json              Print the result as JSON on STDOUT.
+
+Example — review what is staged, then apply the safe ones:
+
+    deno run --allow-read --allow-write f5kb.ts approve --list
+    deno run --allow-read --allow-write f5kb.ts approve
+
+Example — a body-dropped edit you have verified is correct anyway:
+
+    deno run --allow-read --allow-write f5kb.ts approve --include-risky --ids=K12345
+
+Example — throw away the staged changes (keep the live versions):
+
+    deno run --allow-read --allow-write f5kb.ts approve --reject
+
+To recover a wrongly-approved article, copy it back from `<dump>/_replaced/`.
+
 CHANGELOG FORMAT
 ----------------
-Mutating subcommands (sync, dump, enrich, track, reconcile) can append a
+Mutating subcommands (sync, dump, enrich, track, reconcile, approve) can append a
 structured changelog via --changelog[=FILE]. It is JSONL: one JSON object per
 line, append-only, so it is a greppable, streamable history across runs (default
 file: <dump>/_changelog.jsonl). sync writes it by default; the others opt in.
@@ -354,14 +453,18 @@ Each line has these keys (required first, then optional):
   hashOld       string  (optional) prior metadata_hash (absent => newly added)
   hashNew       string  (optional) new metadata_hash
   source        string  (optional) which command produced it: dump | enrich |
-                        track | reconcile | sync
+                        track | reconcile | sync | approve
   detail        string  (optional) free text (a bodyError message, an archive
                         path, or "detected upstream ..." for a sync deletion)
 
-op meanings: added/edited come from the dump/track classification; body-added
-(an empty body filled), body-changed (an existing body replaced), and body-error
-(a bodyError recorded instead of a body) come from enrich; deleted comes from
-reconcile --apply (actually removed) or from sync (detected upstream, reported
+op meanings: added comes from the dump/track classification (a new article applied
+immediately); edited is logged when an edit is APPLIED — either an in-place
+overwrite (source=dump under --yes / a non-gated run) or, under the gate, when
+`approve` promotes a staged edit (source=approve). A staged-but-not-yet-approved
+edit is NOT logged as edited; it lives in _pending/_manifest.json until approved.
+body-added (an empty body filled), body-changed (an existing body replaced), and
+body-error (a bodyError recorded instead of a body) come from enrich; deleted comes
+from reconcile --apply (actually removed) or from sync (detected upstream, reported
 only — its detail says so and nothing is removed).
 
 A minimal line carries only the five required keys; optionals appear only when
@@ -377,8 +480,8 @@ each handled gracefully when absent: `<dump>/_index.json` (per-type
 expected/written/status), `<dump>/_enrich_report.json` (per-type
 enriched/failed/skipped), on-disk per-type file counts, and the tracking DB
 (articles/runs tables). If a `<dump>/_changelog.jsonl` exists it is surfaced too,
-with the most recent run's per-op tally (added/edited/deleted/body-*). Never
-writes.
+with the most recent run's per-op tally (added/edited/deleted/body-*), and any edits
+staged in `<dump>/_pending/` awaiting `f5kb approve` are flagged. Never writes.
 
 Flags:
 

@@ -31,6 +31,10 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const limit = flags.limit ? (parseInt(String(flags.limit), 10) || null) : null;
   const refetch = flagBool(flags, "refetch");
   const refetchErrors = flagBool(flags, "refetch-errors");
+  // A --refetch over an article that already has a body would OVERWRITE good data,
+  // so by default it is staged to _pending/ for review. --yes bypasses (overwrite in
+  // place). (Filling empty/errored bodies is never gated — there is nothing to lose.)
+  const bypass = flagBool(flags, "yes");
 
   let githubToken: string | undefined;
   try {
@@ -45,7 +49,7 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
   const changelogPath = changelogPathFromFlag(flags["changelog"], dump);
   const changelog = new Changelog(changelogPath, new Date().toISOString());
 
-  await enrichDump({
+  const reports = await enrichDump({
     dump,
     types,
     concurrency,
@@ -57,10 +61,19 @@ export async function run(args: ParsedArgs, logger: Logger): Promise<number> {
     githubToken,
     logger,
     changelog,
+    approval: !bypass,
   });
 
   await changelog.flush();
   if (changelogPath) logger.info(`Changelog: ${changelogPath}`);
+
+  const totalStaged = reports.reduce((a, r) => a + r.staged, 0);
+  if (totalStaged) {
+    logger.warn(
+      `${totalStaged} re-fetched body(ies) STAGED to ${dump}/_pending/ (live bodies not ` +
+        `overwritten). Review, then \`f5kb approve\` (or re-run with --yes to overwrite).`,
+    );
+  }
 
   return 0;
 }
