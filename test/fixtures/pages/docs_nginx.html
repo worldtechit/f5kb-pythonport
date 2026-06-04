@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  
+
+  <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    
+    
+    
+    
+        
+    
+    <title>Migrate from NGINX Ingress Controller to NGINX Gateway Fabric | NGINX Documentation</title>
+
+
+
+
+    <meta name="description" content="Learn how to deliver, manage, and protect your applications using F5 NGINX products.">
+
+
+
+
+
+<link rel="canonical" href="https://docs.nginx.com/nginx-gateway-fabric/install/ingress-to-gateway/">
+
+
+
+
+
+
+
+
+
+
+    
+
+    
+    
+    
+
+    
+        <meta property="article:publisher" content="https://www.facebook.com/f5incorporated/" />
+    
+
+    
+    
+
+    <meta property="og:image" content="/images/nginx-documentation-500x300.png" />
+
+    
+    
+        <meta property="og:type" content="article" />
+        
+            <meta property="article:modified_time" content="2026-05-28T14:40:53-0700">
+        
+        
+            <meta property="article:section" content="Install" />
+        
+    
+
+    <meta property="og:url" content="https://docs.nginx.com/nginx-gateway-fabric/install/ingress-to-gateway/" />
+    <meta property="og:image:width" content="500" />
+    <meta property="og:image:height" content="300" />
+
+    
+
+    
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@nginx" />
+    
+
+
+
+<meta http-equiv="last-modified" content="28/05/2026" />
+
+
+
+
+
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'
+    https://consent.trustarc.com/ 
+    https://mktg.tags.f5.com/basic/prod/utag.sync.js 
+    https://static.cloud.coveo.com/ 
+    https://*.f5.com/
+    https://*.amplitude.com
+    https://*.netlify.app https://gist.github.com
+    https://tag.demandbase.com/pscSDsz4.min.js
+    https://munchkin.brightfunnel.com/js/build/bf-munchkin.min.js
+    https://www.googletagmanager.com/gtm.js
+    https://www.google-analytics.com/
+    https://www.google-analytics.com/analytics.js
+    https://www.google-analytics.com/plugins/ua/linkid.js
+    https://cdn.bizible.com/scripts/bizible.js
+    https://cdn.bizible.com/xdc.js
+    https://f5networksglobalprod.122.2o7.net/
+    https://f5networksnginxdocs.122.2o7.net/
+    https://*.siteintercept.qualtrics.com/SIE/?Q_ZID=*
+    https://siteintercept.qualtrics.com/
+    ;
+    worker-src 'self' blob:">
+
+
+
+<meta property="environment" type="production" />
+<meta property="buildtype" type="webdocs" />
+<meta property="isServer" type="false" />
+
+
+<meta name="product" content="NGINX Documentation">
+<meta name="version" content="">
+<meta name="doc_type" content="Manual">
+
+  
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://docs.nginx.com/images/favicon-48x48.ico">
+
+
+  
+<link href="/css/v2/style.min.3b99df1c35c5b854149250ab5404085aa3418b1a2457a4bee1885ea21090cf31da3fb13ceb0a203f105e64f4b302b52a1ce0682c7e8a699be47404efbc5a0640.css" integrity="sha512-O5nfHDXFuFQUklCrVAQIWqNBixokV6S&#43;4YheohCQzzHaP7E86wogPxBeZPSzArUqHOBoLH6KaZvkdATvvFoGQA==" rel="stylesheet" type="text/css">
+
+
+<link href="/css/inter/inter.min.b79aadd1b7f78cc6ce1d818b2ea1a4a8c950f4cd3ea8d03f380799a8f232526261c58091f8ab921be3d4b6b737c41006f7bf208f961afd7109de284b017b8374.css" integrity="sha512-t5qt0bf3jMbOHYGLLqGkqMlQ9M0&#43;qNA/OAeZqPIyUmJhxYCR&#43;KuSG&#43;PUtrc3xBAG978gj5Ya/XEJ3ihLAXuDdA==" rel="stylesheet" type="text/css">
+
+
+<link href="/css/v2/highlight.min.9ef7c7ad221175216abc8a5827f967bcd7c0e035bfa91180acd26a2c36d54242ae5f485986c260d70b1bbdf225ad76cdbba3179afa7e4335282cc3080a17e337.css" rel="stylesheet" type="text/css">
+
+
+
+ 
+<link
+  rel="stylesheet"
+  href="https://static.cloud.coveo.com/atomic/v3.19.0/themes/coveo.css"
+  integrity="sha512-m2BufPi8Tc6H2jcQfDj/PIl5H57C9jeqhbDFgFXKTtOhoC4S7ULXmx74FseZ8WXpfdT9uyccMHDBJDrIZlrUUQ=="
+  crossorigin="anonymous"/>
+
+
+  
+
+  
+
+  
+
+  <script async="async" src="https://consent.trustarc.com/notice?domain=f5.com&c=teconsent&js=nj&noticeType=bb&text=true&gtm=1" crossorigin=""></script>
+
+  
+
+<script src="https://mktg.tags.f5.com/basic/prod/utag.sync.js"></script> 
+
+
+
+  
+
+  
+
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5HG9JT');</script>
+
+  </head>
+
+  <body id="body">
+    
+     
+<script type="text/javascript"> 
+    (function(a,b,c,d) { 
+        a='//mktg.tags.f5.com/basic/prod/utag.js'; 
+        b=document;c='script';d=b.createElement(c);d.src=a; 
+        d.type='text/java'+c;d.async=true; 
+        a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a)})(); 
+</script> 
+    
+    <input type="checkbox" id="search-standalone-header-panel" class="search-standalone-header-panel" hidden/>
+    <input type="checkbox" id="sidebar-panel" class="sidebar-panel" hidden/>
+    <div class="grid-container">
+        <aside class="sidebar" data-testid="sidebar" id="sidebar">
+            
+<div class="sidebar__container">
+    <div class="sidebar__header" data-testid="sidebar__header">
+        <div class="sidebar__search">
+          
+          
+
+<atomic-search-interface id=search-standalone-sidebar>
+  <atomic-search-box redirection-url=/search.html class="header-search-box">
+  </atomic-search-box>
+</atomic-search-interface>
+
+          <label class="sidebar__mobile__toggle" for="sidebar-panel">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#panel-left-close"></use></svg>
+          </label>
+        </div>
+
+        
+        
+        
+
+        
+
+        
+          
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+                  
+                
+              
+            
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+          
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+          
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+          
+            
+              
+                
+                
+                
+
+                
+                
+
+                
+              
+            
+          
+        
+
+
+
+        <div class="product-selector" data-testid="product-selector">
+            <details class="product-selector__section">
+                <summary class="product-selector__toggle">
+
+                    <span class="product-selector__toggle-text" title="NGINX Gateway Fabric">
+                        
+                            NGINX Gateway Fabric
+                        
+                    </span>
+                    <span class="product-selector__chevron">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+                    </span>
+                </summary>
+                <div class="product-selector__content" data-testid="product-selector__content">
+                
+                  
+                  
+                    <h3 class="product-selector__product-group">NGINX One</h3>
+                    <ul>
+                      
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx-one-console"
+                            aria-label="NGINX One Console documentation"
+                            
+                          >
+                            NGINX One Console
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx"
+                            aria-label="NGINX Plus documentation"
+                            
+                          >
+                            NGINX Plus
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx-instance-manager"
+                            aria-label="NGINX Instance Manager documentation"
+                            
+                          >
+                            NGINX Instance Manager
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx-ingress-controller"
+                            aria-label="NGINX Ingress Controller documentation"
+                            
+                          >
+                            NGINX Ingress Controller
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx-gateway-fabric"
+                            aria-label="NGINX Gateway Fabric documentation"
+                            
+                          >
+                            NGINX Gateway Fabric
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://nginx.org/en/docs/"
+                            aria-label="NGINX Open Source documentation"
+                             target="_blank" 
+                          >
+                            NGINX Open Source
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx-agent"
+                            aria-label="NGINX Agent documentation"
+                            
+                          >
+                            NGINX Agent
+                          </a>
+                        </li>
+                      
+                    </ul>
+                  
+                    <h3 class="product-selector__product-group">F5 WAF for NGINX</h3>
+                    <ul>
+                      
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/waf"
+                            aria-label="F5 WAF for NGINX documentation"
+                            
+                          >
+                            F5 WAF for NGINX
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginx-app-protect-dos"
+                            aria-label="F5 DoS for NGINX documentation"
+                            
+                          >
+                            F5 DoS for NGINX
+                          </a>
+                        </li>
+                      
+                    </ul>
+                  
+                    <h3 class="product-selector__product-group">NGINX as a Service</h3>
+                    <ul>
+                      
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginxaas/azure/"
+                            aria-label="NGINXaaS for Azure documentation"
+                            
+                          >
+                            NGINXaaS for Azure
+                          </a>
+                        </li>
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/nginxaas/google/"
+                            aria-label="NGINXaaS for Google Cloud documentation"
+                            
+                          >
+                            NGINXaaS for Google Cloud
+                          </a>
+                        </li>
+                      
+                    </ul>
+                  
+                    <h3 class="product-selector__product-group">Glossary</h3>
+                    <ul>
+                      
+                      
+                        <li class="product-selector__product" data-testid="product-selector__product">
+                          <a
+                            href="https://docs.nginx.com/glossary"
+                            aria-label="F5 NGINX Glossary documentation"
+                            
+                          >
+                            F5 NGINX Glossary
+                          </a>
+                        </li>
+                      
+                    </ul>
+                  
+                
+                </div>
+
+            </details>
+
+        </div>
+
+    </div>
+    <div class="sidebar__content__wrapper">
+
+        <div class="sidebar__content" data-testid="sidebar__content">
+            <a class="skip-link" href="#maincontent">Skip Navigation</a>
+            
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/overview/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/overview/"
+        >
+          <span class="sidebar__toggle-text">Overview</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/overview/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/gateway-architecture/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/gateway-architecture/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Gateway architecture 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/gateway-api-compatibility/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/gateway-api-compatibility/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Gateway API compatibility 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/nginx-plus/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/nginx-plus/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Advanced features with NGINX Plus 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/technical-specifications/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/technical-specifications/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Technical specifications 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/resource-validation/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/resource-validation/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Resource validation 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/product-telemetry/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/product-telemetry/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Product telemetry 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/overview/custom-policies/"
+            id="overview-link-https//docs.nginx.com/nginx-gateway-fabric/overview/custom-policies/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Custom policies 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/get-started/"
+            id="link-https//docs.nginx.com/nginx-gateway-fabric/get-started/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Get started 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/install/"
+          class="sidebar__toggle sidebar__toggle--ancestor"
+          data-testid="sidebar__section__toggle"
+          aria-expanded="true"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/install/"
+        >
+          <span class="sidebar__toggle-text">Install</span>
+          <span class="sidebar__chevron sidebar__chevron--open" data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/install/"
+          class="sidebar__children"
+          
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/secure-certificates/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/secure-certificates/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Add certificates for secure authentication 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/helm/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/helm/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Install NGINX Gateway Fabric with Helm 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="install-section-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/"
+        >
+          <span class="sidebar__toggle-text">Manifests</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="install-section-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/manifests/open-source/"
+            id="install-manifests-link-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/open-source/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>NGINX Open Source 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/manifests/plus/"
+            id="install-manifests-link-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/plus/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>NGINX Plus 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/manifests/open-source-experimental/"
+            id="install-manifests-link-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/open-source-experimental/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>NGINX Open Source (experimental) 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/manifests/plus-experimental/"
+            id="install-manifests-link-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/plus-experimental/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>NGINX Plus (experimental) 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/manifests/uninstall/"
+            id="install-manifests-link-https//docs.nginx.com/nginx-gateway-fabric/install/manifests/uninstall/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Uninstall 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/nginx-plus/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/nginx-plus/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Install NGINX Gateway Fabric with NGINX Plus 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/openshift/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/openshift/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Install NGINX Gateway Fabric on OpenShift 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/build-image/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/build-image/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Build NGINX Gateway Fabric 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/deploy-data-plane/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/deploy-data-plane/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Deploy a Gateway for data plane instances 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/install/upgrade-version/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/upgrade-version/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Upgrade NGINX Gateway Fabric 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <button
+            class="sidebar__toggle sidebar__link sidebar__link--current"
+            data-testid="sidebar__section__toggle"
+            aria-expanded="true"
+            aria-controls="install-toc-https//docs.nginx.com/nginx-gateway-fabric/install/ingress-to-gateway/"
+            id="install-link-https//docs.nginx.com/nginx-gateway-fabric/install/ingress-to-gateway/"
+          >
+            <span>Migrate from NGINX Ingress Controller to NGINX Gateway Fabric 
+  
+
+</span>
+            <span class="sidebar__chevron sidebar__chevron--open" data-testid="sidebar__chevron">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+            </span>
+          </button>
+          <div id="install-toc-https//docs.nginx.com/nginx-gateway-fabric/install/ingress-to-gateway/" class="sidebar__toc">
+            
+              <a class="skip-link" href="#maincontent">Skip Table of Contents</a>
+            
+              <nav id="TableOfContents">
+  <ul>
+    <li><a href="#why-migrate">Why migrate?</a></li>
+    <li><a href="#about-the-ingress2gateway-tool">About the ingress2gateway tool</a></li>
+  </ul>
+</nav>
+          </div>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/"
+        >
+          <span class="sidebar__toggle-text">Traffic management</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/basic-routing/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/basic-routing/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Routing traffic to applications 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/advanced-routing/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/advanced-routing/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Application routes using HTTP matching conditions 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/https-termination/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/https-termination/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure HTTPS termination 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/redirects-and-rewrites/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/redirects-and-rewrites/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>HTTP redirects and rewrites 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/request-response-headers/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/request-response-headers/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Modify HTTP request and response headers 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/tls-passthrough/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/tls-passthrough/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure TLS passthrough with TLSRoute 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/mirror/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/mirror/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure Request Mirroring 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/snippets/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Snippets 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/client-settings/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/client-settings/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Client Settings Policy API 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/upstream-settings/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/upstream-settings/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Upstream Settings Policy API 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/session-persistence/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/session-persistence/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Session Persistence 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/tcp-routing/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/tcp-routing/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>TCPRoute 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/udp-routing/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/udp-routing/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>UDPRoute 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/proxy-settings/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/proxy-settings/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Proxy Settings Policy API 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/listener-sets/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/listener-sets/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>ListenerSet API 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-management/rate-limit/"
+            id="traffic-management-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-management/rate-limit/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Rate Limit Policy API 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/"
+        >
+          <span class="sidebar__toggle-text">Traffic security</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/integrate-cert-manager/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/integrate-cert-manager/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Secure traffic using Let&#39;s Encrypt and cert-manager 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/client-validation/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/client-validation/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Securing frontend client traffic using mutual TLS 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/secure-backend/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/secure-backend/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Securing backend traffic using mutual TLS 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/basic-authentication/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/basic-authentication/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure basic authentication 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/oidc-authentication/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/oidc-authentication/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure OpenID Connect (OIDC) authentication 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/jwt-authentication/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/jwt-authentication/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure JSON Web Token (JWT) authentication 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/traffic-security/cors/"
+            id="traffic-security-link-https//docs.nginx.com/nginx-gateway-fabric/traffic-security/cors/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure Cross-Origin Request Sharing (CORS) 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/"
+        >
+          <span class="sidebar__toggle-text">Secure with F5 WAF for NGINX</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/waf-integration/overview/"
+            id="secure-with-f5-waf-for-nginx-link-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/overview/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>F5 WAF for NGINX overview 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/waf-integration/get-started/"
+            id="secure-with-f5-waf-for-nginx-link-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/get-started/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Get started with F5 WAF for NGINX 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/waf-integration/policy-sources/"
+            id="secure-with-f5-waf-for-nginx-link-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/policy-sources/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure policy sources 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/waf-integration/configuration/"
+            id="secure-with-f5-waf-for-nginx-link-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/configuration/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure WAF settings 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/waf-integration/troubleshooting/"
+            id="secure-with-f5-waf-for-nginx-link-https//docs.nginx.com/nginx-gateway-fabric/waf-integration/troubleshooting/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Troubleshoot WAFPolicy status 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/how-to/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/how-to/"
+        >
+          <span class="sidebar__toggle-text">How-to guides</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/how-to/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/how-to/control-plane-configuration/"
+            id="how-to-guides-link-https//docs.nginx.com/nginx-gateway-fabric/how-to/control-plane-configuration/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Control plane configuration 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/how-to/data-plane-configuration/"
+            id="how-to-guides-link-https//docs.nginx.com/nginx-gateway-fabric/how-to/data-plane-configuration/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Data plane configuration 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/how-to/upgrade-apps-without-downtime/"
+            id="how-to-guides-link-https//docs.nginx.com/nginx-gateway-fabric/how-to/upgrade-apps-without-downtime/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Upgrade applications without downtime 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/how-to/scaling/"
+            id="how-to-guides-link-https//docs.nginx.com/nginx-gateway-fabric/how-to/scaling/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Scaling the control plane and data plane 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/how-to/gateway-api-inference-extension/"
+            id="how-to-guides-link-https//docs.nginx.com/nginx-gateway-fabric/how-to/gateway-api-inference-extension/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Gateway API Inference Extension 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/monitoring/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/monitoring/"
+        >
+          <span class="sidebar__toggle-text">Monitoring</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/monitoring/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/monitoring/tracing/"
+            id="monitoring-link-https//docs.nginx.com/nginx-gateway-fabric/monitoring/tracing/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Configure tracing 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/monitoring/prometheus/"
+            id="monitoring-link-https//docs.nginx.com/nginx-gateway-fabric/monitoring/prometheus/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Monitoring with Prometheus and Grafana 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/monitoring/dashboard/"
+            id="monitoring-link-https//docs.nginx.com/nginx-gateway-fabric/monitoring/dashboard/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Access the NGINX Plus dashboard 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/troubleshooting/"
+            id="link-https//docs.nginx.com/nginx-gateway-fabric/troubleshooting/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Troubleshooting 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+      <li class="sidebar__section" data-testid="sidebar__section">
+        <button
+          id="link-https//docs.nginx.com/nginx-gateway-fabric/reference/"
+          class="sidebar__toggle "
+          data-testid="sidebar__section__toggle"
+          aria-expanded="false"
+          aria-controls="section-https//docs.nginx.com/nginx-gateway-fabric/reference/"
+        >
+          <span class="sidebar__toggle-text">Reference</span>
+          <span class="sidebar__chevron " data-testid="sidebar__chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-right"></use></svg>
+          </span>
+        </button>
+        <div
+          id="section-https//docs.nginx.com/nginx-gateway-fabric/reference/"
+          class="sidebar__children"
+          hidden
+        >
+        
+
+          
+
+
+
+
+<ul class="sidebar__ul" data-testid="sidebar__ul">
+  
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/reference/api/"
+            id="reference-link-https//docs.nginx.com/nginx-gateway-fabric/reference/api/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>API reference 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/reference/cli-help/"
+            id="reference-link-https//docs.nginx.com/nginx-gateway-fabric/reference/cli-help/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Command-line reference guide 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/reference/permissions/"
+            id="reference-link-https//docs.nginx.com/nginx-gateway-fabric/reference/permissions/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Permissions 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/support/"
+            id="link-https//docs.nginx.com/nginx-gateway-fabric/support/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Support 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  <li class="sidebar__page"  data-testid="sidebar__page">
+        
+          <a
+            href="https://docs.nginx.com/nginx-gateway-fabric/changelog/"
+            id="link-https//docs.nginx.com/nginx-gateway-fabric/changelog/"
+            class="sidebar__link "
+            
+            data-testid="sidebar__link"
+          >
+              <span>Changelog 
+  
+
+</span>
+          </a>
+        
+      </li>
+    
+  
+</ul>
+
+
+        </div>
+    </div>
+
+</div>
+
+        </aside>
+
+        <header class="header" data-testid="header" id="header">
+            
+<div class="header-base">
+  <div class="header-container">
+      <div class="header__control" data-testid="header__control">
+          <div class="header__control--sidebar">
+              <label class="header__control--sidebar--close" for="sidebar-panel" data-testid="header__control--sidebar--close">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#panel-left-close"></use></svg>
+              </label>
+              <label class="header__control--sidebar--open" for="sidebar-panel" data-testid="header__control--sidebar--open">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#panel-left-open"></use></svg>
+              </label>
+          </div>
+          
+          
+          
+          
+            <label class="header__search--mobile--search--button"for="search-standalone-header-panel" data-testid="header__search--mobile--search--button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#search"></use></svg>
+            </label>
+          
+          <div class="header__search" data-testid="header__search">
+            
+              
+              
+
+<atomic-search-interface id=search-standalone-header>
+  <atomic-search-box redirection-url=/search.html class="header-search-box">
+  </atomic-search-box>
+</atomic-search-interface>
+
+            
+          </div>
+          
+      </div>
+
+      <div class="header__logo" data-testid="header__logo">
+          <a class="header__logo-link" href="/" alt="NGINX Docs Home">
+              <img class="header__img" src="https://docs.nginx.com/images/icons/NGINX-Open-Source-product-icon.svg" alt="NGINX Docs">
+          </a>
+      </div>
+
+      <div class="header__f5sites" data-testid="header__f5sites">
+
+
+<div class="navbar navbar-nav">
+    <div class="nav-item-explore active">
+    <button id="navbar-sites-button" class="button navbar-button dropdown-button" data-testid="header__f5sites_button">
+        F5 Sites
+        <span class="header__f5sites--icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#chevron-down"></use></svg>
+        </span>
+    </button>
+    <div class="dropdown-content" id="dropdown-content" data-testid="header__f5sites_content">
+        <ul>
+        
+            <li>
+            <a href="https://f5.com/" target="_blank" >F5</a>
+            <p>Deliver and secure every app</p>
+            </li>
+        
+            <li>
+            <a href="https://community.f5.com/" target="_blank" >DevCentral</a>
+            <p>Connect &amp; learn in our hosted community</p>
+            </li>
+        
+            <li>
+            <a href="https://my.f5.com/" target="_blank" >MyF5</a>
+            <p>Your key to everything F5, including support, registration keys, and subscriptions</p>
+            </li>
+        
+            <li>
+            <a href="https://nginx.org/" target="_blank" >NGINX</a>
+            <p>Learn more about NGINX Open Source and read the community blog</p>
+            </li>
+        
+            <li>
+            <a href="https://community.nginx.org/" target="_blank" >Community Forum</a>
+            <p>Engage with the broader NGINX community for discussions and troubleshooting</p>
+            </li>
+        
+        </ul>
+    </div>
+    </div>
+</div>
+
+</div>
+
+
+  </div>
+  <div class="header-search-dropdown" data-testid="header-search-dropdown-mobile">
+    
+      
+      
+
+<atomic-search-interface id=search-standalone-header-dropdown>
+  <atomic-search-box redirection-url=/search.html class="header-search-box">
+  </atomic-search-box>
+</atomic-search-interface>
+
+    
+  </div>
+</div>
+
+        </header>
+
+        
+<main class="content" data-testid="content">
+    
+    
+
+    <div class="breadcrumb-layout">
+        
+        
+        <nav aria-label="breadcrumb" class="breadcrumb" data-grid="wide">
+    <ol class="breadcrumb">
+        <li>
+            <a href="https://docs.nginx.com/">Home</a>
+        </li><li><a href="/nginx-gateway-fabric/">F5 NGINX Gateway Fabric</a></li><li><a href="/nginx-gateway-fabric/install/">Install</a></li>Migrate from NGINX Ingress Controller to NGINX Gateway Fabric</ol>
+</nav>
+
+        
+        
+    </div>
+    <article data-cms-edit="content" >
+        <div class="banner banner-deprecation">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<blockquote class="notice call-out note" data-title="" data-grid="last-third">
+  <div class="callout-content">
+  <p>NGINX Gateway Fabric 2.6.3 is now available.</p>
+<p>Follow <a href="https://docs.nginx.com/nginx-gateway-fabric/install/upgrade-version/#upgrade-from-v1x-to-v2x" target="_blank" rel="noopener">these instructions</a> to upgrade from 1.x to 2.0.</p>
+<p>For 1.x, checkout <a href="https://docs.nginx.com/nginx-gateway-fabric/install/upgrade-version/#access-nginx-gateway-fabric-1x-documentation" target="_blank" rel="noopener">an older version</a> of documentation.</p>
+
+  </div>
+</blockquote>
+
+
+
+
+          </div>
+
+        <h1>Migrate from NGINX Ingress Controller to NGINX Gateway Fabric</h1>
+        <div class="content__reading-time">
+        
+        </div>
+
+        <p>This document describes how to migrate from F5 NGINX Ingress Controller to NGINX Gateway Fabric.</p>
+<p>If you&rsquo;re already using NGINX Ingress Controller and want to migrate to NGINX Gateway Fabric, you can use the <a href="https://github.com/kubernetes-sigs/ingress2gateway" target="_blank" rel="noopener">ingress2gateway</a> tool to automatically convert your existing Ingress resources to Gateway API resources.</p>
+<h2 
+id="why-migrate">
+<div>
+<a class="headerlink float-right" href="#why-migrate" title="Why migrate?">
+    Why migrate?
+</a>
+</div>
+</h2><p>The <a href="https://gateway-api.sigs.k8s.io/" target="_blank" rel="noopener">Gateway API</a> is the next-generation Kubernetes networking API that builds on the limitations of Ingress. Compared to Ingress, Gateway API provides:</p>
+<ul>
+<li><strong>Role-oriented resources</strong>: Distinct resources for infrastructure providers, cluster operators, and application developers, enabling <a href="https://gateway-api.sigs.k8s.io/concepts/security-model/#role-oriented-resources" target="_blank" rel="noopener">separation of concerns</a>.</li>
+<li><strong>More expressive routing</strong>: Support for <a href="https://gateway-api.sigs.k8s.io/concepts/api-overview/#routes" target="_blank" rel="noopener">advanced traffic management</a> such as path-based and header-based routing, traffic splitting, and TLS configuration.</li>
+<li><strong>Standardization and portability</strong>: A Kubernetes <a href="https://gateway-api.sigs.k8s.io/" target="_blank" rel="noopener">community standard</a> supported by multiple vendors, ensuring consistent behavior across implementations.</li>
+<li><strong>Extensibility</strong>: Built on Kubernetes <a href="https://gateway-api.sigs.k8s.io/guides/migrating-from-ingress/?h=extensibility#approach-to-extensibility" target="_blank" rel="noopener">CRD extensibility</a> to support new capabilities without breaking the core API.</li>
+</ul>
+<p>Migrating to Gateway API with NGINX Gateway Fabric helps future-proof your Kubernetes networking stack, provide a standardized API across implementations, and unlock advanced traffic management features.</p>
+<h2 
+id="about-the-ingress2gateway-tool">
+<div>
+<a class="headerlink float-right" href="#about-the-ingress2gateway-tool" title="About the ingress2gateway tool">
+    About the ingress2gateway tool
+</a>
+</div>
+</h2><p>The ingress2gateway tool is a <a href="https://github.com/kubernetes-sigs" target="_blank" rel="noopener">Kubernetes SIG project</a> for converting Ingress resources to Gateway API resources. It supports multiple Ingress providers, including NGINX Ingress Controller.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<blockquote class="important call-out" data-grid="first-two-thirds">
+  <div>
+    <div class="call-out-type">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" class="lucide" style=""><use href="https://docs.nginx.com/images/lucide-sprite.svg#circle-arrow-right"></use></svg>
+      Important
+    </div>
+    <div class="callout-content"><p>The ingress2gateway tool is a conversion utility that translates Ingress resources to Gateway API equivalents. It is not a complete end-to-end migration solution.</p>
+<p>You will need to manually review the converted resources, test functionality, and make additional configuration changes as needed for your specific environment.</p>
+</div>
+  </div>
+</blockquote>
+
+
+
+<p>To convert your existing NGINX Ingress resources to Gateway API resources, first <a href="https://github.com/kubernetes-sigs/ingress2gateway?tab=readme-ov-file#installation" target="_blank" rel="noopener">install the ingress2gateway tool</a>.</p>
+<p>Then run the conversion command for the NGINX provider:</p>
+
+
+
+<div class="code-block">
+    <div class="code-container chroma">
+        <button onclick="copyToClipBoard(this, &#34;id-18b5a4a0e66bc54c&#34;)" class="code-copy-button" type="button">Copy</button>
+        <div class="code-content single-line" id="id-18b5a4a0e66bc54c">
+            <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ingress2gateway print --providers<span class="o">=</span>nginx --input-file<span class="o">=</span>&lt;your-ingress-file&gt; &gt; gateway-api-resources.yaml</span></span></code></pre></div>
+        </div>
+    </div>
+</div><p>This tool will analyze your Ingress resources from the input file and output the equivalent Gateway API resources to a file named <code>gateway-api-resources.yaml</code>.</p>
+<p>Review the generated Gateway API resources in the output file and apply them to your cluster:</p>
+
+
+
+<div class="code-block">
+    <div class="code-container chroma">
+        <button onclick="copyToClipBoard(this, &#34;id-18b5a4a0e6702702&#34;)" class="code-copy-button" type="button">Copy</button>
+        <div class="code-content single-line" id="id-18b5a4a0e6702702">
+            <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f gateway-api-resources.yaml</span></span></code></pre></div>
+        </div>
+    </div>
+</div><p>For detailed information about NGINX-specific features and conversion options, see the <a href="https://github.com/kubernetes-sigs/ingress2gateway/blob/main/pkg/i2gw/providers/nginx/README.md" target="_blank" rel="noopener">NGINX provider documentation</a>.</p>
+
+
+        
+        
+
+        
+
+        
+        <div class="last-modified">
+            
+<div>
+    <a href="https://github.com/nginx/documentation//tree/main/content/ngf/install/ingress-to-gateway.md" class="" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines fa-fw"></i> View source</a>
+  </div>
+  <div>
+    <a href="https://github.com/nginx/documentation//edit/main/content/ngf/install/ingress-to-gateway.md" class="" target="_blank" rel="noopener"><i class="fa-solid fa-pen-to-square fa-fw"></i> Edit this page</a>
+  </div>
+  <div>
+    <a href="https://github.com/nginx/documentation//issues/new?title=Migrate%20from%20NGINX%20Ingress%20Controller%20to%20NGINX%20Gateway%20Fabric&amp;template=2-bug_report.md" class="" target="_blank" rel="noopener"><i class="fa-solid fa-list-check fa-fw"></i> Create a new issue</a>
+  </div>
+
+
+
+        </div>
+        
+
+        
+        
+         
+           
+<script type='text/javascript'> 
+    (function(){var g=function(e,h,f,g){ 
+        this.get=function(a){
+            for(var a=a+"=",c=document.cookie.split(";"),b=0,e=c.length;b<e;b++){
+                for(var d=c[b];" "==d.charAt(0);)
+                    d=d.substring(1,d.length);
+                    if(0==d.indexOf(a))
+                        return d.substring(a.length,d.length)
+            }
+            return null
+        }; 
+        
+        this.set=function(a,c){
+            var b="",b=new Date;
+            b.setTime(b.getTime()+6048E5);
+            b="; expires="+b.toGMTString();
+            document.cookie=a+"="+c+b+"; path=/; "
+        }; 
+        
+        this.check=function(){
+            var a=this.get(f);
+            if(a)
+                a=a.split(":");
+            else if(100!=e)
+                "v"==h&&(e=Math.random()>=e/100?0:100),
+                a=[h,e,0],
+                this.set(f,a.join(":"));
+            else 
+                return!0;
+            var c=a[1];
+            if(100==c)
+                return!0;
+            switch(a[0]){
+                case "v":
+                    return!1;
+                case "r":
+                    return c=a[2]%Math.floor(100/c),a[2]++,this.set(f,a.join(":")),!c
+            }
+            return!0
+        }; 
+
+        this.go=function(){
+            if(this.check()){
+                var a=document.createElement("script");
+                a.type="text/javascript";
+                a.src=g;
+                document.body&&document.body.appendChild(a)
+            }
+        };
+
+        this.start=function(){
+            var t=this;
+            "complete"!==document.readyState?window.addEventListener ?
+                window.addEventListener("load",function(){t.go()},!1) : 
+                window.attachEvent&&window.attachEvent("onload",function(){t.go()}):t.go()};
+    }; 
+
+    try{
+        const project_id = window.location.hostname.includes("staging") ? "QSI_S_ZN_2YG73ads2zp5bN0" : "QSI_S_ZN_2QSTn2r41YlXrYk";
+        const endpoint = window.location.hostname.includes("staging") ? "https://zn2yg73ads2zp5bn0-f5.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_2YG73ads2zp5bN0" : "https://zn2qstn2r41ylxryk-f5.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_2QSTn2r41YlXrYk";
+        (new g(100,"r", project_id, endpoint)).start()
+    }
+    catch(i){}})();
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector(".qualtrics-feedback").id = window.location.hostname.includes("staging") ? "ZN_2YG73ads2zp5bN0" : "ZN_2QSTn2r41YlXrYk"
+    });
+</script>
+<div style="height: 60px;"></div>
+<div class="qualtrics-feedback" id='ZN_2QSTn2r41YlXrYk'></div>
+
+        
+    </article>
+</main>
+
+
+
+
+
+
+
+
+
+
+
+
+        <footer class="footer" data-testid="footer" id="footer">
+          
+            <div class="footer-layout">
+    <div class="footer-f5-trademark" data-testid="footer-f5-trademark">
+        <img class="f5-logo-footer" src="https://docs.nginx.com/images/icons/Logo_F5.svg" alt="F5 logo">
+        <p>©2026 F5, Inc. All rights reserved. NGINX is a registered trademark of F5, Inc.</p>
+    </div>
+    <div class="footer-useful-links" data-testid="footer-useful-links">
+        <a
+            href="https://www.f5.com/company/policies/trademarks"
+            rel="noopener"
+            target="_blank"
+            >Trademarks
+        </a>
+        <a
+            href="https://www.f5.com/company/policies"
+            rel="noopener"
+            target="_blank"
+            >Policies
+        </a>
+        <a
+            href="https://www.f5.com/company/policies/privacy-notice"
+            rel="noopener"
+            target="_blank"
+            >Privacy
+        </a>
+        <a
+            href="https://www.f5.com/company/policies/privacy-notice#ca"
+            rel="noopener"
+            target="_blank"
+            >California Privacy
+        </a>
+        <a
+            href="https://www.f5.com/company/policies/privacy-notice#no-sell"
+            rel="noopener"
+            target="_blank"
+            >Do Not Sell My Personal Information
+        </a>
+        <span id="teconsent"></span>
+    </div>
+</div>
+
+          
+        </footer>
+    </div>
+
+
+  
+
+<script src="/js/code-copy-v2.c6145a3e94822ed072fb6308894219fcda6456caf8a181e9184b672e85698465e314561ce467866b0884328d92bda58bbff43b8a6a26d48cf5b26284578c69de.js" type="text/javascript"></script>
+
+
+
+<script src="/js/browser-incompatibility.e1bd1ef46d4b3a41d67dd8f2df6544d1cd12872c132a3dddc56a9139fbc0b606e8106bc423b4dfcbfc2dd775e892bb3589ab8b69b22f5a3971a83f80e99b5561.js" type="text/javascript"></script>
+
+
+
+<script src="/js/site-dropdown.27a28a3fd68f6f5ee5234f202cecbea5c9e73a887da674ddfd32dfc77dae2ca49a1cee1f5fce87617258e9f6974d8fd4cd6b43f467267e75e53bdd5e3da7f1fc.js" type="text/javascript"></script>
+
+
+
+<script src="/js/tabs.871c0e08a58cc694e54eaf2852a08c5cb0ae30c604f420411ac7538f700e4dd5bd297ac8bcb802f63c325010dd13cb38402811e7028b71cc83ab28f71ab7122c.js" type="text/javascript"></script>
+
+
+
+
+
+
+
+<script
+  type="module"
+  src="https://static.cloud.coveo.com/atomic/v3.19.0/atomic.esm.js"
+  integrity="sha512-VA9k6iDWhwxl8bwKUYPD63l93lGX7daV60k3yFxEt9EuEq4iWvsu5COq1mZ8OXKl0KCOFlUSDXS32Cy+YwbufQ=="
+  crossorigin="anonymous">
+</script>
+
+
+<script class="coveo-script" src="https://static.cloud.coveo.com/searchui/v2.10104/0/js/CoveoJsSearch.Lazy.min.js"
+  integrity="sha512-HxdDBIp5snbqtu1TPkBnXLKEvN9IPz3PeZW8zT9KfsflV9Ck822XDroDlpVbfCfXeiu8C0RDVn0fdu7aGy/H1g=="
+  crossorigin="anonymous"></script>
+
+<script src="https://static.cloud.coveo.com/searchui/v2.10104/0/js/templates/templates.js"
+  integrity="sha512-CR0Yk/LIwgh1MsKqjecDp/r6F9ipKc6gA+4+E1pplT3N3r1pk+la/HaqyDiKtjOFwrwIIbIYBFrUJgPql93QHw=="
+  crossorigin="anonymous"></script>
+
+
+
+
+
+<script src="/js/coveo.min.14eb36975b3af2cc098655ea6823f3a41126fe76c46af740498eda83a138396f7650df9ac81f00e48e4f81025297130fdbfdbf8cd90da8c52e775d04f1a689a5.js" integrity="sha512-FOs2l1s68swJhlXqaCPzpBEm/nbEavdASY7ag6E4OW92UN&#43;ayB8A5I5PgQJSlxMP2/2/jNkNqMUud10E8aaJpQ=="type="text/javascript"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/sidebar-v2.min.33184372f83b8f3d5d5cc57efc4cd93fa30f0c3220fd91265097a9f4cb61fc1571e747b1785063f2d34e8f0f9b1f973e2b082558a59bb343af07819dde3619e2.js" type="text/javascript" integrity="sha512-MxhDcvg7jz1dXMV&#43;/EzZP6MPDDIg/ZEmUJep9Mth/BVx50exeFBj8tNOjw&#43;bH5c&#43;KwglWKWbs0OvB4Gd3jYZ4g=="></script>
+
+  <div id="consent_blackbar"></div>
+</body>
+</html>

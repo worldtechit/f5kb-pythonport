@@ -1,0 +1,833 @@
+{
+  "totalCount" : 410428,
+  "totalCountFiltered" : 410428,
+  "duration" : 83,
+  "indexDuration" : 73,
+  "requestDuration" : 78,
+  "searchUid" : "3dca3c2a-2ca5-4eeb-9ec5-160ea2747be4",
+  "pipeline" : "askf5-federatedsearch",
+  "apiVersion" : 2,
+  "queryCorrections" : [ ],
+  "index" : "f5networksproduction5vkhn00h-xxw0ahqy-Indexer-1-x4jdzaprtwwjna647ldzu5sfpa",
+  "logicalIndex" : "default",
+  "indexRegion" : "us-east-2",
+  "indexToken" : "ZjVuZXR3b3Jrc3Byb2R1Y3Rpb241dmtobjAwaC14eHcwYWhxeS1JbmRleGVyLTEteDRqZHphcHJ0d3dqbmE2NDdsZHp1NXNmcGE=",
+  "refinedKeywords" : [ ],
+  "triggers" : [ {
+    "type" : "notify",
+    "content" : "<div>For details on recent vulnerabilities, refer to the following:<br> <a href='https://my.f5.com/manage/s/article/K000161377'>K000161377: NGINX ngx_http_rewrite_module vulnerability CVE-2026-9256</a><br> <a href='https://my.f5.com/manage/s/article/K000161307'>K000161307: NGINX ngx_http_js_module vulnerability CVE-2026-8711</a><br> <a href='https://my.f5.com/manage/s/article/K000160932'>K000160932: Quarterly Security Notification (May 2026)</a>.</div>"
+  } ],
+  "termsToHighlight" : { },
+  "phrasesToHighlight" : { },
+  "groupByResults" : [ ],
+  "facets" : [ {
+    "field" : "f5_version",
+    "moreValuesAvailable" : true,
+    "values" : [ {
+      "value" : "BIG-IP",
+      "state" : "idle",
+      "numberOfResults" : 48476
+    }, {
+      "value" : "BIG-IP|17",
+      "state" : "idle",
+      "numberOfResults" : 11819
+    }, {
+      "value" : "BIG-IP|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 9573
+    }, {
+      "value" : "BIG-IP|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 3213
+    }, {
+      "value" : "BIG-IP LTM",
+      "state" : "idle",
+      "numberOfResults" : 29276
+    }, {
+      "value" : "BIG-IP LTM|17",
+      "state" : "idle",
+      "numberOfResults" : 7883
+    }, {
+      "value" : "BIG-IP LTM|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 6620
+    }, {
+      "value" : "BIG-IP|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 5645
+    }, {
+      "value" : "BIG-IP LTM|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 4114
+    }, {
+      "value" : "BIG-IP|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 3284
+    }, {
+      "value" : "BIG-IP LTM|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 3062
+    }, {
+      "value" : "BIG-IP LTM|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 2599
+    }, {
+      "value" : "BIG-IP APM",
+      "state" : "idle",
+      "numberOfResults" : 24457
+    }, {
+      "value" : "BIG-IP AFM",
+      "state" : "idle",
+      "numberOfResults" : 15616
+    }, {
+      "value" : "BIG-IP AFM|17",
+      "state" : "idle",
+      "numberOfResults" : 4437
+    }, {
+      "value" : "BIG-IP AFM|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 3570
+    }, {
+      "value" : "BIG-IP AFM|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 1472
+    }, {
+      "value" : "BIG-IP LTM|21",
+      "state" : "idle",
+      "numberOfResults" : 2274
+    }, {
+      "value" : "BIG-IP LTM|21|21.0",
+      "state" : "idle",
+      "numberOfResults" : 2023
+    }, {
+      "value" : "BIG-IP LTM|21|21.0|21.0.0",
+      "state" : "idle",
+      "numberOfResults" : 1986
+    }, {
+      "value" : "BIG-IP|21|21.0",
+      "state" : "idle",
+      "numberOfResults" : 1986
+    }, {
+      "value" : "BIG-IP|21",
+      "state" : "idle",
+      "numberOfResults" : 1963
+    }, {
+      "value" : "BIG-IP|21|21.0|21.0.0",
+      "state" : "idle",
+      "numberOfResults" : 1911
+    }, {
+      "value" : "BIG-IP ASM",
+      "state" : "idle",
+      "numberOfResults" : 21442
+    }, {
+      "value" : "BIG-IP Link Controller",
+      "state" : "idle",
+      "numberOfResults" : 14072
+    }, {
+      "value" : "BIG-IP PEM",
+      "state" : "idle",
+      "numberOfResults" : 13954
+    }, {
+      "value" : "BIG-IP DNS",
+      "state" : "idle",
+      "numberOfResults" : 13615
+    }, {
+      "value" : "BIG-IP Analytics",
+      "state" : "idle",
+      "numberOfResults" : 12332
+    }, {
+      "value" : "BIG-IP FPS",
+      "state" : "idle",
+      "numberOfResults" : 7718
+    }, {
+      "value" : "BIG-IP APM|17",
+      "state" : "idle",
+      "numberOfResults" : 6054
+    }, {
+      "value" : "BIG-IP ASM|17",
+      "state" : "idle",
+      "numberOfResults" : 5559
+    }, {
+      "value" : "BIG-IP APM|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 4905
+    }, {
+      "value" : "BIG-IP ASM|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 4433
+    }, {
+      "value" : "BIG-IP DNS|17",
+      "state" : "idle",
+      "numberOfResults" : 4408
+    }, {
+      "value" : "BIG-IP PEM|17",
+      "state" : "idle",
+      "numberOfResults" : 3759
+    }, {
+      "value" : "BIG-IP Link Controller|17",
+      "state" : "idle",
+      "numberOfResults" : 3642
+    }, {
+      "value" : "BIG-IP DNS|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 3584
+    }, {
+      "value" : "BIG-IP Analytics|17",
+      "state" : "idle",
+      "numberOfResults" : 3374
+    }, {
+      "value" : "BIG-IP APM|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 3247
+    }, {
+      "value" : "BIG-IP PEM|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 3030
+    }, {
+      "value" : "BIG-IP Link Controller|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 2904
+    }, {
+      "value" : "BIG-IP FPS|17",
+      "state" : "idle",
+      "numberOfResults" : 2891
+    }, {
+      "value" : "BIG-IP ASM|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 2860
+    }, {
+      "value" : "BIG-IP Analytics|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 2676
+    }, {
+      "value" : "BIG-IP APM|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 2591
+    }, {
+      "value" : "BIG-IP APM|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 2323
+    }, {
+      "value" : "BIG-IP DNS|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 2282
+    }, {
+      "value" : "BIG-IP AFM|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 2266
+    }, {
+      "value" : "BIG-IP FPS|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 2219
+    }, {
+      "value" : "BIG-IP ASM|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 2110
+    }, {
+      "value" : "BIG-IP PEM|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 1931
+    }, {
+      "value" : "BIG-IP Link Controller|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 1830
+    }, {
+      "value" : "BIG-IP AFM|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 1791
+    }, {
+      "value" : "BIG-IP DNS|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 1786
+    }, {
+      "value" : "BIG-IP ASM|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 1752
+    }, {
+      "value" : "BIG-IP Analytics|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 1643
+    }, {
+      "value" : "BIG-IP PEM|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 1555
+    }, {
+      "value" : "BIG-IP Link Controller|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 1489
+    }, {
+      "value" : "BIG-IP DNS|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 1481
+    }, {
+      "value" : "BIG-IP Analytics|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 1342
+    }, {
+      "value" : "BIG-IP PEM|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 1253
+    }, {
+      "value" : "BIG-IP FPS|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 1215
+    }, {
+      "value" : "BIG-IP Link Controller|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 1192
+    }, {
+      "value" : "BIG-IP Analytics|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 1090
+    }, {
+      "value" : "BIG-IP FPS|17|17.5|17.5.1",
+      "state" : "idle",
+      "numberOfResults" : 940
+    }, {
+      "value" : "BIG-IP FPS|17|17.1|17.1.3",
+      "state" : "idle",
+      "numberOfResults" : 713
+    }, {
+      "value" : "BIG-IP|16",
+      "state" : "idle",
+      "numberOfResults" : 14889
+    }, {
+      "value" : "BIG-IP|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 13920
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 12364
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 11501
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 11421
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 11181
+    }, {
+      "value" : "BIG-IP LTM|16",
+      "state" : "idle",
+      "numberOfResults" : 9952
+    }, {
+      "value" : "BIG-IP LTM|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 9403
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 8794
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 8472
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 8455
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 8134
+    }, {
+      "value" : "BIG-IP|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 7898
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.4",
+      "state" : "idle",
+      "numberOfResults" : 7515
+    }, {
+      "value" : "BIG-IP|17|17.1|17.1.1",
+      "state" : "idle",
+      "numberOfResults" : 7096
+    }, {
+      "value" : "BIG-IP LTM|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 6013
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 5818
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.4",
+      "state" : "idle",
+      "numberOfResults" : 5547
+    }, {
+      "value" : "BIG-IP LTM|17|17.1|17.1.1",
+      "state" : "idle",
+      "numberOfResults" : 5461
+    }, {
+      "value" : "BIG-IP|17|17.1|17.1.2",
+      "state" : "idle",
+      "numberOfResults" : 5410
+    }, {
+      "value" : "BIG-IP|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 4929
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 4481
+    }, {
+      "value" : "BIG-IP|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 4259
+    }, {
+      "value" : "BIG-IP LTM|17|17.1|17.1.2",
+      "state" : "idle",
+      "numberOfResults" : 4229
+    }, {
+      "value" : "BIG-IP LTM|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 3873
+    }, {
+      "value" : "BIG-IP LTM|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 3401
+    }, {
+      "value" : "BIG-IP LTM|21|21.1",
+      "state" : "idle",
+      "numberOfResults" : 837
+    }, {
+      "value" : "BIG-IP LTM|21|21.1|21.1.0",
+      "state" : "idle",
+      "numberOfResults" : 837
+    }, {
+      "value" : "BIG-IP|21|21.1",
+      "state" : "idle",
+      "numberOfResults" : 332
+    }, {
+      "value" : "BIG-IP|21|21.1|21.1.0",
+      "state" : "idle",
+      "numberOfResults" : 332
+    }, {
+      "value" : "BIG-IP APM|16",
+      "state" : "idle",
+      "numberOfResults" : 8002
+    }, {
+      "value" : "BIG-IQ Centralized Management",
+      "state" : "idle",
+      "numberOfResults" : 7793
+    }, {
+      "value" : "BIG-IP ASM|16",
+      "state" : "idle",
+      "numberOfResults" : 7488
+    }, {
+      "value" : "BIG-IP APM|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 7294
+    }, {
+      "value" : "BIG-IP ASM|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 6965
+    }, {
+      "value" : "BIG-IP APM|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 6868
+    }, {
+      "value" : "BIG-IP APM|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 6702
+    }, {
+      "value" : "BIG-IP APM|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 6676
+    }, {
+      "value" : "BIG-IP ASM|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 6588
+    }, {
+      "value" : "BIG-IP APM|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 6507
+    }, {
+      "value" : "BIG-IQ",
+      "state" : "idle",
+      "numberOfResults" : 6395
+    }, {
+      "value" : "BIG-IP ASM|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 6347
+    }, {
+      "value" : "BIG-IP ASM|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 6346
+    }, {
+      "value" : "BIG-IP DNS|16",
+      "state" : "idle",
+      "numberOfResults" : 6232
+    }, {
+      "value" : "BIG-IP AFM|16",
+      "state" : "idle",
+      "numberOfResults" : 6086
+    }, {
+      "value" : "BIG-IP ASM|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 5959
+    }, {
+      "value" : "BIG-IP DNS|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 5882
+    }, {
+      "value" : "BIG-IP AFM|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 5684
+    }, {
+      "value" : "BIG-IP DNS|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 5679
+    }, {
+      "value" : "BIG-IP DNS|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 5518
+    }, {
+      "value" : "BIG-IP DNS|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 5512
+    }, {
+      "value" : "BIG-IP AFM|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 5498
+    }, {
+      "value" : "BIG-IP AFM|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 5323
+    }, {
+      "value" : "BIG-IP AFM|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 5319
+    }, {
+      "value" : "BIG-IP DNS|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 5175
+    }, {
+      "value" : "BIG-IP Analytics|16",
+      "state" : "idle",
+      "numberOfResults" : 5047
+    }, {
+      "value" : "BIG-IP AFM|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 5010
+    }, {
+      "value" : "F5OS",
+      "state" : "idle",
+      "numberOfResults" : 4882
+    }, {
+      "value" : "BIG-IP Analytics|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 4707
+    }, {
+      "value" : "BIG-IP Analytics|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 4601
+    }, {
+      "value" : "BIG-IP APM|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 4521
+    }, {
+      "value" : "BIG-IP Analytics|16|16.1|16.1.2",
+      "state" : "idle",
+      "numberOfResults" : 4474
+    }, {
+      "value" : "BIG-IP Analytics|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 4465
+    }, {
+      "value" : "BIG-IP APM|17|17.1|17.1.1",
+      "state" : "idle",
+      "numberOfResults" : 4169
+    }, {
+      "value" : "BIG-IP ASM|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 4071
+    }, {
+      "value" : "BIG-IQ Centralized Management|8",
+      "state" : "idle",
+      "numberOfResults" : 3821
+    }, {
+      "value" : "BIG-IP ASM|17|17.1|17.1.1",
+      "state" : "idle",
+      "numberOfResults" : 3687
+    }, {
+      "value" : "BIG-IP APM|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 3599
+    }, {
+      "value" : "BIG-IP DNS|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 3421
+    }, {
+      "value" : "BIG-IP APM|17|17.1|17.1.2",
+      "state" : "idle",
+      "numberOfResults" : 3377
+    }, {
+      "value" : "BIG-IP DNS|17|17.1|17.1.1",
+      "state" : "idle",
+      "numberOfResults" : 3088
+    }, {
+      "value" : "BIG-IP APM|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 3078
+    }, {
+      "value" : "BIG-IP ASM|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 3026
+    }, {
+      "value" : "BIG-IP ASM|17|17.1|17.1.2",
+      "state" : "idle",
+      "numberOfResults" : 2904
+    }, {
+      "value" : "BIG-IP APM|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 2859
+    }, {
+      "value" : "F5OS-C",
+      "state" : "idle",
+      "numberOfResults" : 2787
+    }, {
+      "value" : "BIG-IP ASM|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 2745
+    }, {
+      "value" : "F5OS-A",
+      "state" : "idle",
+      "numberOfResults" : 2692
+    }, {
+      "value" : "BIG-IP DNS|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 2647
+    }, {
+      "value" : "BIG-IP Analytics|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 2607
+    }, {
+      "value" : "BIG-IP AFM|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 2577
+    }, {
+      "value" : "BIG-IP DNS|17|17.1|17.1.2",
+      "state" : "idle",
+      "numberOfResults" : 2390
+    }, {
+      "value" : "BIG-IP Analytics|17|17.1|17.1.1",
+      "state" : "idle",
+      "numberOfResults" : 2325
+    }, {
+      "value" : "BIG-IP ASM|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 2303
+    }, {
+      "value" : "BIG-IP DNS|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 2211
+    }, {
+      "value" : "BIG-IP AFM|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 2186
+    }, {
+      "value" : "NGINX Products",
+      "state" : "idle",
+      "numberOfResults" : 2098
+    }, {
+      "value" : "BIG-IP DNS|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 2023
+    }, {
+      "value" : "BIG-IP AFM|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 2004
+    }, {
+      "value" : "BIG-IP Analytics|16|16.1|16.1.5",
+      "state" : "idle",
+      "numberOfResults" : 1992
+    }, {
+      "value" : "BIG-IP Analytics|17|17.1|17.1.2",
+      "state" : "idle",
+      "numberOfResults" : 1748
+    }, {
+      "value" : "BIG-IQ Centralized Management|8|8.4",
+      "state" : "idle",
+      "numberOfResults" : 1632
+    }, {
+      "value" : "F5OS-A|1|1.5|1.5.1",
+      "state" : "idle",
+      "numberOfResults" : 1620
+    }, {
+      "value" : "BIG-IP Analytics|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 1608
+    }, {
+      "value" : "BIG-IQ Centralized Management|8|8.4|8.4.0",
+      "state" : "idle",
+      "numberOfResults" : 1587
+    }, {
+      "value" : "BIG-IP ASM|21",
+      "state" : "idle",
+      "numberOfResults" : 1563
+    }, {
+      "value" : "F5OS-C|1|1.6|1.6.1",
+      "state" : "idle",
+      "numberOfResults" : 1526
+    }, {
+      "value" : "BIG-IP Analytics|16|16.1|16.1.6",
+      "state" : "idle",
+      "numberOfResults" : 1501
+    }, {
+      "value" : "F5OS-C|1|1.6|1.6.2",
+      "state" : "idle",
+      "numberOfResults" : 1463
+    }, {
+      "value" : "F5OS-A|1|1.5|1.5.2",
+      "state" : "idle",
+      "numberOfResults" : 1416
+    }, {
+      "value" : "BIG-IP AFM|21",
+      "state" : "idle",
+      "numberOfResults" : 1380
+    }, {
+      "value" : "BIG-IP ASM|21|21.0",
+      "state" : "idle",
+      "numberOfResults" : 1377
+    }, {
+      "value" : "BIG-IP ASM|21|21.0|21.0.0",
+      "state" : "idle",
+      "numberOfResults" : 1355
+    }, {
+      "value" : "BIG-IP DNS|21",
+      "state" : "idle",
+      "numberOfResults" : 1335
+    }, {
+      "value" : "BIG-IP DNS|21|21.0",
+      "state" : "idle",
+      "numberOfResults" : 1244
+    }, {
+      "value" : "BIG-IP DNS|21|21.0|21.0.0",
+      "state" : "idle",
+      "numberOfResults" : 1220
+    }, {
+      "value" : "F5OS-A|1|1.8",
+      "state" : "idle",
+      "numberOfResults" : 1216
+    }, {
+      "value" : "F5OS-A|1|1.8|1.8.0",
+      "state" : "idle",
+      "numberOfResults" : 1187
+    }, {
+      "value" : "BIG-IP AFM|21|21.0",
+      "state" : "idle",
+      "numberOfResults" : 1177
+    }, {
+      "value" : "BIG-IP AFM|21|21.0|21.0.0",
+      "state" : "idle",
+      "numberOfResults" : 1156
+    }, {
+      "value" : "F5OS-C|1|1.8",
+      "state" : "idle",
+      "numberOfResults" : 1008
+    }, {
+      "value" : "BIG-IP Analytics|21",
+      "state" : "idle",
+      "numberOfResults" : 1007
+    }, {
+      "value" : "F5OS-C|1|1.8|1.8.0",
+      "state" : "idle",
+      "numberOfResults" : 975
+    }, {
+      "value" : "BIG-IP Analytics|21|21.0",
+      "state" : "idle",
+      "numberOfResults" : 959
+    }, {
+      "value" : "BIG-IP Analytics|21|21.0|21.0.0",
+      "state" : "idle",
+      "numberOfResults" : 941
+    }, {
+      "value" : "F5OS-A|1|1.5|1.5.3",
+      "state" : "idle",
+      "numberOfResults" : 830
+    }, {
+      "value" : "BIG-IP SSL Orchestrator",
+      "state" : "idle",
+      "numberOfResults" : 814
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|16",
+      "state" : "idle",
+      "numberOfResults" : 774
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|16|16.1",
+      "state" : "idle",
+      "numberOfResults" : 765
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|16|16.1|16.1.0",
+      "state" : "idle",
+      "numberOfResults" : 765
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|17",
+      "state" : "idle",
+      "numberOfResults" : 764
+    }, {
+      "value" : "F5OS-C|1|1.8|1.8.1",
+      "state" : "idle",
+      "numberOfResults" : 763
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|16|16.1|16.1.1",
+      "state" : "idle",
+      "numberOfResults" : 754
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|16|16.1|16.1.3",
+      "state" : "idle",
+      "numberOfResults" : 741
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|17|17.1",
+      "state" : "idle",
+      "numberOfResults" : 739
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|17|17.1|17.1.0",
+      "state" : "idle",
+      "numberOfResults" : 732
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|16|16.1|16.1.4",
+      "state" : "idle",
+      "numberOfResults" : 697
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|17|17.5",
+      "state" : "idle",
+      "numberOfResults" : 595
+    }, {
+      "value" : "BIG-IP SSL Orchestrator|17|17.5|17.5.0",
+      "state" : "idle",
+      "numberOfResults" : 595
+    }, {
+      "value" : "F5OS-A|1|1.8|1.8.3",
+      "state" : "idle",
+      "numberOfResults" : 554
+    }, {
+      "value" : "F5OS-C|1|1.8|1.8.2",
+      "state" : "idle",
+      "numberOfResults" : 521
+    }, {
+      "value" : "F5OS-A|1|1.5|1.5.4",
+      "state" : "idle",
+      "numberOfResults" : 503
+    }, {
+      "value" : "F5OS-C|1|1.6|1.6.4",
+      "state" : "idle",
+      "numberOfResults" : 496
+    }, {
+      "value" : "BIG-IQ Centralized Management|8|8.4|8.4.1",
+      "state" : "idle",
+      "numberOfResults" : 377
+    } ],
+    "indexScore" : 0.2420029996561081
+  } ],
+  "suggestedFacets" : [ ],
+  "categoryFacets" : [ ],
+  "results" : [ ],
+  "extendedResults" : { }
+}

@@ -1,0 +1,104 @@
+{
+  "id": "bc4915f3f2a30f5cd22ba586e71e86bc9e35eaf71ad7b2cbb8800c6f2c48",
+  "documentType": "Bug Tracker",
+  "title": "Bug ID 753912: UDP flows may not be swept",
+  "link": "https://cdn.f5.com/product/bugtracker/ID753912.html",
+  "modifiedMs": 1769697591000,
+  "modified": "2026-01-29T14:39:51.000Z",
+  "capturedAt": "2026-06-04T01:52:17.945Z",
+  "metadata": {
+    "f5_bug_severity": "2-Critical",
+    "f5_alternate_bug_id": "ID753912",
+    "f5_product_module": [
+      "BIG-IP LTM"
+    ],
+    "f5_version_display_name": [
+      "BIG-IP",
+      "BIG-IP LTM",
+      "AGC"
+    ],
+    "f5_original_published_date": 1547231571000,
+    "f5_product": [
+      "BIG-IP ",
+      " BIG-IP LTM"
+    ],
+    "permanentid": "bc4915f3f2a30f5cd22ba586e71e86bc9e35eaf71ad7b2cbb8800c6f2c48",
+    "f5_alternate_related_kb_id": "44385170",
+    "f5_product_family": [
+      "BIG-IP"
+    ],
+    "f5_updated_published_date": 1769697591000,
+    "f5_related_kb_id": "K44385170",
+    "f5_bug_id": "753912",
+    "f5_created_date": 1547231571000,
+    "f5_bug_state": "Verified",
+    "f5_bug_product_known_affected_version": [
+      "12.1.1 ",
+      "  12.1.1 HF1 ",
+      "  12.1.1 HF2 ",
+      "  12.1.2 ",
+      "  12.1.2 HF1 ",
+      "  12.1.2 HF2 ",
+      "  12.1.3 ",
+      "  12.1.3.1 ",
+      "  12.1.3.2 ",
+      "  12.1.3.3 ",
+      "  12.1.3.4 ",
+      "  12.1.3.5 ",
+      "  12.1.3.6 ",
+      "  12.1.3.7 ",
+      "  12.1.4 ",
+      "  13.0.0 ",
+      "  13.0.0 HF1 ",
+      "  13.0.0 HF2 ",
+      "  13.0.0 HF3 ",
+      "  13.0.1 ",
+      "  13.1.0 ",
+      "  13.1.0.1 ",
+      "  13.1.0.2 ",
+      "  13.1.0.3 ",
+      "  13.1.0.4 ",
+      "  13.1.0.5 ",
+      "  13.1.0.6 ",
+      "  13.1.0.7 ",
+      "  13.1.0.8 ",
+      "  13.1.1 ",
+      "  13.1.1.2 ",
+      "  13.1.1.3 ",
+      "  13.1.1.4 ",
+      "  14.0.0 ",
+      "  14.0.0.1 ",
+      "  14.0.0.2 ",
+      "  14.0.0.3 ",
+      "  14.0.0.4 ",
+      "  14.1.0 ",
+      "  14.1.0.1 ",
+      "  14.1.0.2 ",
+      "  14.1.0.3 ",
+      "  14.1.0.5"
+    ],
+    "f5_title": "UDP flows may not be swept",
+    "f5_fix_category": "Local Traffic Manager",
+    "f5_bug_product_fix_version": [
+      "15.0.0 ",
+      "  14.1.0.6 ",
+      "  14.0.0.5 ",
+      "  13.1.1.5 ",
+      "  12.1.4.1"
+    ],
+    "excerpt": "Related Article: K44385170 ... Symptoms ... Some UDP connection flows do not show in connection table but do show up in stats. ... This might occur with datagram_lb mode is enabled on the UDP profi..."
+  },
+  "content": {
+    "sections": {
+      "Symptoms": "Some UDP connection flows do not show in connection table but do show up in stats. This might occur with datagram_lb mode is enabled on the UDP profile under heavy load.",
+      "Impact": "Increased memory utilization of TMM.",
+      "Conditions": "-- UDP profile with datagram_lb mode enabled. -- System under heavy load.",
+      "Workaround": "None.",
+      "Fix Information": "The system now correctly manages all expired flows.",
+      "Guides & references": "[**K10134038: F5 Bug Tracker Filter Names and Tips**](https://my.f5.com/manage/s/article/K10134038)"
+    },
+    "body_text": "## Symptoms\n\nSome UDP connection flows do not show in connection table but do show up in stats. This might occur with datagram_lb mode is enabled on the UDP profile under heavy load.\n\n## Impact\n\nIncreased memory utilization of TMM.\n\n## Conditions\n\n-- UDP profile with datagram_lb mode enabled. -- System under heavy load.\n\n## Workaround\n\nNone.\n\n## Fix Information\n\nThe system now correctly manages all expired flows.\n\n## Guides & references\n\n[**K10134038: F5 Bug Tracker Filter Names and Tips**](https://my.f5.com/manage/s/article/K10134038)",
+    "bodySource": "https://cdn.f5.com/product/bugtracker/ID753912.html",
+    "fetchedAt": "2026-06-04T02:20:32.833Z"
+  }
+}

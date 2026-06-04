@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="title" content="Access Profile Rejects HTTP Requests with Unencoded characters in URI"/>
+    <link rel="icon" type="image/x-icon" href="https://cdn.f5.com/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.f5.com/websites/support/resources/images/favicons/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.f5.com/websites/support/resources/images/favicons/favicon-16x16.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.f5.com/websites/support/resources/images/favicons/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="150x150" href="https://cdn.f5.com/websites/support/resources/images/favicons/mstile-150x150.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="https://cdn.f5.com/websites/support/resources/images/favicons/android-chrome-192x192.png"/>
+    <link rel="icon" type="image/png" sizes="512x512" href="https://cdn.f5.com/websites/support/resources/images/favicons/android-chrome-512x512.png"/>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="kb_doc_type" content="Bug Tracker"/>
+    <meta name="robots" content="noarchive"/>
+    <meta name="original_date" content="2026-06-02 01:38:19"/>
+    <meta name="updated_date" content="2026-06-04 01:38:25"/>
+    <meta name="product" content="BIG-IP"/>
+                <meta name="product" content="BIG-IP APM"/>                <meta name="product" content="BIG-IP Install/Upgrade"/>    <meta name="product_family" content="BIG-IP"/>
+<meta name="product_module" content="BIG-IP APM"/><meta name="product_module" content="BIG-IP Install/Upgrade"/><meta name="BIG-IP" content="17.1.3.2, 17.5.1.6, 21.0.0, 21.0.0.1"/>
+<meta name="BIG-IP APM" content="17.1.3.2, 17.5.1.6, 21.0.0, 21.0.0.1"/><meta name="BIG-IP Install/Upgrade" content="17.1.3.2, 17.5.1.6, 21.0.0, 21.0.0.1"/>
+
+
+    <meta name="bug_id" content="2298245"/>
+    <meta name="alternate_bug_id" content="ID2298245"/>
+    <meta name="severity" content="3-Major"/>
+    <meta name="state" content="Verified"/>
+<meta name="product_known_affected_versions" content="17.1.3.2, 17.5.1.6, 21.0.0, 21.0.0.1"/><meta name="fix_category" content="Access Policy Manager"/>    <meta name="archived" content="Archived documents excluded"/>
+
+    <title>Bug ID 2298245</title>
+    <link href="https://cdn.f5.com/product/bugtracker/css/bug-tracker-05.05.23.css?v=05052023" rel="stylesheet" type="text/css">
+
+    <link rel="canonical" href="https://cdn.f5.com/product/bugtracker/ID2298245.html" />
+
+
+    <script>
+        const config = {
+            apisUrlRoot: "https://internal.apis.f5.com",
+            k: "shFQso8lWffcyoM78NSOJmF8J3zMhcEu"
+        };
+    </script>
+
+    <script src="https://cdn.f5.com/product/bugtracker/js/analytics-06.20.23.js"></script>
+
+<script async="async" src="https://consent.trustarc.com/notice?domain=f5.com&c=teconsent&js=nj&noticeType=bb&text=true&gtm=1" crossorigin=""></script>
+<script async=“async” src="https://resources.digital-cloud-west.medallia.com/wdcwest/102748/onsite/embed.js"></script>
+<script async=“async” src="https://mktg.tags.f5.com/basic/prod/utag.sync.js"></script>
+</head>
+
+<body>
+<!-- Tealium Universal Tag -->
+<script type="text/javascript">
+    (function(a,b,c,d) {
+        a='https://mktg.tags.f5.com/basic/prod/utag.js';
+        b=document;c='script';d=b.createElement(c);d.src=a;
+        d.type='text/java'+c;d.async=true;
+        a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a)})();
+</script>
+<div class="header">
+    <div class="main-row">
+        <div class="container">
+            <div class="brand">
+                <a href="https://www.f5.com">
+                    <img src="https://cdn.f5.com/digital-platforms/images/logo.svg" alt="f5 Networks" height="42" width="47" class="logo">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+    <main>
+    <div class="bug-template">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="bread-crumbs">
+                        <li>
+                            <a href="https://my.f5.com/manage/s/bug-tracker">Bug Tracker</a>
+                        </li>
+                        <li>
+                            <span>ID 2298245</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 middlecontent">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <h2 class="bug-title">Bug ID 2298245: Access Profile Rejects HTTP Requests with Unencoded characters in URI</h2>
+                            <p class="last-modified">
+                                <span class="standard-text standard-field">Last Modified: </span>Jun 04, 2026
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <section class="container-fluid well">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p>
+                                            <span class="standard-text">Affected Product(s):</span><br/>
+                                            <span>BIG-IP <span style="display:inline">APM, Install/Upgrade</span><span style="display:none">(all modules)</span></span>
+                                        </p>
+                                    </div>
+<div class="col-sm-12">
+                                        <p>
+                                            <span class="standard-text">Known Affected Versions:</span><br/>
+                                            <span>17.1.3.2, 17.5.1.6, 21.0.0, 21.0.0.1</span>
+                                        </p>
+                                    </div>                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="date-container">
+                                <span class="standard-text standard-field">Opened: </span>May 22, 2026<br/>
+
+                                <span>
+                                    <p><span class="standard-text standard-field">Severity: </span>3-Major</p>
+                                        </p>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 bug-content">
+                            <h4>Symptoms</h4>
+                            <p>After upgrading to BIG-IP 17.5.1.6, all users fail with certain requests when an Access Profile is applied to the virtual server. Specifically, SharePoint edits or updates fail, and any request containing curly braces ({ or }) results in the error: &#34;Access encountered an error (Operation not supported).&#34; The issue does not occur when the Access Profile is removed or with standard bracket characters (e.g., ( or )).</p>
+
+                            <h4>Impact</h4>
+                            <p>Significant impact, especially for environments using Microsoft SharePoint/IIS and browsers like Chrome/Edge that send non-encoded curly braces</p>
+
+                            <h4>Conditions</h4>
+                            <p>Requests contain curly braces ({ or } or |) in the URI</p>
+
+                            <h4>Workaround</h4>
+                            <p>URI encoding of curly braces ({ - %7B, } - %7D) is accepted with iRule.</p>
+
+                            <h4>Fix Information</h4>
+                            <p>None</p>
+
+                            <div style="display:none">
+                            <h4>Behavior Change</h4>
+                            <p></p>
+                            </div>
+
+                            <h4>Guides &amp; references</h4>
+                            <p><a href="https://my.f5.com/manage/s/article/K10134038"><b>K10134038: F5 Bug Tracker Filter Names and Tips</b></a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <script>rodan.sendAnalytics("2298245")</script>
+
+<footer>
+    <div class="footer">
+        <div class="container">
+            <div class="col-md-12">
+                <div class="row top-row-container">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="contact-container">
+                            <h4 class="contact-header">Have a question?</h4>
+                            <div>
+                                <span class="spacer">|</span><a href="https://www.f5.com/company/contact">Support and Sales ></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="social-container">
+                            <h4 class="social-link-header">Follow Us</h4>
+                            <div>
+                                <ul class="social-links">
+                                    <li><a href="https://twitter.com/f5" aria-label="Twitter" target="_blank">
+                                        <img src="https://cdn.f5.com/websites/support/resources/images/icon-twitter.png" alt="Twitter" />
+                                    </a>
+                                    </li>
+                                    <li><a href="https://www.linkedin.com/company/f5" aria-label="LinkedIn" target="_blank">
+                                        <img src="https://cdn.f5.com/websites/support/resources/images/icon-linked-in.png" alt="LinkedIn" />
+                                    </a>
+                                    </li>
+                                    <li><a href="https://www.facebook.com/f5incorporated" aria-label="Facebook" target="_blank">
+                                        <img src="https://cdn.f5.com/websites/support/resources/images/icon-facebook.png" alt="Facebook" />
+                                    </a>
+                                    </li>
+                                    <li><a href="https://www.youtube.com/user/f5networksinc" aria-label="YouTube" target="_blank">
+                                        <img src="https://cdn.f5.com/websites/support/resources/images/icon-you-tube.png" alt="YouTube" />
+                                    </a>
+                                    </li>
+                                    <li><a href="https://community.f5.com" aria-label="DevCentral" target="_blank">
+                                        <img src="https://cdn.f5.com/websites/support/resources/images/icon-dc_social.png" alt="DevCentral" />
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <hr class="footer-divider">
+            </div>
+            <div class="col-md-12">
+                <div class="row footer-links">
+                    <div class="col-sm-3 col-md-3">
+                        <h4>About F5</h4>
+                        <ul>
+                            <li><a href="https://www.f5.com/company" data-link-type='footer'>Corporate Information</a>
+                            </li>
+                            <li><a href="https://www.f5.com/company/news" data-link-type='footer'>Newsroom</a>
+                            </li>
+                            <li><a href="https://www.f5.com/company/investor-relations" data-link-type='footer'>Investor Relations</a>
+                            </li>
+                            <li><a href="https://f5.com/careers" data-link-type='footer'>Careers</a>
+                            </li>
+                            <li><a href="https://www.f5.com/company/contact" data-link-type='footer'>Contact Information</a>
+                            </li>
+                            <li><a href="https://interact.f5.com/email-preference-center.html?utm_source=optin-f5footer" data-link-type='footer'>Communication Preferences</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <h4>Education</h4>
+                        <ul>
+                            <li><a href="https://www.f5.com/services/training" data-link-type='footer'>Training</a>
+                            </li>
+                            <li><a href="https://www.f5.com/services/certification" data-link-type='footer'>Certification</a>
+                            </li>
+                            <li><a href="https://account.f5.com/learnf5" data-link-type='footer'>LearnF5</a>
+                            </li>
+                            <li><a href="https://f5.com/education/training/free-courses" data-link-type='footer'>Free Online Training</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <h4>F5 sites</h4>
+                        <ul>
+                            <li><a href="https://www.f5.com" data-link-type='footer'>F5.com</a>
+                            </li>
+                            <li><a href="https://community.f5.com" data-link-type='footer'>DevCentral</a>
+                            </li>
+                            <li><a href="https://my.f5.com" data-link-type='footer'>Support Portal</a>
+                            </li>
+                            <li><a href="https://partnercentral.f5.com" data-link-type='footer'>Partner Central</a>
+                            </li>
+                            <li><a href="https://www.f5.com/labs" data-link-type='footer'>F5 Labs</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <h4>Support Tasks</h4>
+                        <ul>
+                            <li><a href="https://www.f5.com/services/support/support-offerings/support-policies" data-link-type='footer'>Read Support Policies</a>
+                            </li>
+                            <li><a href="https://my.f5.com/manage/s/contactsupport" data-link-type='footer'>Create Service Request</a>
+                            </li>
+                            <li><a onclick="KAMPYLE_ONSITE_SDK.showForm(11005)">Leave feedback [+]</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="copyright-container">
+                    <p class="copyright">
+                        &copy; F5, Inc. All rights reserved.
+                    </p>
+                    <p>
+                    <span class="policy-links">
+                        <a href="https://www.f5.com/company/policies" data-link-type='footer'>Policies</a> |
+                        <a href="https://www.f5.com/company/policies/privacy-policy" data-link-type='footer'>Privacy</a> |
+                        <a href="https://www.f5.com/company/policies/trademarks" data-link-type='footer'>Trademarks</a> |
+                        <a href="https://www.f5.com/company/policies/F5-California-privacy-summary" data-link-type='footer'>California Privacy</a> |
+                        <a href="https://www.f5.com/company/policies/privacy-notice#no-sell" data-link-type='footer'>Do Not Sell My Personal Information</a> |
+                        <span id="teconsent"></span>
+                    </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="consent_blackbar" style="position:fixed;top:0px;width:100%"></div>
+</footer></body>
+</html>

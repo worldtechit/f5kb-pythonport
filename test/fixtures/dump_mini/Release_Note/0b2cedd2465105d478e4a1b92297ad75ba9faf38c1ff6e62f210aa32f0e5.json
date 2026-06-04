@@ -1,0 +1,59 @@
+{
+  "id": "0b2cedd2465105d478e4a1b92297ad75ba9faf38c1ff6e62f210aa32f0e5",
+  "documentType": "Release Note",
+  "title": "BIG-IP Edge Client for iOS 1.0.3",
+  "link": "https://techdocs.f5.com/kb/en-us/products/big-ip_apm/releasenotes/related/relnote-ios-1-0-3.html",
+  "modifiedMs": 1540944000000,
+  "modified": "2018-10-31T00:00:00.000Z",
+  "capturedAt": "2026-06-04T02:18:33.355Z",
+  "metadata": {
+    "f5_isparentpage": "false",
+    "f5_product": [
+      "BIG-IP APM ",
+      " FirePass"
+    ],
+    "f5_version": [
+      "BIG-IP APM",
+      "BIG-IP APM|11",
+      "BIG-IP APM|11|11.5",
+      "BIG-IP APM|11|11.5|11.5.1",
+      "BIG-IP APM|11|11.2",
+      "BIG-IP APM|11|11.2|11.2.1",
+      "FirePass",
+      "FirePass|7",
+      "FirePass|7|7.0",
+      "FirePass|7|7.0|7.0.0",
+      "FirePass|6",
+      "FirePass|6|6.1",
+      "FirePass|6|6.1|6.1.0"
+    ],
+    "f5_source_name": "TechComm",
+    "concepts": "Edge Client ; release ; Apple ; new configuration ; user guide ; server ; enhancements ; address specified ; Outbound graphs ; tunnel crashes ; iPad screen ; certificate authentication ; longer sends ; iTunes store",
+    "permanentid": "0b2cedd2465105d478e4a1b92297ad75ba9faf38c1ff6e62f210aa32f0e5",
+    "f5_document_type": [
+      "Release Note"
+    ],
+    "f5_updated_published_date": 1540944000000,
+    "filename": "relnote-ios-1-0-3.html",
+    "sourcetype": "Sitemap",
+    "f5_created_date": 1540944000000,
+    "clickableuri": "https://techdocs.f5.com/kb/en-us/products/big-ip_apm/releasenotes/related/relnote-ios-1-0-3.html",
+    "f5_title": "BIG-IP Edge Client for iOS 1.0.3",
+    "f5_archived": "Archived Documents excluded",
+    "wordcount": 206,
+    "source": "TechComm",
+    "sitemaplastmodified": 1540944000000,
+    "f5_is_new_kb_article": "false",
+    "f5_lifecycle": "release",
+    "language": [
+      "English"
+    ],
+    "sitemapparenturl": "https://techdocs.f5.com/kb/sitemap.xml",
+    "excerpt": "On February 13, 2012, Apple posted the release of the iOS Edge Client version 1.0.3. ... The iOS Edge Client version 1.0.3 includes the fixes and feature enhancements listed. ... With the release o..."
+  },
+  "content": {
+    "body_text": "## User documentation for this release\n\n For a comprehensive list of documentation that is relevant to this release, refer to the following pages:\n\n  - [FirePass Documentation](https://techdocs.f5.com/kb/en-us/products/firepass.html)\n - [BIG-IP Access Policy Manager Documentation](https://techdocs.f5.com/kb/en-us/products/big-ip_apm.html)\n\n ## Features and fixes in 1.0.3\n\n This release contains the following enhancements.\n\n ID Number | Description\n\n373965 | You can now add configurations to the client using the URI scheme. See the online help for more details.\n\n ## Fixes in 1.0.3\n\n ID Number | Description\n\n372320 | The iOS Edge Client now honors redirects during logon.\n375346 | The client no longer sends CN and username for the password, when using with client certificate authentication.\n376256 | The Edge Client user guide now appears at the correct size on the iPad screen.\n376258, 376261 | The Edge Client user guide now includes the correct information in some previously empty sections.\n376264 | The Edge Client now includes the correct copyright date.\n376278 | The Edge Client now correctly stops the session on the server.\n376282 | Some VPN tunnel crashes and errors have been fixed.\n376435 | The Inbound and Outbound graphs now appear correctly after restoring the Edge Client from the background.\n376481 | Previously, a URL scheme with only server=server_address specified could not create a new configuration. This command now creates a new configuration.\n\n ## Contacting F5 Networks\n\n Phone: | (206) 272-6888\nFax: | (206) 272-6802\nWeb: | http://support.f5.com\nEmail: | support@f5.com\n\n For additional information, please visit [http://www.f5.com](http://www.f5.com/).\n\n ## Legal notices\n\n Copyright ©2012, F5 Networks, Inc. All rights reserved.\n\n For a current list of F5's trademarks and service marks, click [here](http://www.f5.com/services/customer-support/guidelines-policies/trademarks.html). All other product and company names herein may be trademarks of their respective owners.",
+    "bodySource": "https://techdocs.f5.com/kb/en-us/products/big-ip_apm/releasenotes/related/relnote-ios-1-0-3.html",
+    "fetchedAt": "2026-06-04T03:29:19.299Z"
+  }
+}

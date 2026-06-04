@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<head>
+  
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-PPZPQ6');</script>
+  <!-- End Google Tag Manager -->
+  <title>F5 BIG-IP Next for Kubernetes</title>
+  
+
+  <meta charset="utf-8">
+  <!-- Twitter Bootstrap viewport setting -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- F5 metadata -->
+  <meta name="title" content="F5 BIG-IP Next for Kubernetes" />
+  <meta name="product" content="BIG-IP Next for Kubernetes" />
+  <meta name="version" content="2.3" />
+  <meta name="updated_date" content="False" />
+  <meta name="archived" content="Archived documents excluded" />
+  <meta name="doc_type" content="Manual" />
+  <meta name="lifecycle" content="release" />
+  <meta name="BIG-IP Next for Kubernetes" content="2.3" />
+
+  
+  
+
+  
+  <link href="https://cdn.f5.com/favicon.ico" rel="icon">
+
+</head>
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F5 BIG-IP Next for Kubernetes &#8212; BIG-IP Next for Kubernetes 2.3</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/css/f5.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/css/f5-theme.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/css/CoveoFullSearch.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/21fb8a09c3.css" type="text/css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overview" href="overview.html" /> 
+  </head><body>
+<div id="clouddocs-header"></div>
+
+    <div id="sidebar" class="section-nav">
+      <!-- javascript code to maintain the sidebar scroll positon when loaded -->
+      <script type="text/javascript">
+        $(function () {
+          if (localStorage.tempScrollTop) {
+            $('#sidebar').scrollTop(localStorage.tempScrollTop);
+          }
+        });
+        $('#sidebar').on("scroll", function () {
+          localStorage.setItem("tempScrollTop", $('#sidebar').scrollTop());
+        });
+      </script>
+      
+      <!--  version selector ------------------>
+      <div id="version_selector_wrapper">
+      </div>
+      <nav class="nav-sidebartoc">
+
+        
+
+        
+        <div class="dropdown">
+          <button class="dropbtn">BNK 2.3 (latest)<span class="downarrow"> &#8250;</span></button>
+          <div class="dropdown-content">
+            
+            <a href=/bigip-next-for-kubernetes/2.2/>BNK 2.2</a>
+            
+            <a href=/bigip-next-for-kubernetes/2.1.1/>BNK 2.1.1</a>
+            
+            <a href=/bigip-next-for-kubernetes/2.1.0/>BNK 2.1.0</a>
+            
+            <a href=/bigip-next-for-kubernetes/2.0.0/>BNK 2.0.0</a>
+            
+          </div>
+        </div>
+        <!DOCTYPE html>
+<div id="searchbox" role="search">
+  <form class="search" action="search.html" method="get">
+    <input type="text" class="search" name="q" placeholder=" Search..." />
+    <button type="submit" class="btn btn-info navbar-btn"><i class="fa fa-search"></i></button>
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        <hr>
+        <span class="nav-sidebartoc">
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/index.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-guide/index.html">Administration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-tos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability/index.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-resource-definitions/index.html">Custom Resource Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use-cases/index.html">Use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases/index.html">Releases</a></li>
+</ul>
+
+        </span><!DOCTYPE html>
+<!-- Use this file to add extra links to the bottom of the ToC sidebar -->
+<hr>
+<span class="nav-sidebartoc">
+  <!-- insert content here -->
+</span>
+      </nav>
+    </div>
+    <div id="right-sidebar">
+      <h7 style="font-weight:normal">On this page:</h7>
+      <nav class="nav-sidebartoc">
+        <span class="nav-sidebartoc">
+          <ul>
+<li><a class="reference internal" href="#">F5 BIG-IP Next for Kubernetes</a><ul>
+<li><a class="reference internal" href="#about-this-website">About this website</a></li>
+</ul>
+</li>
+</ul>
+
+        </span>
+      </nav>
+    </div>
+
+
+
+
+
+    
+
+    <div class="main active" id="content" >
+
+      <article class="docs-container site-article-inner">
+        <!DOCTYPE html>
+<nav class="site-breadcrumb-nav site-nav">
+  <ul class="site-breadcrumb-list">
+    <li class="breadcrumb-item"><button type="button" id="sidebarCollapse"
+        class="btn btn-info navbar-btn site-hidden"><i class="fa fa-align-justify"></i></button>&#x20 <a
+        href="/">CloudDocs Home</a> &gt; <a href="#">BIG-IP Next for Kubernetes </a> &gt; F5 BIG-IP Next for Kubernetes</li>
+  </ul>
+</nav>
+        
+
+
+        <!--a title="Export PDF" id="export-pdf" class="btn btn btn-link pull-right">View PDF</a-->
+        <button type="button" id="export-pdf" class="btn btn-link right">PDF</button>
+
+
+        
+        
+        <div class="sidebar" id="version-warning" style="display: none;">
+          <p class="first sidebar-title">
+            <span class="icon fa fa-info-circle fa-lg"></span> Version notice:
+          </p>
+          <p class="last" id="currentVersion"></p>
+        </div>
+
+
+        <div role="main">
+          
+  <div class="tex2jax_ignore mathjax_ignore section" id="f5-big-ip-next-for-kubernetes">
+<h1>F5 BIG-IP Next for Kubernetes<a class="headerlink" href="#f5-big-ip-next-for-kubernetes" title="Permalink to this heading">¶</a></h1>
+<p>F5 BIG-IP Next for Kubernetes (BNK) brings critical network capabilities to a Kubernetes environment to meet the demands of service provider networks. BIG-IP Next for Kubernetes is deployed as a Kubernetes resource at the North/South gateway, becoming part of the Kubernetes orchestration environment. F5 Cloud Native Network Functions (CNFs) extend F5 BIG-IP solutions into the container ecosystem.</p>
+<p>BIG-IP Next for Kubernetes is designed to be Kubernetes‑native. You can deploy it in IaaS environments by using Helm or the F5 Lifecycle Operator (FLO), and manage it with standard tools including Custom Resource Definitions (CRDs) and the Cloud Native Computing Foundation (CNCF) Gateway API. Designed following the <a class="reference external" href="https://kubernetes.io/docs/concepts/extend-kubernetes/operator/">Kubernetes Operator pattern</a>, FLO manages BNK installation, upgrades, and rollbacks.</p>
+<p>Visit the <a class="reference internal" href="overview.html"><span class="std std-doc">Overview</span></a> page to learn more about BIG-IP Next for Kubernetes, its deployment models, and supported use cases.</p>
+<div class="section" id="about-this-website">
+<h2>About this website<a class="headerlink" href="#about-this-website" title="Permalink to this heading">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Documentation for the BIG-IP Next for Kubernetes Service Proxy and BIG-IP Cloud-Native Network functions is being consolidated here.</p>
+</div>
+<p>You can find the following documentation in this location:</p>
+<ul class="simple">
+<li><p>Consolidated installation instructions for BIG-IP Next for Kubernetes (refer to <a class="reference internal" href="install/index.html"><span class="std std-doc">Install</span></a>)</p></li>
+<li><p>Reference material, task instructions, and use cases for BIG-IP Next for Kubernetes.</p></li>
+</ul>
+<p>You can find reference material, task instructions, and use cases for F5 Cloud-Native Network Functions (CNFs) at the following locations:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://clouddocs.f5.com/cnfs/aon/latest/">CNFs on AON</a></p></li>
+<li><p><a class="reference external" href="https://clouddocs.f5.com/cnfs/openshift/latest/">CNFs on OpenShift</a></p></li>
+<li><p><a class="reference external" href="https://clouddocs.f5.com/cnfs/robin/latest/">CNFs on Robin</a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+        </div>
+        
+        
+        
+        
+      </article>
+    </div>
+
+  </div>
+
+  
+<div id="clouddocs-footer"></div>
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="_static/js/index.js"></script>
+
+<script src="_static/js/jquery.appear.js"></script>
+<script src="_static/js/printThis.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/clouddocs.js"></script>
+<script src="/assets/js/CoveoJsSearch.Lazy.min.js"></script>
+  </body>
+</html>

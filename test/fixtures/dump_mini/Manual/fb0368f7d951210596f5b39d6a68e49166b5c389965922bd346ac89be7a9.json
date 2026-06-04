@@ -1,0 +1,68 @@
+{
+  "id": "fb0368f7d951210596f5b39d6a68e49166b5c389965922bd346ac89be7a9",
+  "documentType": "Manual",
+  "title": "Detecting Dynamic DoS Attacks,Detecting Dynamic DoS Attacks",
+  "link": "https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-dynamic-dos-attacks.html",
+  "modifiedMs": 1745452800000,
+  "modified": "2025-04-24T00:00:00.000Z",
+  "capturedAt": "2026-06-04T02:07:12.141Z",
+  "metadata": {
+    "f5_isparentpage": "false",
+    "f5_product": [
+      "BIG-IP AFM"
+    ],
+    "f5_version": [
+      "BIG-IP AFM",
+      "BIG-IP AFM|17",
+      "BIG-IP AFM|17|17.0",
+      "BIG-IP AFM|17|17.0|17.0.0",
+      "BIG-IP AFM|16",
+      "BIG-IP AFM|16|16.1",
+      "BIG-IP AFM|16|16.1|16.1.3",
+      "BIG-IP AFM|16|16.1|16.1.2",
+      "BIG-IP AFM|16|16.1|16.1.1",
+      "BIG-IP AFM|16|16.1|16.1.0",
+      "BIG-IP AFM|16|16.0",
+      "BIG-IP AFM|16|16.0|16.0.1",
+      "BIG-IP AFM|16|16.0|16.0.0",
+      "BIG-IP AFM|15",
+      "BIG-IP AFM|15|15.1",
+      "BIG-IP AFM|15|15.1|15.1.7",
+      "BIG-IP AFM|15|15.1|15.1.6",
+      "BIG-IP AFM|15|15.1|15.1.5",
+      "BIG-IP AFM|15|15.1|15.1.4",
+      "BIG-IP AFM|15|15.1|15.1.3",
+      "BIG-IP AFM|15|15.1|15.1.2",
+      "BIG-IP AFM|15|15.1|15.1.1",
+      "BIG-IP AFM|15|15.1|15.1.0"
+    ],
+    "f5_source_name": "TechComm",
+    "concepts": "dynamic signatures ; protection profile ; IP Intelligence ; properties pane ; packets ; mitigation ; network ; virtual server ; bottom of the screen ; configuration ; redirection ; anomalous activity ; Security tab",
+    "permanentid": "fb0368f7d951210596f5b39d6a68e49166b5c389965922bd346ac89be7a9",
+    "f5_document_type": [
+      "Manual"
+    ],
+    "filename": "detecting-dynamic-dos-attacks.html",
+    "sourcetype": "Sitemap",
+    "f5_created_date": 1745452800000,
+    "clickableuri": "https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-dynamic-dos-attacks.html",
+    "f5_title": "Detecting Dynamic DoS Attacks,Detecting Dynamic DoS Attacks",
+    "f5_archived": "Archived Documents excluded",
+    "wordcount": 314,
+    "source": "TechComm",
+    "sitemaplastmodified": 1745452800000,
+    "f5_is_new_kb_article": "true",
+    "language": [
+      "English"
+    ],
+    "sitemapparenturl": "https://techdocs.f5.com/en-us/sitemap.xml",
+    "printableUri": "https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-dynamic-dos-attacks.html",
+    "uniqueId": "42.37916$https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-dynamic-dos-attacks.html",
+    "excerpt": "is a DoS attack that doesn't fit predefined DoS vector criteria. ... Using dynamic signature enforcement, such attacks can be detected and mitigated automatically by AFM. ... Dynamic signature enfo..."
+  },
+  "content": {
+    "body_text": "# Detecting Dynamic DoS Attacks\n\n ## Overview: Detecting Dynamic DoS Attacks\n\n A dynamic DoS attack\n\n is a DoS attack that doesn't fit predefined DoS vector criteria. Using dynamic signature enforcement, such attacks can be detected and mitigated automatically by AFM. Dynamic signature enforcement creates signatures for attacks based on changing traffic patterns over time. When an attack is detected, a signature is created and added to a list of dynamic signatures. All packets are then checked against the dynamic signature, and mitigated according to internal logic, and settings you can specify. When packet processing on the system falls back to normal levels, the signature no longer appears as an attack, and is removed from the dynamic signature list.\n\n## Enforcement modes\n\n The following modes are available for dynamic signature enforcement. Disabled\n\nIn this mode, no dynamic signature enforcement occurs.\n\nLearn-Only\n\nIn this mode, the system establishes a baseline for packet processing on AFM. Learn-Only mode detects traffic patterns, establishes a baseline, and detects anomalies, but does not generate logs or dynamic signatures. Attacks are not mitigated in Learn-Only mode.\n\nEnabled\n\nIn this mode, the system monitors traffic, compares traffic changes over time, and detects anomalies. Attacks are logged, dynamic signatures are generated, packets are compared to the dynamic signature, and attacks are mitigated. When an attack ceases, the dynamic signature is removed from the list.\n\n## Mitigation Sensitivity\n\n Mitigation sensitivity establishes how aggressively the system mitigates dynamic DoS attacks. You can set this to None\n\n, Low\n\n, Medium\n\n, or High\n\n. By default, mitigation sensitivity is set to None\n\n. Low\n\n sensitivity is the least aggressive, at the risk of allowing more attack packets through. High\n\n drops packets more aggressively, even when attack confidence is lower.\n\n## Redirection/Scrubbing\n\n You can configure redirection and scrubbing to handle mitigation of dynamic DoS signatures with an IP Intelligence category. The following parameters can be configured for redirection and scrubbing.\n\nScrubbing Category\n\nYou can select an IP Intelligence category for IP addresses blocked by dynamic DoS signatures. By default, the IP intelligence category for scrubbed IP addresses is attacked_ips\n\n.\n\nScrubbing Advertisement Time\n\nThis is the duration for which a mitigated IP is advertised to the IP Intelligence mechanism for scrubbing. The default is 300\n\n seconds.\n\n## Start Relearning\n\n The Start Relearning\n\n option clears historical data, thresholds and signatures for the dynamic DoS detection system. The Dynamic DoS signature baseline is re-established. Relearning occurs for a period of 20 minutes. You can relearn dynamic signatures at the device level or at the protected object level (on the virtual server Security tab).\n\n ## Detect global dynamic DoS attacks\n\n You can enable dynamic signatures at the system level to dynamically detect and mitigate DoS attacks. Dynamic signatures can apply to Network or DNS device protection.\n\n- On the Main tab, click Security DoS Protection Device Protection . The DoS Device Protection screen opens.\n- At the bottom of the screen, select the Edit icon (pencil) on the right side of the Network or DNS areas. The Network or DNS properties pane opens on the right.\n- In the Properties pane, for Dynamic Signature Enforcement , from the list, select Enabled . At first, you may want to select Learn Only to track dynamic signatures, without enforcing any thresholds or limits. Once you see that the system is accurately detecting attacks, then select Enabled .\n- From the Mitigation Sensitivity list, select the sensitivity level for dropping packets. - Select None to generate and log dynamic signatures, without dropping packets. - To drop packets, set the mitigation level from Low to High . A setting of Low is least aggressive, but will also trigger fewer false positives. A setting of High is most aggressive, and the system may drop more false positive packets.\n- For Network vectors only: To have dynamic signatures handled by an IP Intelligence category, from the Redirection/Scrubbing list, select Enabled .\n- If using Redirection/Scrubbing to redirect traffic identified by dynamic signatures, from the Scrubbing Category list, select the IP Intelligence category to assign to the scrubbed packets.\n- In the Scrubbing Advertisement Time field, specify the amount of time during which an IP address remains in the blacklist category (default is 300 seconds).\n- Click Commit Changes to System at the top of the page to save the changes. The configuration is updated, and the Device Protection screen opens again.\n\nYou have enabled dynamic signatures at the system level. The system monitors traffic, detects anomalies, and generates dynamic signatures are generated, packets are compared to the dynamic signature, and attacks are mitigated. When an attack ceases, the dynamic signature is removed from the list.\n\n ## Detect dynamic DoS network attacks with a protection profile\n\n You enable dynamic DoS signatures on a protection profile to detect dynamic DoS attacks at a more granular level than the system level. In this case, the protected objects associated with the protection profile use dynamic signature enforcement. Dynamic signatures can apply to Network or DNS device protection.\n\n- On the Main tab, click Security DoS Protection Protection Profiles . The Protection Profiles list screen opens.\n- Click the name of an existing protection profile (or create a new one). The Protection Profile Properties screen for that profile opens.\n- At the bottom of the screen, select the Edit icon (pencil) on the right side of the Network or DNS areas. The Network or DNS properties pane opens on the right.\n- In the Properties pane, for Dynamic Signature Enforcement , from the list, select Enabled . At first, you may want to select Learn Only to track dynamic signatures, without enforcing any thresholds or limits. Once you see that the system is accurately detecting attacks, then select Enabled .\n- From the Mitigation Sensitivity list, select the sensitivity level for dropping packets. - Select None to generate and log dynamic signatures, without dropping packets. - To drop packets, set the mitigation level from Low to High . A setting of Low is least aggressive, but will also trigger fewer false positives. A setting of High is most aggressive, and the system may drop more false positive packets.\n- For Network vectors only: To have dynamic signatures handled by an IP Intelligence category, from the Redirection/Scrubbing list, select Enabled .\n- In the Scrubbing Advertisement Time field, specify the amount of time during which an IP address remains in the blacklist category (default is 300 seconds).\n- Click Commit Changes to System at the top of the page to save the changes. The Protection Profile is updated.\n\nYou have configured the protection profile to detect dynamic DoS vectors and mitigate such attacks.\n\nNext, you associate the protection profile with one or more protected objects to enable dynamic signature enforcement on those protected objects.\n\n ## Apply a protection profile to a protected object\n\n You must add the DoS protection profile to the protected object to provide enhanced protection from DoS attacks, and track anomalous activity on the BIG-IP system.\n\n- On the Main tab, click Security DoS Protection Protected Objects .\n- Click the name of the protected object (virtual server) to which you want to assign a protection profile. The Properties pane opens on the right.\n- In the Protection Settings area, from the Protection Profile list, select the name of the protection profile to assign. Ensure a Service Profile is selected to enable the protected object to process application traffic.\n- Click Save .\n\nThe DoS protection profile is associated with the protected object and DoS protection is now enabled.\n\n ## View and persist dynamic signatures\n\n The BIG-IP AFM system must have completed the traffic learning period, two hours by default, and detected one or more traffic pattern anomalies in order to create a dynamic signature.\n\nDynamic signatures can not be modified and do not remain in the configuration by default. You can view dynamic signature details and if the signature is considered useful, you can make it permanent., or persistent in the configuration. Persistent signatures can be also be modified.\n\n- On the Main tab, click Security DoS Protection Signatures .\n- Click Dynamic to expand the list of Dynamic Signatures\n- Review the relevant signature statistics such as Creation Info and Threshold EPS .\n- Click the name of the signature to view the signature Predicate List .\n- To make the dynamic signature a permanent or a Persistent signature, check the box next to the signature and click Make Persistent .\n- To modify the signature, click Persistent .\n- Click the name of the signature.\n- The Properties page will appear to the right, allowing you to modify the signature.",
+    "bodySource": "https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-dynamic-dos-attacks.html",
+    "fetchedAt": "2026-06-04T02:46:20.987Z"
+  }
+}
