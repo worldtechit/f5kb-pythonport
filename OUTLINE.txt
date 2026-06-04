@@ -324,17 +324,20 @@ and are the only ones that touch the real API.
 7. TESTING APPROACH
 -------------------
 
-130 tests, all offline by default, under test/ in three categories:
+134 tests, all offline by default, under test/ in three categories:
 
-  - unit (16 files) — one module's functions in isolation (paging, client,
-    aura/config, dates, fields, the HTML parsers, hashing, args, logger, status,
-    github, fsutil). Network is the mock; backoff sleeps are no-ops.
-  - integration (5 files) — a full subcommand wrapper end to end against the mock
-    fetch and a temp dir (dump, enrich, track, status, the flat fetch).
-  - regression (4 files) — lock the on-disk contracts: the 9-key article envelope,
+  - unit (21 files) — one module's functions in isolation (paging, client,
+    aura/config, dates, fields, the HTML parsers, hashing, args incl.
+    applyTypeFilters, logger, status, github, fsutil; the incremental/refresh layer:
+    changelog, dump-incremental, reconcile, staging, approve). Network is the mock;
+    backoff sleeps are no-ops.
+  - integration (8 files) — a full subcommand wrapper / orchestrator end to end
+    against the mock fetch and a temp dir (dump, enrich, track, status, the flat
+    fetch, sync, the approval gate, the approve cmd).
+  - regression (5 files) — lock the on-disk contracts: the 9-key article envelope,
     the catalogue row schema + markdown table, the SQLite schema (tables / indexes
-    / columns / PK), and the enrich output shape. These guard the
-    behavior-unchanged guarantee from the consolidation.
+    / columns / PK), the enrich output shape, and the changelog JSONL line schema.
+    These guard the behavior-unchanged guarantee from the consolidation.
 
 Fixtures live in test/fixtures/ (Aura token response, Coveo facet/search/count
 JSON, a dump_mini covering every type, GitHub API JSON, and real doc/bug HTML

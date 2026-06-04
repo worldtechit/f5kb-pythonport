@@ -719,6 +719,8 @@ Other notes:
   config, API limits).
 - **HOWTO.txt** — task-oriented user guide: quick start + common workflows with copy-paste
   commands.
+- **MEMORIES.md** — durable project memory & handoff: current state, credentials/token
+  flow, gotchas, data layout, and open work (written to survive a zip-and-move).
 - **OUTLINE.txt** — our code: module tree, the dump→enrich→track flow, the
   dependency-injection design, pagination strategy, testing, decisions, and obstacles
   overcome.

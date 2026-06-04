@@ -81,6 +81,8 @@ Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
   network-injection design, strategies, decisions, obstacles overcome.
 - **HOWTO.txt** — task-oriented USER guide: quick start + the common workflows (full
   build, incremental refresh, reviewing/approving changes, deletions) with examples.
+- **MEMORIES.md** — durable project memory & handoff (current state, credentials/token
+  flow, gotchas, data layout, open work). Written to survive a zip-and-move.
 - **TODO.txt** — open work (sitemap-gap follow-up incl. the 47 IDs) + a log of
   shipped work.
 - Machine-read config (not docs): `config.yaml` — three sections: `types:`
@@ -90,16 +92,16 @@ Exploratory subcommands (predate the pipeline): `fetch`, `recent`, `list-types`,
 
 ## Documentation file conventions (.txt rules)
 
-Most human docs are plain-text `.txt`. The two Markdown exceptions are `CLAUDE.md`
-(the harness expects that name) and `README.md` (the user's entry-point doc —
-GitHub renders it). README.md uses normal Markdown (`#`/`##` headings, fenced code,
-tables, `**bold**`); keep it that way going forward. The remaining docs
-(`FINDINGS.txt`, `OUTLINE.txt`, `HOWTO.txt`, `TODO.txt`) stay `.txt` and follow the
-rules below — keep them readable for humans AND unambiguous for LLMs. Apply to every
-`.txt` now and going forward:
+Most human docs are plain-text `.txt`. The Markdown exceptions are `CLAUDE.md` (the
+harness expects that name), `README.md` (the user's entry-point doc — GitHub renders
+it), and `MEMORIES.md` (the cross-machine handoff doc). Those use normal Markdown
+(`#`/`##` headings, fenced code, tables, `**bold**`); keep them that way going
+forward. The remaining docs (`FINDINGS.txt`, `OUTLINE.txt`, `HOWTO.txt`, `TODO.txt`)
+stay `.txt` and follow the rules below — keep them readable for humans AND
+unambiguous for LLMs. Apply to every `.txt` now and going forward:
 
 - **Filename**: `CAPITAL_LETTERS.txt` (UPPER snake-case), e.g. `FINDINGS.txt`.
-  `CLAUDE.md` and `README.md` are the Markdown exceptions.
+  `CLAUDE.md`, `README.md`, and `MEMORIES.md` are the Markdown exceptions.
 - **Title**: first line is the title; underline it with `=` the same width; then a
   blank line and a 1–2 line purpose statement.
 - **Sections (H2)**: `UPPERCASE NAME` underlined with `-` (full width), one blank
@@ -135,7 +137,7 @@ rules below — keep them readable for humans AND unambiguous for LLMs. Apply to
 - Subcommands are resumable and idempotent; never assume a clean restart is required.
 - **Network is dependency-injected.** `CoveoClient` (`lib/coveo/client.ts`) and
   `HttpClient` (`lib/http/fetcher.ts`) each take a `fetch` fn; tests pass a mock
-  (`test/_helpers/mock_fetch.ts`), which is why the 125-test suite runs offline.
+  (`test/_helpers/mock_fetch.ts`), which is why the 134-test suite runs offline.
   Don't reach for the global `fetch` directly in lib code.
 - **Incremental skip hinges on one string.** `dbKey(documentType,id)` in
   `lib/dump.ts` must produce the EXACT same `"<document_type> <id>"` key that
