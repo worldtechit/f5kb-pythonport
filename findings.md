@@ -333,8 +333,10 @@ under-lists Security Advisories, so our Coveo dump is the more complete source t
 **Bottom line:** the only true gap the sitemap reveals is ~45 old Coveo-unindexed
 K-articles (practically unreachable, low value) plus a couple of indexing-lag items.
 The sitemap's real utility is exactly that: surfacing the handful of Salesforce
-articles missing from Coveo, and a cheap `lastmod` feed for change-polling. Use the
-Coveo API for everything else.
+articles missing from Coveo, and a cheap `lastmod` feed for change-polling (poll
+`sitemap-topicarticle-weekly.xml` — ~93 entries, the most recently updated — to
+detect new/changed K-articles without a full crawl). Use the Coveo API for
+everything else.
 
 ---
 

@@ -46,7 +46,7 @@ Exploratory tools (pre-pipeline): `fetch_f5_articles.ts`,
 - **outline.md** — our *code*: script flows, strategies, decisions, obstacles overcome.
 - **TODO.txt** — open work (currently only the deferred "skip-unchanged bodies" idea).
 - **available_fields.txt** — field-name → description reference (feeds the catalogue).
-- **sitemap_note.txt** — notes on the my.f5.com sitemap (an alternative discovery path).
+- (my.f5.com sitemap notes + gap analysis live in findings.md → "Sitemap".)
 
 ## Conventions & gotchas
 
