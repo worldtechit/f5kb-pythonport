@@ -135,10 +135,28 @@ This is a platform-wide limit, not configurable.
 **Symptom:** Standard pagination silently stops at 5,000 articles. The total
 count in the response drops to 0 on the page that would push past the boundary.
 
-**Fix — recursive date-range chunking:**
+**Fix — recursive date-range chunking (`--days`) + `@rowid` keyset (`--all`):**
 Split the query into date windows using `@date>=YYYY/MM/DD@HH:MM:SS` filters
 in the `aq` field. Recursively halve any window whose count still exceeds 5,000.
 Each leaf window is then safely paged with standard pagination.
+
+**`@date` chunking alone is NOT sufficient for a full-corpus dump (learned the
+hard way on the 2026-06 full dump).** Two failure modes:
+1. `@date` filtering is only **1-second resolution**. A bulk re-index can stamp
+   >5,000 articles with the SAME `@date` second (Manual had 12,992 in one second),
+   which is irreducible by date — the 5,000 cap then drops the rest.
+2. Date-range queries silently EXCLUDE documents whose `@date` is null or outside
+   the window (Release_Note had 31 such articles → bare count 757 vs windowed 726).
+
+Real fix: **keyset (cursor) pagination by `@rowid`** — the one sortable, unique,
+monotonic system field (`@permanentid`/`@urihash`/`@f5_kb_id` are NOT sortable —
+`InvalidSortField`). Sort `@rowid ascending`, page with `@rowid>=cursor`, no
+offset cap. `@rowid` (~1.8e18) exceeds JS safe-integer range, so JSON.parse rounds
+it (ULP ~256); back the cursor off a margin (4096) and use `>=` + dedup by
+permanentid to avoid a boundary skip. `dump_articles.ts --all` now keyset-pages
+the WHOLE type (no `@date` window at all), which also captures the null/out-of-
+window-`@date` articles; `--days` keeps date-chunking (recency is the point) and
+defers to keyset only for an irreducible sub-second window.
 
 Date filter syntax for the `aq` field:
 
@@ -997,10 +1015,30 @@ enricher; resumability skips already-bodied/errored articles (`--refetch` /
   interleaved `/* ... */` comment blocks → recovered and joined; `docData.swaggerFile`
   (API specs) → rendered to markdown. Host rule flag `nextData: true`.
 
-**Coverage (full Manual run over the --days=7 dump, 2026-06-03): 3336/3338 (99.9%)**
-— clouddocs 1792/1794, techdocs 510/510, nginx 332/332, docs.cloud 702/702; the 2
-misses are genuinely-empty stub pages. All 15 document types now have bodies (9 from
-the index, 5 enriched off-API). See `readme.txt` for the `enrich_bodies.ts` usage.
+**Full-corpus enrichment (2026-06-04), 13 types (all except Community + F5 GitHub),
+106,042 articles.** The full Manual corpus surfaced more hosts/edge cases than the
+7-day sample; all handled:
+- **More doc hosts:** added `nginx.org` and `unit.nginx.org` (both body in `#content`;
+  nginx.org changelog/dir-listing pages have no container → last-resort `<pre>`/`<body>`
+  fallback). Generic fallback logs unmapped hosts via console.warn.
+- **Bug Tracker second template:** security/CVE bugs have no `div.bug-content`; a
+  fallback parses labelled fields and keeps CVE / Related Article / Vulnerability
+  Severity (skips metadata-duplicates). ~6.5% of bugs.
+- **Soft 404s:** techdocs dead links return HTTP 200 with a "404 - Page Not Found"
+  body — detected by signature, recorded as bodyError (not captured as body).
+- **Moved-to-landing redirects:** clouddocs `service-proxy/latest/*` URLs redirect to
+  a product landing page — detected (specific file or changed top-level section →
+  directory root) and recorded as bodyError, not captured.
+- **F5-KB redirects:** some docs.nginx.com URLs 302 into my.f5.com/article/K… (body
+  already captured under the Salesforce type) → recorded as a cross-reference.
+
+Final body coverage: Bug_Tracker 22,247/22,247 (100%), Release_Note 757 (100%),
+Supplemental_Document 135 (100%), Manual 46,572/46,811 (99%). The ~239 Manual
+no-body cases are all legitimate: 117 soft-404 dead links, 90 moved-to-landing
+redirects, ~31 image-only/empty stub pages, 1 KB cross-reference. A subagent audit
+of all 69,864 enriched bodies confirmed no junk/wrong-container content remains.
+All 13 dumped types' on-disk counts equal their live Coveo counts. See `readme.txt`
+for usage and `track_articles.ts` for the SQLite change-tracking overview.
 
 **Type-specific fields worth noting:** Bug Tracker carries `f5_bug_*`
 (severity/state/affected+fix version, CVE id); Security Advisory keeps CVE in

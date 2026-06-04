@@ -1,38 +1,23 @@
 F5 ARTICLE DUMP — TODO
 ======================
 
-PLANNED: FULL-CORPUS DUMP (driven, soon)
-----------------------------------------
-Dump the ENTIRE corpus (not a --days window) for every document type EXCEPT
-'Community' and 'F5 GitHub'. Workflow per the hardened scripts:
+DONE 2026-06-04: FULL-CORPUS DUMP (13 types, all except Community + F5 GitHub)
+------------------------------------------------------------------------------
+106,042 articles. dump_articles.ts --all -> enrich_bodies.ts -> track_articles.ts.
+All 13 types' on-disk counts == live Coveo counts (verified). Body coverage:
+Bug_Tracker/Release_Note/Supplemental 100%, Manual 99% (the ~239 no-body cases are
+all legitimate: soft-404 dead links, moved-to-landing redirects, image-only/empty
+stub pages, 1 KB cross-reference). Tracking DB: outputs/articles.db.
 
-  1. Metadata dump (all types except Community + F5_GitHub):
-       deno run --allow-net --allow-read --allow-write dump_articles.ts \
-         --all --out=outputs/dump \
-         --types="Support_Solution,Known_Issue,Knowledge,Security_Advisory,\
-Operations_Guide,Policy,Video,Compliance,Education,Manual,Release_Note,\
-Supplemental_Document,Bug_Tracker"
-     Watch the per-type lines + _index.json: any type marked FAILED/partial,
-     re-run just those via --types=. dump_articles.ts validates written vs the
-     server count under --all and exits non-zero if any type fails.
+To REFRESH later (incremental change tracking): re-run the same 3-step pipeline;
+track_articles.ts will report new/changed/removed vs the prior run. Counts drift
+on the live corpus, so re-run any type whose dump shows a shortfall.
 
-  2. Body enrichment for the empty-index types present in that set
-     (Bug_Tracker, Manual, Release_Note, Supplemental_Document):
-       deno run --allow-net --allow-read --allow-write --allow-env \
-         enrich_bodies.ts --dump=outputs/dump \
-         --types="Bug_Tracker,Manual,Release_Note,Supplemental_Document"
-     Review outputs/dump/_enrich_report.json; re-run failures with
-     --refetch-errors after fixing. (F5_GitHub is excluded from this dump, so no
-     GITHUB_TOKEN is needed.)
-     NOTE scale: Bug Tracker (~22k) and Manual (~47k) are large — this is the
-     long part; concurrency=4 + 200ms throttle by default. Be patient/polite.
-
-  3. Build the master tracking DB:
-       deno run --allow-read --allow-write track_articles.ts --dump=outputs/dump
-     Records per-article dates + metadata/content hashes; classifies
-     new/changed/unchanged/removed across runs into outputs/articles.db.
-
-  Driver (me) reacts to anything not dumping correctly and fixes it.
+The driven run found+fixed several real bugs (all committed) — see findings.md
+and `git log`: fetch timeout (no-hang), @rowid keyset (offset cap + dense @date
+second + null/out-of-window @date), --all whole-type keyset, nginx.org/unit.nginx.org
+hosts, plain-text changelog fallback, Bug Tracker CVE template, soft-404 + landing-
+redirect + F5-KB-redirect handling, guest-token refresh, per-type error isolation.
 
 
 FUTURE IDEA (NOT now): skip unchanged bodies to cut API/scrape calls

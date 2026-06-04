@@ -68,13 +68,21 @@ ENRICH_BODIES.TS (article bodies for empty-content types)
       and /blob/ raw-file links.
     - Manual/Release_Note/Supplemental_Document: doc-page scrape driven by the
       HOST_RULES host->selector map (clouddocs.f5.com, techdocs.f5.com,
-      docs.nginx.com) with a generic fallback for unmapped hosts (logged).
-      Extracts ONLY the content container as markdown (headings/lists/code/links).
+      docs.nginx.com, nginx.org, unit.nginx.org) with a generic fallback for
+      unmapped hosts (logged) and a last-resort <pre>/<body> fallback for plain
+      pages (e.g. nginx.org changelogs). Extracts ONLY the content container as
+      markdown (headings/lists/code/links).
       docs.cloud.f5.com (Next.js) renders its body client-side, so it is read
       from the page's embedded <script id="__NEXT_DATA__"> JSON instead of the
       DOM (prose from docData.compiledSource, API specs from docData.swaggerFile)
-      — no headless browser needed. Full Manual coverage: 99.9% (only genuinely
-      empty stub pages miss).
+      — no headless browser needed.
+      Edge cases recorded as content.bodyError (not captured as body): soft 404s
+      (HTTP 200 "Page Not Found"), moved-to-landing redirects, and docs.nginx.com
+      URLs that 302 into the F5 KB (my.f5.com/article/K…, body captured under the
+      Salesforce type). Bug Tracker has two page templates (standard narrative +
+      security/CVE) — both handled. Full-corpus Manual body coverage: 99% (the
+      remainder are legitimately bodiless: dead links, moved content, image-only
+      or empty stub pages).
 
   Re-running after mapping a new host: use --refetch-errors to re-process only
   the articles that previously recorded a content.bodyError (already-bodied
