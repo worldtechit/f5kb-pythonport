@@ -1,0 +1,63 @@
+{
+  "id": "ac8677dca4ef6ee1ebbad29b7eb407dee0d138d3260d78886cb678c18a64",
+  "documentType": "Bug Tracker",
+  "title": "Bug ID 1991717: Upgrade fails from 17.5.0 to 17.5.1 if a shared object list is configured with Geo or FQDN's",
+  "link": "https://cdn.f5.com/product/bugtracker/ID1991717.html",
+  "modifiedMs": 1770086492000,
+  "modified": "2026-02-03T02:41:32.000Z",
+  "capturedAt": "2026-06-04T01:52:17.945Z",
+  "metadata": {
+    "f5_bug_severity": "3-Major",
+    "f5_alternate_bug_id": "ID1991717",
+    "f5_product_module": [
+      "BIG-IP AFM ",
+      " BIG-IP Install/Upgrade"
+    ],
+    "f5_version_display_name": [
+      "BIG-IP",
+      "BIG-IP AFM",
+      "AGC"
+    ],
+    "f5_original_published_date": 1753407503000,
+    "f5_product": [
+      "BIG-IP ",
+      " BIG-IP AFM ",
+      " BIG-IP Install/Upgrade"
+    ],
+    "permanentid": "ac8677dca4ef6ee1ebbad29b7eb407dee0d138d3260d78886cb678c18a64",
+    "f5_product_family": [
+      "BIG-IP"
+    ],
+    "f5_updated_published_date": 1770086492000,
+    "f5_bug_id": "1991717",
+    "f5_created_date": 1753407503000,
+    "f5_bug_state": "Resolved",
+    "f5_bug_product_known_affected_version": [
+      "17.5.0 ",
+      "  17.5.1 ",
+      "  17.5.1.2 ",
+      "  17.5.1.3 ",
+      "  21.0.0 ",
+      "  21.0.0.1"
+    ],
+    "f5_title": "Upgrade fails from 17.5.0 to 17.5.1 if a shared object list is configured with Geo or FQDN's",
+    "f5_fix_category": "Advanced Firewall Manager",
+    "f5_bug_product_fix_version": [
+      "17.5.1.4"
+    ],
+    "excerpt": "Bug ID 1991717: Upgrade fails from 17.5.0 to 17.5.1 if a shared object list is configured with Geo or FQDN's ... Last Modified: Feb 03, 2026 ... Symptoms ... - Upgrade fails from 17.5.0 to 17.5.1 i..."
+  },
+  "content": {
+    "sections": {
+      "Symptoms": "- Upgrade fails from 17.5.0 to 17.5.1 if a shared object list is configured with Geo or FQDN addresses.",
+      "Impact": "Upgrade fails from 17.5.0 to 17.5.1 with the following error: Syntax Error:(/config/bigip_base.conf at line: 649) \"geo\" unknown property",
+      "Conditions": "- AFM Provisioned on v17.5.0 - Configure a dns-resolver under global-fqdn-policy. - Configure a shared object list with a Geo or FQDN address. - Install 17.5.1 on a boot location. - Upgrade to 17.5.1",
+      "Workaround": "- Identify the rules and the lists and comment them out of the bigip_base file that are involved in the firewall rules. - Upgrade to 17.5.1 or load the config again. or 1. Remove the shared objects address list from the AFM rules and then the shared objects address lists with Geo or FQDN addresses. 2. Once after an upgrade, add address list again to AFM rules and Geo or FQDN",
+      "Fix Information": "None",
+      "Guides & references": "[**K10134038: F5 Bug Tracker Filter Names and Tips**](https://my.f5.com/manage/s/article/K10134038)"
+    },
+    "body_text": "## Symptoms\n\n- Upgrade fails from 17.5.0 to 17.5.1 if a shared object list is configured with Geo or FQDN addresses.\n\n## Impact\n\nUpgrade fails from 17.5.0 to 17.5.1 with the following error: Syntax Error:(/config/bigip_base.conf at line: 649) \"geo\" unknown property\n\n## Conditions\n\n- AFM Provisioned on v17.5.0 - Configure a dns-resolver under global-fqdn-policy. - Configure a shared object list with a Geo or FQDN address. - Install 17.5.1 on a boot location. - Upgrade to 17.5.1\n\n## Workaround\n\n- Identify the rules and the lists and comment them out of the bigip_base file that are involved in the firewall rules. - Upgrade to 17.5.1 or load the config again. or 1. Remove the shared objects address list from the AFM rules and then the shared objects address lists with Geo or FQDN addresses. 2. Once after an upgrade, add address list again to AFM rules and Geo or FQDN\n\n## Fix Information\n\nNone\n\n## Guides & references\n\n[**K10134038: F5 Bug Tracker Filter Names and Tips**](https://my.f5.com/manage/s/article/K10134038)",
+    "bodySource": "https://cdn.f5.com/product/bugtracker/ID1991717.html",
+    "fetchedAt": "2026-06-04T02:20:32.833Z"
+  }
+}

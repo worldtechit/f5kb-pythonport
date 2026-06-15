@@ -1,0 +1,42 @@
+{
+  "id": "K000159067",
+  "documentType": "Compliance",
+  "title": "K000159067: Support and Professional Services subprocessors",
+  "link": "https://my.f5.com/manage/s/article/K000159067",
+  "modifiedMs": 1769181343000,
+  "modified": "2026-01-23T15:15:43.000Z",
+  "capturedAt": "2026-06-03T21:32:13.850Z",
+  "metadata": {
+    "f5_article_creator": "Erin Kilpatrick",
+    "sfrecord_type_name__c": "Compliance Content",
+    "f5_original_published_date": 1768275447000,
+    "f5_status": "Online",
+    "concepts": "select ; custom ; general instructions ; K9957",
+    "permanentid": "b2e209e717035610d6dea6472c358e2c87557789",
+    "sfarticlenumber": "000159067",
+    "f5_document_type": [
+      "Compliance"
+    ],
+    "f5_updated_published_date": 1769181343000,
+    "sfkavid": "ka0Po000000d12fIAA",
+    "f5_kb_id": "K000159067",
+    "f5_created_date": 1768275447000,
+    "f5_title": "Support and Professional Services subprocessors",
+    "sfkbid": "kA0Po000000AduXKAS",
+    "f5_archived": "Archived documents excluded",
+    "sflastmodifieddate": 1769181343000,
+    "wordcount": 154,
+    "f5_kb_public": "Public",
+    "sfcontent_type__c": "Compliance",
+    "sfvalidationstatus": "Validated",
+    "f5_employee": "false",
+    "language": [
+      "English"
+    ],
+    "sffirstpublisheddate": 1768275447000,
+    "excerpt": "New Zealand ... Receive updates about this article ... To receive updates about this article, you can create a custom RSS feed. ... For general instructions, refer to K9957: Creating a custom RSS f..."
+  },
+  "content": {
+    "sfdetails__c": "<p>The following lists contain F5 subprocessors.</p>\n<table border=\"1\" style=\"border-width: 1px;\"><caption>F5 affiliates (who may act as subprocessors for providing Support Services or Professional Services)</caption><thead><tr><th colspan=\"1\" rowspan=\"1\">F5 affliates</th><th colspan=\"1\" rowspan=\"1\">Entity country</th></tr></thead><tbody><tr><td colspan=\"1\" rowspan=\"1\">F5 Inc.</td><td colspan=\"1\" rowspan=\"1\">United States</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Canada Ltd</td><td colspan=\"1\" rowspan=\"1\">Canada</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Mexico S de RL de CV.</td><td colspan=\"1\" rowspan=\"1\">Mexico</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Limited</td><td colspan=\"1\" rowspan=\"1\">UK</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks SARL</td><td colspan=\"1\" rowspan=\"1\">France</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Poland sp.z.o.o</td><td colspan=\"1\" rowspan=\"1\">Poland</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Czech Republic s.r.o.</td><td colspan=\"1\" rowspan=\"1\">Czech Republic</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Austria GmbH</td><td colspan=\"1\" rowspan=\"1\">Austria</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Benelux B.V.</td><td colspan=\"1\" rowspan=\"1\">Netherlands</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks SRL</td><td colspan=\"1\" rowspan=\"1\">Italy</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Iberia SL</td><td colspan=\"1\" rowspan=\"1\">Spain</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks GmbH</td><td colspan=\"1\" rowspan=\"1\">Germany</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Luxembourg s.a.r.l.</td><td colspan=\"1\" rowspan=\"1\">Luxembourg</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Denmark ApS</td><td colspan=\"1\" rowspan=\"1\">Denmark</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Zagreb LLC</td><td colspan=\"1\" rowspan=\"1\">Croatia</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Sweden Aktiebolag</td><td colspan=\"1\" rowspan=\"1\">Sweden</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Finland Oy</td><td colspan=\"1\" rowspan=\"1\">Finland</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Belgium BVBA</td><td colspan=\"1\" rowspan=\"1\">Belgium</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks, (Israel) Ltd.</td><td colspan=\"1\" rowspan=\"1\">Israel</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Turkey Teknoloji Limited Sirketi</td><td colspan=\"1\" rowspan=\"1\">Turkey</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Switzerland GmbH</td><td colspan=\"1\" rowspan=\"1\">Switzerland</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Morocco (SARL)</td><td colspan=\"1\" rowspan=\"1\">Morocco</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Columbia S.A.S</td><td colspan=\"1\" rowspan=\"1\">Colombia</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Chile Limitada</td><td colspan=\"1\" rowspan=\"1\">Chile</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks South Africa (Pty) Ltd</td><td colspan=\"1\" rowspan=\"1\">South Africa</td></tr><tr><td colspan=\"1\" rowspan=\"1\">FCinco Representacoes do Brasil LTDA</td><td colspan=\"1\" rowspan=\"1\">Brazil</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks de Argentina SRL</td><td colspan=\"1\" rowspan=\"1\">Argentina</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Singapore Pte Ltd</td><td colspan=\"1\" rowspan=\"1\">Singapore</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks India Private Limited</td><td colspan=\"1\" rowspan=\"1\">India</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Malaysia Sdn. Bhd.</td><td colspan=\"1\" rowspan=\"1\">Malaysia</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Taiwan Company Limited</td><td colspan=\"1\" rowspan=\"1\">Taiwan</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Korea Co., Ltd</td><td colspan=\"1\" rowspan=\"1\">Korea</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks China</td><td colspan=\"1\" rowspan=\"1\">PRC</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Hong Kong Ltd.</td><td colspan=\"1\" rowspan=\"1\">Hong Kong</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks, Japan G.K.</td><td colspan=\"1\" rowspan=\"1\">Japan</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Bangladesh Ltd.</td><td colspan=\"1\" rowspan=\"1\">Bangladesh</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks Australia Pty Ltd.</td><td colspan=\"1\" rowspan=\"1\">Australia</td></tr><tr><td colspan=\"1\" rowspan=\"1\">F5 Networks New Zealand Ltd.</td><td colspan=\"1\" rowspan=\"1\">New Zealand</td></tr></tbody></table>\n<table border=\"1\" style=\"border-width: 1px;\"><caption>Subprocessors who provide Professional Services in certain engagements</caption><thead><tr><th colspan=\"1\" rowspan=\"1\">Name</th><th colspan=\"1\" rowspan=\"1\">Entity country</th></tr></thead><tbody><tr><td colspan=\"1\" rowspan=\"1\">C-Serv Global Ltd</td><td colspan=\"1\" rowspan=\"1\">United Kingdom</td></tr></tbody></table>\n<h2>Receive updates about this article</h2>\n<p>To receive updates about this article, you can create a custom RSS feed. For general instructions, refer to <a href=\"https://my.f5.com/manage/s/article/K9957\" target=\"_blank\">K9957: Creating a custom RSS feed to view new and updated documents</a>. When creating your feed, first select <strong>Past year</strong> for <strong>Show by a date range</strong>, then select <strong>Compliance</strong> for <strong>Content Type</strong>.</p>"
+  }
+}

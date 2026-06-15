@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<head>
+  
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PPZPQ6');</script>
+  <!-- End Google Tag Manager -->
+    <title>LTM Virtual Server</title>
+  
+
+  <meta charset="utf-8">
+  <!-- Twitter Bootstrap viewport setting -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- F5 metadata -->
+  <meta name="title" content="LTM Virtual Server"/>
+  <meta name="product" content="F5 BIG-IQ API"/>
+  <meta name="version" content="7.0.0"/>
+  <meta name="updated_date"  content="None"/>
+  <meta name="archived" content="Archived documents excluded"/>
+  <meta name="doc_type" content="Manual"/>
+  <meta name="lifecycle" content="release"/>
+  <meta name="F5 BIG-IQ API" content="7.0.0"/>
+
+
+  <!-- Version selector meta tags-->
+  <meta name="version_meta_path" content="/products/big-iq/mgmt-api/versions.json">
+  <meta name="project_safe" content="F5BIGIQAPI">
+  
+
+  
+  <link href="https://cdn.f5.com/favicon.ico" rel="icon">
+
+</head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>LTM Virtual Server &#8212; F5 BIG-IQ API  </title>
+    <link rel="stylesheet" href="../../_static/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/f5.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/f5-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/CoveoFullSearch.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/21fb8a09c3.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SSL Certificates" href="r_adc_ssl_cert.html" />
+    <link rel="prev" title="LTM Application Server Node" href="r_application_server_node_management_60.html" /> 
+  </head><body>
+  <div id="clouddocs-header"></div>
+
+    <div id="sidebar" class="section-nav">
+      <!-- javascript code to maintain the sidebar scroll positon when loaded -->
+      <script type="text/javascript">
+        $(function() {
+          if (localStorage.tempScrollTop) {
+            $('#sidebar').scrollTop(localStorage.tempScrollTop);
+          }
+        });
+        $('#sidebar').on("scroll", function() {
+          localStorage.setItem("tempScrollTop", $('#sidebar').scrollTop());
+        });
+      </script>
+      
+      <!--  version selector ------------------>
+      <div id="version_selector_wrapper">
+      </div>
+      <nav class="nav-sidebartoc">
+
+        
+        <h5>F5 BIG-IQ API 7.0.0 </h5>
+        
+<div id="searchbox" role="search">
+  <form class="search" action="../../search.html" method="get">
+    <input type="text" class="search" name="q" placeholder=" Search..." />
+    <button type="submit" class="btn btn-info navbar-btn"><i class="fa fa-search"></i></button>
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        <hr>
+        <span class="nav-sidebartoc">
+            <p class="caption"><span class="caption-text">All APIs for this release:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../HowToSamples/bigiq_public_api_wf/t_bigiq_public_api_workflows.html">API Workflows</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="r_public_api_references.html">API Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">New APIs for this release:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="r_fps_alert_forwarding_rules.html">Alert Forwarding Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_analytics_entities.html">Analytics Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_as3_declare.html">AS3 Declare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_as3_deploy.html">AS3 Deploy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_as3_force_delete.html">AS3 Force-Delete</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_as3_move_merge.html">AS3 Move/Merge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_create_bigip_ve.html">Create BIG-IP VE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacked_devices_ddos.html">Current DDoS Attacks on BIG-IPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacked_protected_objects_ddos.html">Current DDoS Attacks on Protected Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_over_time.html">DDoS Attacks List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_per_device.html">DDoS Attacks per BIG-IP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_per_protected_object.html">DDoS Attacks per Protected Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_do_onboarding.html">Declarative Onboarding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_delete_bigip_ve.html">Delete BIG-IP VE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_device_remove_mgmt_authority.html">Device RMA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_dns_ddos_summary.html">DNS DDoS Attacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_dos_summary.html">Dos Attacks Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_analytics_event_query.html">Events Query</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_file_downloads.html">File Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_file_uploads.html">File Uploads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_fps_accounts.html">FPS Accounts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_adc_gre_profile.html">GRE Tunnel Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_ha_add_peer.html">HA Add Peer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_ha_failover_state.html">HA Failover State</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_ha_promote.html">HA Promote</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_ha_remove_peer.html">HA Remove Standby</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_ha_reset.html">HA Reset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_http_ddos_summary.html">HTTP DDoS Attacks Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_analytics_http_traffic_query.html">HTTP Traffic Query</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_analytics_metric_query.html">Metrics Query</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_attacks_network_ddos_summary.html">Network DDoS Attacks Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_adc_ssl_manage.html">SSL Object Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_analytics_ssg_devices.html">Service Scaling Group BIG-IP List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_analytics_ssg_groups.html">Service Scaling Group List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_devices_list.html">SSLO Devices List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_devices_summary.html">SSLO Devices Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_overview_summary.html">SSLO Overview Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_per_device_summary.html">SSLO Per Device Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_per_service_summary.html">SSLO Per Service Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_per_topology_summary.html">SSLO Per Topology Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_services_list.html">SSLO Services List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_services_summary.html">SSLO Services Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_topologies_list.html">SSLO Topologies List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_sslo_topologies_summary.html">SSLO Topologies Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_adc_vlan_group_manage.html">VLAN Group Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_adc_vlan_group_state.html">VLAN Group State</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Revised API documentation in this release:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="r_alert_rule_state.html">Alert Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_app_analytics_health.html">All Applications Analytics and Health</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_as3_template.html">AS3 Template</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_auth_exchange.html">Auth Token by Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_auth_login.html">Auth Token by Login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_cloud_environment_state.html">Cloud Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_access_device_discovery_and_import_task.html">Device Discovery for Import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_file_downloads.html">File Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_file_uploads.html">File Uploads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_assign_revoke.html">License Assign/Revoke</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_initial_activation.html">License Initial Activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_purchased_pool.html">Purchased Pool Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_purchased_pool_members.html">Purchased Pool License Members</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_regkey_pool.html">RegKey Pool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_regkey_pool_offerings.html">RegKey Pool Offerings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r_license_regkey_pool_members.html">RegKey Pool Members</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Precursory APIs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../bigiq_precursory_apis_ref/r_precursory_apis.html">Precursory APIs</a></li>
+</ul>
+
+        </span><hr>
+<span class="nav-sidebartoc">
+<h5><a href="https://clouddocs.f5.com/training/community/big-iq-cloud-edition/html/" target="_blank">F5 BIG-IQ Centralized Management Lab <i class="fa fa-external-link-square"></i></a></h5>
+</span>
+      </nav>
+    </div>
+
+
+    <div id="right-sidebar">
+      <h7 style="font-weight:normal">On this page:</h7>
+      <nav class="nav-sidebartoc">
+        <span class="nav-sidebartoc">
+            <ul>
+<li><a class="reference internal" href="#">LTM Virtual Server</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#rest-endpoint-mgmt-cm-adc-core-working-config-ltm-virtual">REST Endpoint: /mgmt/cm/adc-core/working-config/ltm/virtual</a></li>
+<li><a class="reference internal" href="#requests">Requests</a><ul>
+<li><a class="reference internal" href="#post-mgmt-cm-adc-core-working-config-ltm-virtual">POST /mgmt/cm/adc-core/working-config/ltm/virtual</a><ul>
+<li><a class="reference internal" href="#request-parameters">Request Parameters</a></li>
+<li><a class="reference internal" href="#query-parameters">Query Parameters</a></li>
+<li><a class="reference internal" href="#response">Response</a></li>
+<li><a class="reference internal" href="#permissions">Permissions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#get-mgmt-cm-adc-core-working-config-ltm-virtual">GET /mgmt/cm/adc-core/working-config/ltm/virtual</a><ul>
+<li><a class="reference internal" href="#id1">Request Parameters</a></li>
+<li><a class="reference internal" href="#id2">Query Parameters</a></li>
+<li><a class="reference internal" href="#id3">Response</a></li>
+<li><a class="reference internal" href="#id4">Permissions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#get-mgmt-cm-adc-core-working-config-ltm-virtual-objectid">GET /mgmt/cm/adc-core/working-config/ltm/virtual/{objectId}</a><ul>
+<li><a class="reference internal" href="#id5">Request Parameters</a></li>
+<li><a class="reference internal" href="#id6">Query Parameters</a></li>
+<li><a class="reference internal" href="#id7">Response</a></li>
+<li><a class="reference internal" href="#id8">Permissions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+         </span>
+      </nav>
+    </div>
+
+
+
+
+
+  
+  <div class="main active" id="content" >
+    <article class="docs-container site-article-inner">
+            <nav class="site-breadcrumb-nav site-nav">
+          <ul class="site-breadcrumb-list">
+            <li class="breadcrumb-item"><button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn site-hidden"><i class="fa fa-align-justify"></i></button>&#x20 <a href="/">CloudDocs Home</a> &gt; <a href="../../index.html">F5 BIG-IQ API </a> &gt; LTM Virtual Server</li>
+          </ul>
+      </nav>
+      
+      
+
+
+    <!--a title="Export PDF" id="export-pdf" class="btn btn btn-link pull-right">View PDF</a-->
+    <button type="button" id="export-pdf" class="btn btn-link right">PDF</button>
+
+
+    
+     
+         <div class="sidebar" id="version-warning" style="display: none;">
+           <p class="first sidebar-title">
+           <span class="icon fa fa-info-circle fa-lg"></span> Version notice:</p>
+           <p class="last" id="currentVersion"></p>
+          </div>
+
+
+     <div role="main">
+        
+  <div class="section" id="ltm-virtual-server">
+<h1>LTM Virtual Server<a class="headerlink" href="#ltm-virtual-server" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>API used to create/manage LTM virtual server.</p>
+</div>
+<div class="section" id="rest-endpoint-mgmt-cm-adc-core-working-config-ltm-virtual">
+<h2>REST Endpoint: /mgmt/cm/adc-core/working-config/ltm/virtual<a class="headerlink" href="#rest-endpoint-mgmt-cm-adc-core-working-config-ltm-virtual" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="requests">
+<h2>Requests<a class="headerlink" href="#requests" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-mgmt-cm-adc-core-working-config-ltm-virtual">
+<h3>POST /mgmt/cm/adc-core/working-config/ltm/virtual<a class="headerlink" href="#post-mgmt-cm-adc-core-working-config-ltm-virtual" title="Permalink to this headline">¶</a></h3>
+<p>Create a LTM virtual server.</p>
+<div class="section" id="request-parameters">
+<h4>Request Parameters<a class="headerlink" href="#request-parameters" title="Permalink to this headline">¶</a></h4>
+<p><strong>None</strong></p>
+</div>
+<div class="section" id="query-parameters">
+<h4>Query Parameters<a class="headerlink" href="#query-parameters" title="Permalink to this headline">¶</a></h4>
+<p><strong>None</strong></p>
+</div>
+<div class="section" id="response">
+<h4>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">200</span> <span class="pre">OK</span></code></p>
+<p>Add an item the properties_collection representing a BIG-IP virtual server.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>generation</td>
+<td>integer(int64)</td>
+<td>A integer that will track change made to a virtual server collection object. generation. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>A collection of virtual servers. Properties defining items. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for this virtual servers collection object - cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>lastUpdateMicros</td>
+<td>integer(int64)</td>
+<td>Update time (micros) for last change made to an virtual server collection object. time. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>selfLink</td>
+<td>string</td>
+<td>A reference link URI to the virtual server collection object. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></code></p>
+<p>Error response “Bad Request”</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errorStack</td>
+<td>string</td>
+<td>Error stack trace returned by java. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>Collection of virtual servers. Errored response from server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for LTM virtual servers - errors cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>message</td>
+<td>string</td>
+<td>Error message returned from server. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>requestBody</td>
+<td>string</td>
+<td>The data in the request body. GET (None) <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>requestOperationId</td>
+<td>integer(int64)</td>
+<td>Unique id assigned to rest operation. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">404</span></code></p>
+<p>Error response “Public URI path not registered.”</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errorStack</td>
+<td>string</td>
+<td>Error stack trace returned by java. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>Collection of virtual servers. Errored response from server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for virtual server - cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>message</td>
+<td>string</td>
+<td>Error message returned from server. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>requestBody</td>
+<td>string</td>
+<td>The data in the request body. GET (None) <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>requestOperationId</td>
+<td>integer(int64)</td>
+<td>Unique id assigned to rest operation. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="permissions">
+<h4>Permissions<a class="headerlink" href="#permissions" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Role</th>
+<th class="head">Allow</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Local Traffic &amp; Network Deployer</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>Local Traffic &amp; Network Editor</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>Local Traffic &amp; Network Manager</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>Local Traffic &amp; Network Viewer</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>Pool Member Operator</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="get-mgmt-cm-adc-core-working-config-ltm-virtual">
+<h3>GET /mgmt/cm/adc-core/working-config/ltm/virtual<a class="headerlink" href="#get-mgmt-cm-adc-core-working-config-ltm-virtual" title="Permalink to this headline">¶</a></h3>
+<p>List all virtual server items.</p>
+<div class="section" id="id1">
+<h4>Request Parameters<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p><strong>None</strong></p>
+</div>
+<div class="section" id="id2">
+<h4>Query Parameters<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p><strong>None</strong></p>
+</div>
+<div class="section" id="id3">
+<h4>Response<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">200</span> <span class="pre">OK</span></code></p>
+<p>Retrieve a properties_collection representing listing all the virtual servers.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>generation</td>
+<td>integer(int64)</td>
+<td>A integer that will track change made to a virtual server collection object. generation. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>A collection of virtual servers. Properties defining items. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for this virtual servers collection object - cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>lastUpdateMicros</td>
+<td>integer(int64)</td>
+<td>Update time (micros) for last change made to an virtual server collection object. time. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>selfLink</td>
+<td>string</td>
+<td>A reference link URI to the virtual server collection object. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></code></p>
+<p>Error response “Bad Request”</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errorStack</td>
+<td>string</td>
+<td>Error stack trace returned by java. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>Collection of virtual servers. Errored response from server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for LTM virtual servers - errors cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>message</td>
+<td>string</td>
+<td>Error message returned from server. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>requestBody</td>
+<td>string</td>
+<td>The data in the request body. GET (None) <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>requestOperationId</td>
+<td>integer(int64)</td>
+<td>Unique id assigned to rest operation. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">404</span></code></p>
+<p>Error response “Public URI path not registered.”</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errorStack</td>
+<td>string</td>
+<td>Error stack trace returned by java. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>Collection of virtual servers. Errored response from server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for virtual server - cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>message</td>
+<td>string</td>
+<td>Error message returned from server. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>requestBody</td>
+<td>string</td>
+<td>The data in the request body. GET (None) <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>requestOperationId</td>
+<td>integer(int64)</td>
+<td>Unique id assigned to rest operation. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id4">
+<h4>Permissions<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Role</th>
+<th class="head">Allow</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Local Traffic &amp; Network Deployer</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>Local Traffic &amp; Network Editor</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>Local Traffic &amp; Network Manager</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>Local Traffic &amp; Network Viewer</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>Pool Member Operator</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="get-mgmt-cm-adc-core-working-config-ltm-virtual-objectid">
+<h3>GET /mgmt/cm/adc-core/working-config/ltm/virtual/{objectId}<a class="headerlink" href="#get-mgmt-cm-adc-core-working-config-ltm-virtual-objectid" title="Permalink to this headline">¶</a></h3>
+<p>Get a single virtual server object identified by id for an endpoint URI.</p>
+<div class="section" id="id5">
+<h4>Request Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<p><strong>None</strong></p>
+</div>
+<div class="section" id="id6">
+<h4>Query Parameters<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>objectId</td>
+<td>string(UUID)</td>
+<td>Unique id assigned to a virtual server. <em>required</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id7">
+<h4>Response<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">200</span> <span class="pre">OK</span></code></p>
+<p>Retrieve a properties_virtual representing a virtual server object.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>addressStatus</td>
+<td>string</td>
+<td>Specifies the virtual will contribute to the operational status of the associated virtual-address. The default is ‘yes’. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>autoLasthop</td>
+<td>string</td>
+<td>Specifies whether to automatically map last hop for pools or not. The default is to use next level’s default. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>connectionLimit</td>
+<td>integer</td>
+<td>Specifies the maximum number of concurrent connections you want to allow for the virtual server. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>defaultCookiePersistenceReference</td>
+<td>object</td>
+<td>Reference link to profiles that the virtual server uses to manage connection persistence. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>link</em></td>
+<td>string</td>
+<td>Reference link to profiles that the virtual server uses to manage connection persistence. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>string</td>
+<td>Description of LTM virtual server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>deviceReference</td>
+<td>object</td>
+<td>Reference link to BIGIP device associated to virtual server. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>id</em></td>
+<td>string</td>
+<td>Unique id assigned to a device referenced by this object. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>kind</em></td>
+<td>string</td>
+<td>Type information for device. shared:resolver:device-groups:restdeviceresolverdevicestate <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>link</em></td>
+<td>string</td>
+<td>Reference link to adc-core-allbigipDevices in shared resolver device-groups. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>machineId</em></td>
+<td>string</td>
+<td>Unique id assigned to the hardware device. If virtual could be the same as id object. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>name</em></td>
+<td>string</td>
+<td>A name used to identify this device. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>fallbackSourceAddrPersistenceReference</td>
+<td>object</td>
+<td>Reference link fallback persistence profile for the virtual server to use when the default persistence profile is not available. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>link</em></td>
+<td>string</td>
+<td>Reference link fallback persistence profile for the virtual server to use when the default persistence profile is not available. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>generation</td>
+<td>integer(int64)</td>
+<td>A integer that will track change made to a LTM virtual server object. - generation. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>gtmScore</td>
+<td>integer</td>
+<td>Specifies a score that is associated with the virtual server. Global Traffic Manager (GTM) can rely on this value to load balance traffic in a proportional manner. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>id</td>
+<td>string</td>
+<td>Unique id assigned to a virtual server object. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>ipProtocol</td>
+<td>string</td>
+<td>Specifies the IP protocol for which you want the virtual server to direct traffic. Sample protocol names are tcp and udp. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for this virtual server object. cm:adc-core:working-config:ltm:virtual:adcvirtualstate <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>lastUpdateMicros</td>
+<td>integer(int64)</td>
+<td>Update time (micros) for last change made to an LTN virtual server object - time. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>mask</td>
+<td>string</td>
+<td>Destination netmask used for client access - ex. 255.255.255.255 or 32. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>mirror</td>
+<td>string</td>
+<td>Enables or disables state mirroring. You can use state mirroring to maintain the same state information in the standby unit that is in the active unit, allowing transactions such as FTP file transfers to continue as though uninterrupted. The default value is disabled. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>string</td>
+<td>Name of LTM virtual server. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>nat64</td>
+<td>string</td>
+<td>Specifies whether this virtual does NAT64 translation. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>partition</td>
+<td>string</td>
+<td>Displays the administrative partition within which this virtual server profile resides. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>poolReference</td>
+<td>object</td>
+<td>Reference link to virtual pool in which you want the virtual server to automatically direct traffic. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>link</em></td>
+<td>string</td>
+<td>Reference link to virtual pool in which you want the virtual server to automatically direct traffic. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>profilesCollectionReference</td>
+<td>object</td>
+<td>Reference link to profiles for the virtual server to use when directing and managing traffic. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>isSubcollection</em></td>
+<td>boolean</td>
+<td>Is this a collection of objects. In this case profiles. default: true <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>link</em></td>
+<td>string</td>
+<td>Reference link to profiles for the virtual server to use when directing and managing traffic. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>rateLimit</td>
+<td>string</td>
+<td>Specifies the maximum number of connections per second allowed for a virtual server. The default value is disabled. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>rateLimitMode</td>
+<td>string</td>
+<td>Indicates whether the rate limit is applied per virtual object, per source address, per destination address, or some combination thereof. The default value is object, which does not use the source or destination address as part of the key. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>selfLink</td>
+<td>string</td>
+<td>A reference link URI to the LTM virtual server object. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>sourceAddress</td>
+<td>string</td>
+<td>Source address used for client access to virtual server object. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>sourceAddressTranslation</td>
+<td>object</td>
+<td>Type of address translation pool used for implementing selective and intelligent source address translation. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>type</em></td>
+<td>string</td>
+<td>Type of address translation pool used for implementing selective and intelligent source address translation. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>sourcePort</td>
+<td>string</td>
+<td>Specifies whether the system preserves the source port of the connection. The default is preserve. Use of the preserve-strict setting should be restricted to UDP only under very special circumstances such as nPath or transparent (that is, no translation of any other L3/L3 field), where there is a 1:1 relationship between virtual IP addresses and node addresses, or when clustered multi-processing (CMP) is disabled. The change setting is useful for obfuscating internal network addresses. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>state</td>
+<td>string</td>
+<td>State of virtual server. enabled / disabled. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>subPath</td>
+<td>string</td>
+<td>Path to virtual server. Partition / app.app. <em>optional</em> ex. Common /app-service_1.app</td>
+</tr>
+<tr class="row-odd"><td>translatePort</td>
+<td>string</td>
+<td>Enables or disables port translation. Turn port translation off for a virtual server if you want to use the virtual server to load balance. connections to any service. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>vlanReferences</td>
+<td>&lt; object &gt; array</td>
+<td>Specifies an array of vlans against which the packet will be compared. <em>optional</em></td>
+</tr>
+<tr class="row-odd"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>link</em></td>
+<td>string</td>
+<td>Reference link to vlan against which the packet will be compared. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>vlansEnabled</td>
+<td>string</td>
+<td>Enables the virtual server on the VLANs specified by the VLANs option. <em>optional</em></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></code></p>
+<p>Error response “Bad Request”</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errorStack</td>
+<td>string</td>
+<td>Error stack trace returned by java. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>Collection of virtual servers. Errored response from server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for LTM virtual servers - errors cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>message</td>
+<td>string</td>
+<td>Error message returned from server. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>requestBody</td>
+<td>string</td>
+<td>The data in the request body. GET (None) <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>requestOperationId</td>
+<td>integer(int64)</td>
+<td>Unique id assigned to rest operation. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">HTTP/1.1</span> <span class="pre">404</span></code></p>
+<p>Error response “Public URI path not registered.”</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errorStack</td>
+<td>string</td>
+<td>Error stack trace returned by java. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>items</td>
+<td>&lt; object &gt; array</td>
+<td>Collection of virtual servers. Errored response from server. <em>optional</em></td>
+</tr>
+<tr class="row-even"><td>kind</td>
+<td>string</td>
+<td>Type information for virtual server - cm:adc-core:working-config:ltm:virtual:adcvirtualcollectionstate. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>message</td>
+<td>string</td>
+<td>Error message returned from server. <em>optional, read-only</em></td>
+</tr>
+<tr class="row-even"><td>requestBody</td>
+<td>string</td>
+<td>The data in the request body. GET (None) <em>optional, read-only</em></td>
+</tr>
+<tr class="row-odd"><td>requestOperationId</td>
+<td>integer(int64)</td>
+<td>Unique id assigned to rest operation. <em>optional, read-only</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id8">
+<h4>Permissions<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Role</th>
+<th class="head">Allow</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Local Traffic &amp; Network Deployer</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>Local Traffic &amp; Network Editor</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>Local Traffic &amp; Network Manager</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>Local Traffic &amp; Network Viewer</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>Pool Member Operator</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p><strong>None</strong></p>
+</div>
+</div>
+
+
+     </div>
+    
+     <div class="row next-prev-btn-row">
+       <div class="col-lg-12">
+       
+        <a href="r_application_server_node_management_60.html" title="LTM Application Server Node" accesskey="p" class="btn btn-primary left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
+       
+       
+          <a href="r_adc_ssl_cert.html" title="SSL Certificates" accesskey="n" class="btn btn-primary right">Next <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+       
+     </div>
+     </div>
+    
+
+    </article>
+  </div>
+
+</div>
+
+
+  <div id="clouddocs-footer"></div>
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+
+  <script src="../../_static/js/index.js"></script>
+  <script src="../../_static/js/jquery.appear.js"></script>
+  <script src="../../_static/js/printThis.js"></script>
+  <script src="/assets/js/bootstrap.min.js"></script>
+  <script src="/assets/js/clouddocs.js"></script>
+  <script src="/assets/js/CoveoJsSearch.Lazy.min.js"></script>
+  </body>
+</html>

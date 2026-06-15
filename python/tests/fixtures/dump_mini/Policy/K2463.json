@@ -1,0 +1,65 @@
+{
+  "id": "K2463",
+  "documentType": "Policy",
+  "title": "K2463: End of Life: F20 and F25 server appliance platforms",
+  "link": "https://my.f5.com/manage/s/article/K2463",
+  "modifiedMs": 1677009141000,
+  "modified": "2023-02-21T19:52:21.000Z",
+  "capturedAt": "2026-06-03T21:32:13.850Z",
+  "metadata": {
+    "f5_article_creator": "Mark Gallen - V",
+    "sfrecord_type_name__c": "Compliance Content",
+    "f5_original_published_date": 1159358400000,
+    "sfurlname": "K2463",
+    "f5_product": [
+      "Legacy Products",
+      "BIG-IP 4"
+    ],
+    "sfapplies_to_versions__c": "4.6.4",
+    "f5_status": "Online",
+    "f5_version": [
+      "Legacy Products",
+      "BIG-IP 4",
+      "BIG-IP 4|4",
+      "BIG-IP 4|4|4.6",
+      "BIG-IP 4|4|4.6|4.6.4",
+      "BIG-IP",
+      "BIG-IP|4",
+      "BIG-IP|4|4.6",
+      "BIG-IP|4|4.6|4.6.4"
+    ],
+    "concepts": "platforms ; F5 Technical Support ; customers ; hardware ; EoL ; contracts ; sales ; F20 ; requirements change ; accordance ; commitment ; throughput",
+    "permanentid": "67989b367c9fb5b094a91c45964196115d4a141c",
+    "sfarticlenumber": "000120803",
+    "f5_document_type": [
+      "Policy"
+    ],
+    "f5_updated_published_date": 1677009141000,
+    "sfkavid": "ka0Po0000006oroIAA",
+    "f5_kb_id": "K2463",
+    "sfarticle_status__c": "Legacy Content",
+    "f5_product_grouping": [
+      "Uncategorized"
+    ],
+    "f5_created_date": 1677009141000,
+    "sfislatestversion": "true",
+    "f5_title": "End of Life: F20 and F25 server appliance platforms",
+    "sfkbid": "kA01T0000000rVmSAI",
+    "sflastmodifieddate": 1727154987000,
+    "wordcount": 231,
+    "f5_kb_public": "Public",
+    "sfcontent_type__c": "Policy",
+    "sfvalidationstatus": "Validated",
+    "f5_employee": "false",
+    "f5_is_new_kb_article": "false",
+    "sfapplies_to_products__c": "[{\"Product\":\"Legacy Products\"},{\"Versions\":[\"4.6.4\"],\"Product\":\"BIG-IP 4.X\"}]",
+    "language": [
+      "English"
+    ],
+    "uniqueId": "42.1997$http://www.salesforce.com/org:organization/articletype:Knowledge/article:kA01T0000000rVmSAI/language:en_US",
+    "excerpt": "As a result of software enhancements, older platforms may not have optimal configurations to run new versions of F5 products. ... In order to prevent possible problems, F5 may choose at anytime to ..."
+  },
+  "content": {
+    "sfdetails__c": "<h3>Policy Information</h3><h3>Background</h3>\n<p>As a result of software enhancements, older platforms may not have optimal configurations to run new versions of F5 products. In order to prevent possible problems, F5 may choose at anytime to deem a platform unsuited to run the current version of software.</p>\n<p>F5 Networks remains dedicated to advance our products to best serve customer needs as throughput and hardware requirements change. Over the course of last few years, this commitment has lead F5 towards the development of our next generation platforms, the IP Application Switch. By migrating to this new hardware, our customers will receive improved L4/L7 and SSL performance, support for the latest F5 software and a more flexible hardware platform that can be leveraged in the future.</p>\n<h3>Product Update</h3>\n<p>After announcing the End of Sale (EoS) of the F20 and F25 products in 2000, F5 is continuing in our plans to End of Life (EoL) these platforms, ending all platform support by April, 4 2004. These platform models were typically sold as either BIG-IP HA or BIG-IP HA+ products. Below is the entire list of platforms included in this EoL.</p>\n<ul><li>F20; 4U; Asus P2B-S; PIII 333MHz Slot1</li><li>F20; 4U; Asus P2B-F; PIII 450MHz Slot1</li><li>F20; 4U; Asus P3B-F; PIII 550MHz Slot1</li><li>F25; 4U; Asus P3B-F; PIII 700MHz Slot1</li></ul>\n<h3>EoL Platform List and Dates</h3>\n<table border=\"1\" style=\"border-color: rgb(255, 255, 255);width: 100%;\"><tbody><tr><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>Product</b> </td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End of Sale<br> (EoS)</b></td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End of Delivery<br> (EoD)</b></td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End of New Software Support<br> (EoNSS)</b></td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End of Software Development<br> (EoSD)</b></td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End of Support Contract Renewal<br> (ESCR)</b></td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End of Technical Support (EoTS)</b></td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-weight: bold;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(206, 206, 206);\"><b>End Of Return to Manufacturing<br> (ERMA)</b></td></tr><tr><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">BIG-IP HA F20</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">8/31/2000</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">9/31/2000</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">8/31/2000</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">10/30/2003</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">4/4/2004</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">4/4/2005</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">4/4/2005</td></tr><tr><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">BIG-IP HA F25</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">8/31/2000</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">9/31/2000</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">8/31/2000</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">10/30/2003</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">4/4/2004</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">4/4/2005</td><td colspan=\"1\" rowspan=\"1\" style=\"border-width: 1px;padding: 2px;font-size: 8pt;border-color: rgb(255, 255, 255);vertical-align: top;background-color: rgb(221, 221, 221);\">4/4/2005</td></tr></tbody></table>\n<h3>Technical Support</h3>\n<p>For those customers with maintenance contracts, all platforms will continue to be supported in accordance to their contracts. This includes both hardware and software warranties.</p>\n<p>With the F20 and F25 platforms customers can continue to run version 4.2 and related PTFs, which will be fully supported until October 30, 2003. Because the End of New Software Support (EoNSS) date has passed, customers should not run BIG-IP version 4.5 or higher on these platforms. Those attempting to run the latest versions of software on platforms that are designated for EOL will void their contracts.</p>\n<p>It is important to note that after the End of Software Development (EoSD) date, October 30, 2003, F5 will not be able to patch or release PTFs for software issues. All technical support provided after this period will be &#39;best effort&#39; support and may not include issuing software fixes.</p>\n<p>F5 will continue to offer software and phone support on these platforms until the End of Technical Support Date, April 4, 2004. Customers who have platforms which are no longer supported (EoTS) can choose to continue using the products indefinitely with older versions of software or upgrade their platform in order to run the latest versions.</p>\n<h3>Platform Upgrades</h3>\n<p>Customers whose platforms are designated EoL and who wish to utilize the latest software may take advantage of the F5 platform upgrade program. Contact your sales representative or channel partner for details on platform upgrades.</p>\n<h3>EoL Terms and Descriptions</h3>\n<p>For information about End of Life terms and definitions, refer to the <i>End of Life Cycle Glossary</i> located in <a href=\"https://my.f5.com/manage/s/article/K3225\" target=\"_blank\">K3225: F5 Networks End of Life Policy</a>.</p>\n<h3>Questions</h3>\n<p>If you have questions about this Product Announcement, please <a href=\"http://www.f5.com/training-support/customer-support/contact/\" target=\"_blank\">contact F5 Technical Support</a> or your local <a href=\"http://www.f5.com/sales\" target=\"_blank\">F5 Sales</a> department.</p>"
+  }
+}

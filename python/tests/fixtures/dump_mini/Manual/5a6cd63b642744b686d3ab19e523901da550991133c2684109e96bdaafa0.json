@@ -1,0 +1,43 @@
+{
+  "id": "5a6cd63b642744b686d3ab19e523901da550991133c2684109e96bdaafa0",
+  "documentType": "Manual",
+  "title": "Networking::ARP::NDPEntry",
+  "link": "https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP__NDPEntry.html",
+  "modifiedMs": 1779265873000,
+  "modified": "2026-05-20T08:31:13.000Z",
+  "capturedAt": "2026-06-04T02:07:12.141Z",
+  "metadata": {
+    "f5_product": [
+      "F5 BIG-IP iControl API"
+    ],
+    "f5_version": [
+      "F5 BIG-IP iControl API"
+    ],
+    "f5_source_name": "Cloud Docs",
+    "concepts": "sample code ; DevCentral ; API reference ; own risk ; security vulnerabilities ; inaccuracies ; bugs ; warranties ; guarantees ; codeshare ; statistics ; Introduced",
+    "permanentid": "5a6cd63b642744b686d3ab19e523901da550991133c2684109e96bdaafa0",
+    "f5_document_type": [
+      "Manual"
+    ],
+    "f5_updated_published_date": 1779265873000,
+    "filename": "Networking__ARP__NDPEntry.html",
+    "sourcetype": "Sitemap",
+    "f5_created_date": 1779265873000,
+    "clickableuri": "https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP__NDPEntry.html",
+    "f5_archived": "Archived documents excluded",
+    "wordcount": 134,
+    "source": "CloudDocs",
+    "language": [
+      "English"
+    ],
+    "sitemapparenturl": "https://clouddocs.f5.com/sitemap.xml",
+    "printableUri": "https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP__NDPEntry.html",
+    "uniqueId": "42.52068$https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP__NDPEntry.html",
+    "excerpt": "Introduced : BIG-IP_v9.0 ... A struct that describes an dynamic NDP entry/statistics. ... See Also¶ ... Warning ... The links to the sample code below are remnants of the old DevCentral wiki and w..."
+  },
+  "content": {
+    "body_text": "# Networking::ARP::NDPEntry\n\n **Introduced** : BIG-IP_v9.0\n\n A struct that describes an dynamic NDP entry/statistics.\n\n        **Member** | **Type** | **Description**\n ndp_address | String | The NDP entry’s IP address.\n mac_address | String | The netmask of the destination.\n vlan | String | The VLAN name for the destination.\n expiration | long | The MTU to destination.\n is_router | boolean | The flag indicating whether this entry is acting as a router.\n state | [NDPState](https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP__NDPState.html) | The flag indicating the state of this entry.\n\n ## See Also\n\n [iControl](https://clouddocs.f5.com/api/icontrol-soap/APIReference.html) ::\n\n [iControl](https://clouddocs.f5.com/api/icontrol-soap/APIReference.html) :: [Networking](https://clouddocs.f5.com/api/icontrol-soap/Networking.html) :: [ARP](https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP.html)\n\n Warning\n\n **The links to the sample code below are remnants of the old DevCentral wiki and will result in a 404 error. For best results, please copy the link text and search the codeshare directly on DevCentral.**\n\n ## Sample Code\n\n [Copyright © 1996-2012, F5 Networks, Inc. All rights reserved.](https://devcentral.f5.com/s/EULA)\n\n *The BIG-IP API Reference documentation contains community-contributed content. F5 does not monitor or control community code contributions. We make no guarantees or warranties regarding the available code, and it may contain errors, defects, bugs, inaccuracies, or security vulnerabilities. Your access to and use of any code available in the BIG-IP API reference guides is solely at your own risk.*",
+    "bodySource": "https://clouddocs.f5.com/api/icontrol-soap/Networking__ARP__NDPEntry.html",
+    "fetchedAt": "2026-06-04T02:46:20.987Z"
+  }
+}
