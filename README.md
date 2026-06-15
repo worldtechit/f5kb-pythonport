@@ -27,18 +27,18 @@ The Python package lives in the `python/` subdirectory.
 Install uv if you don't have it:
 
 ```
-# macOS / Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# macOS (Homebrew)
+# macOS (Homebrew) — recommended on macOS
 brew install uv
+
+# macOS / Linux (curl installer)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# pip
-pip install uv
 ```
+
+> **Note:** Do not use `pip install uv` on macOS — Homebrew manages the system Python
+> and pip will refuse. Use `brew install uv` or the curl installer instead.
 
 Then install and run:
 
