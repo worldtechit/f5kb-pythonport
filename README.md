@@ -22,17 +22,28 @@ The Python package lives in the `python/` subdirectory.
 
 ## Installation
 
+**Option A — uv (recommended, faster):**
+
 ```
 cd python
-uv sync          # creates .venv and installs all deps (recommended)
-# or:
-pip install -e .
+uv sync
 ```
 
-After `uv sync`, commands run with `uv run f5kb <sub>` from inside `python/`.
-After `pip install -e .`, run `f5kb <sub>` directly.
+After `uv sync`, run commands with `uv run f5kb <sub>` — no venv activation needed.
 
-All examples below use `uv run f5kb`. Substitute `f5kb` if installed via pip.
+**Option B — standard pip + venv:**
+
+```
+cd python
+python3 -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -e .
+f5kb --version
+```
+
+After activating the venv, use `f5kb <sub>` directly (no `uv run` prefix).
+
+All examples below use `uv run f5kb`. If you installed via pip, drop the `uv run` prefix.
 
 ## Quick start — the pipeline
 
