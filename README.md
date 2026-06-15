@@ -24,6 +24,24 @@ The Python package lives in the `python/` subdirectory.
 
 **Option A — uv (recommended, faster):**
 
+Install uv if you don't have it:
+
+```
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# macOS (Homebrew)
+brew install uv
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# pip
+pip install uv
+```
+
+Then install and run:
+
 ```
 cd python
 uv sync
