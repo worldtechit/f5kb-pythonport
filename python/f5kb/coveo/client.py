@@ -95,18 +95,19 @@ class CoveoClient:
     def list_facet_values(
         self, field: str, filter_aq: str | None = None
     ) -> list[dict[str, Any]]:
+        bare_field = field.lstrip("@")
         data = self.post({
             "q": "",
             **({"aq": filter_aq} if filter_aq else {}),
             "numberOfResults": 0,
             "searchHub": "myF5",
-            "facets": [{"field": field, "numberOfValues": 5000, "type": "specific"}],
+            "facets": [{"field": bare_field, "numberOfValues": 5000, "type": "specific"}],
         })
         facets = data.get("facets") or []
-        facet = next((f for f in facets if f.get("field") == field), None)
+        facet = next((f for f in facets if f.get("field") == bare_field), None)
         if not facet:
             return []
         return [
-            {"value": v.get("value", ""), "count": v.get("numberOfResults", 0)}
+            {"value": v.get("value", ""), "numberOfResults": v.get("numberOfResults", 0)}
             for v in (facet.get("values") or [])
         ]

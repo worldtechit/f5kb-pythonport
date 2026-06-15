@@ -132,8 +132,8 @@ def dump_types(
 
             results = fetch_type_since(
                 client, cfg.document_type, cutoff_ms, end_ms, page_size, limit,
-                progress_cb=lambda n: progress.update(n),
-                use_date_window=not all_time,
+                on_progress=lambda n: progress.update(n),
+                apply_mod_filter=not all_time,
             )
             st.fetched = len(results)
 
@@ -148,7 +148,8 @@ def dump_types(
                 fields = flatten_fields_safe(r)
                 update_catalogue(catalogue, fields, descriptions)
 
-                metadata, content = split_entry(fields, cfg)
+                split = split_entry(fields, cfg)
+                metadata, content = split["metadata"], split["content"]
                 raw = r.get("raw") or {}
                 art_id = id_of(r)
 

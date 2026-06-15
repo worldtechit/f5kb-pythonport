@@ -117,7 +117,7 @@ def test_list_facet_values():
     values = cc.list_facet_values("f5_document_type")
     assert len(values) == 2
     assert values[0]["value"] == "Knowledge"
-    assert values[0]["count"] == 100
+    assert values[0]["numberOfResults"] == 100
 
 
 def test_load_search_fixture():
