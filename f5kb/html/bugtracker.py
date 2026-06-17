@@ -91,7 +91,7 @@ def parse_labeled_fields(root: Tag) -> dict[str, str]:
             label = re.sub(r":\s*$", "", (node.get_text() or "")).strip()
             return
         if node.name and node.name.lower() == "a":
-            href = (node.get("href") or "").strip()
+            href = str(node.get("href") or "").strip()
             text = (node.get_text() or "").strip()
             buf.append(f"[{text}]({href})" if href else text)
             return

@@ -125,7 +125,7 @@ def write_catalogue(
     total_entries: int,
     cfg: TypeConfig,
 ) -> None:
-    rows = []
+    rows: list[dict] = []
     for e in sorted(cat.values(), key=lambda x: x.field_name):
         if selects(cfg.content, e.field_name):
             section = "content"

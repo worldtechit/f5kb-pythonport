@@ -53,7 +53,7 @@ def has_body(content: dict | None) -> bool:
 
 def num_meta(meta: dict | None, key: str) -> int | None:
     v = (meta or {}).get(key)
-    return v if isinstance(v, (int, float)) else None
+    return int(v) if isinstance(v, (int, float)) else None
 
 
 @dataclass

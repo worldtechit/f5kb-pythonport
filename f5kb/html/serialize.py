@@ -10,7 +10,7 @@ from bs4 import NavigableString, Tag
 
 
 def is_hidden(el: Tag) -> bool:
-    style = (el.get("style") or "").replace(" ", "")
+    style = str(el.get("style") or "").replace(" ", "")
     return bool(re.search(r"display:none", style, re.I))
 
 
@@ -55,14 +55,14 @@ def make_serializer(base_url: str | None = None) -> Callable[[object], str]:
             t = " ".join(inner().split()).strip()
             return f"\n{'#' * level} {t}\n\n" if t else ""
         if tag == "a":
-            href = (el.get("href") or "").strip()
+            href = str(el.get("href") or "").strip()
             text = inner().strip()
             if not text:
                 return ""
             return f"[{text}]({resolve_url(href, base_url)})" if href else text
         if tag == "img":
-            alt = (el.get("alt") or "").strip()
-            src = (el.get("src") or "").strip()
+            alt = str(el.get("alt") or "").strip()
+            src = str(el.get("src") or "").strip()
             return f"![{alt}]({resolve_url(src, base_url)})" if src else ""
         if tag in ("b", "strong"):
             return f"**{inner().strip()}**"

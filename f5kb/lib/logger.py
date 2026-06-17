@@ -32,7 +32,7 @@ class Logger:
         self._threshold = _ORDER.get(level, 2)
         self._json = json_mode
         self._scope = scope
-        self._write = write or (lambda line: sys.stderr.write(line + "\n"))
+        self._write: Callable[[str], None] = write or (lambda line: None if sys.stderr.write(line + "\n") else None)
 
     @property
     def level(self) -> str:

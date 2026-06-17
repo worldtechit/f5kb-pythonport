@@ -6,7 +6,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator
 
 
 def sanitize_name(s: str) -> str:
@@ -28,7 +28,7 @@ def id_of(r: dict) -> str:
     return sanitize_name(str(candidate))[:120]
 
 
-def read_json(path: str | Path) -> object:
+def read_json(path: str | Path) -> Any:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 

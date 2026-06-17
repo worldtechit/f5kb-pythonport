@@ -122,7 +122,7 @@ def load_last_run_at(db_path: str) -> dict | None:
 
 def load_ids_by_type(db_path: str, document_types: list[str]) -> dict[str, list[str]]:
     """Return {document_type: [id, ...]} for reconcile diffing."""
-    out = {dt: [] for dt in document_types}
+    out: dict[str, list[str]] = {dt: [] for dt in document_types}
     if not path_exists(db_path):
         return out
     try:

@@ -61,7 +61,9 @@ def fetch_cmd(ctx, product, doc_type, limit, output, csv_file, page_size) -> Non
     if total <= COVEO_MAX_OFFSET or (limit and limit <= COVEO_MAX_OFFSET):
         articles = fetch_flat_paged(client, base_aq, page_size, target, on_progress)
     else:
-        articles = fetch_flat_chunked(client, base_aq, page_size, target, on_progress)
+        articles = []
+        fetch_flat_chunked(client, base_aq, EPOCH_START_MS, EPOCH_END_MS,
+                           page_size, target, on_progress, articles)
 
     with open(json_output, "w", encoding="utf-8") as f:
         json.dump([a.__dict__ for a in articles], f, indent=2)

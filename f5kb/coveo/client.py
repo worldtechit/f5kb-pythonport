@@ -78,7 +78,7 @@ class CoveoClient:
         except (httpx.RequestError, RuntimeError) as e:
             msg = str(e)
             if attempt < MAX_RETRIES and "Coveo API error" not in msg:
-                self._logger.trace("coveo retry (network)", msg=msg, attempt=attempt)
+                self._logger.trace("coveo retry (network)", err=msg, attempt=attempt)
                 self._sleep(0.75 * (2 ** attempt))
                 return self.post(body, attempt + 1)
             raise
