@@ -92,7 +92,7 @@ def test_dump_cmd_writes_json_files(tmp_path):
             f"--out={tmp_path}/dump",
         ],
         capture_output=True, text=True,
-        cwd=Path(__file__).parent.parent,
+        cwd=Path(__file__).parent.parent.parent,
     )
     assert result.returncode == 0, f"stderr: {result.stderr}"
     written = list((tmp_path / "dump" / "Knowledge").glob("*.json"))
