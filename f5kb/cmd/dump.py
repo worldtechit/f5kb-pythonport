@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import sys
 import time
+
 import click
 
-from f5kb.lib.logger import make_logger
-from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 from f5kb.config.loader import load_config, load_field_descriptions_file
 from f5kb.coveo.aura import fetch_coveo_config, refresh_config
 from f5kb.coveo.client import CoveoClient
+from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 from f5kb.lib.dump import dump_types
 from f5kb.lib.staging import merge_pending
 from f5kb.track.db import load_hash_index
@@ -101,7 +101,8 @@ def dump_cmd(ctx, all_time, days, out, config_path, fields_doc, types, exclude_t
 
     db_path = db or f"{out.rstrip('/')}/../articles.db"
     cl_path = changelog_path_from_flag(changelog_flag, out)
-    run_id = __import__("datetime").datetime.fromtimestamp(now_ms / 1000, tz=__import__("datetime").timezone.utc).isoformat().replace("+00:00", "Z")
+    import datetime as _dt
+    run_id = _dt.datetime.fromtimestamp(now_ms / 1000, tz=_dt.timezone.utc).isoformat().replace("+00:00", "Z")
     changelog = Changelog(cl_path, run_id)
     prior_hashes = load_hash_index(db_path)
 
@@ -129,15 +130,18 @@ def dump_cmd(ctx, all_time, days, out, config_path, fields_doc, types, exclude_t
     if cl_path:
         log.info(f"Changelog: {cl_path}")
     if result.pending:
-        import datetime
-        merge_pending(out, result.pending, datetime.datetime.fromtimestamp(now_ms / 1000, tz=datetime.timezone.utc).isoformat().replace("+00:00", "Z"))
+        import datetime as _dt2
+        _stamp = _dt2.datetime.fromtimestamp(now_ms / 1000, tz=_dt2.timezone.utc).isoformat().replace("+00:00", "Z")
+        merge_pending(out, result.pending, _stamp)
         log.warn(f"{len(result.pending)} edited article(s) STAGED to {out}/_pending/")
 
     failed = [m for m in result.manifest if m.status == "failed"]
     partial = [m for m in result.manifest if m.status == "partial"]
     log.info(f"Done. {result.total} articles across {len(result.manifest)} type(s) -> {out}/")
     if partial:
-        log.warn(f"PARTIAL ({len(partial)}): " + ", ".join(f"{m.type_key} ({m.written}/{m.expected or '?'})" for m in partial))
+        _parts = ", ".join(f"{m.type_key} ({m.written}/{m.expected or '?'})" for m in partial)
+        log.warn(f"PARTIAL ({len(partial)}): {_parts}")
     if failed:
-        log.error(f"FAILED ({len(failed)}): " + "; ".join(f"{m.type_key}: {m.error}" for m in failed))
+        _errs = "; ".join(f"{m.type_key}: {m.error}" for m in failed)
+        log.error(f"FAILED ({len(failed)}): {_errs}")
         sys.exit(1)

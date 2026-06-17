@@ -27,10 +27,12 @@ dev = [
     "pytest>=8.0",
     "pytest-mock>=3.12",
     "ruff>=0.4",
+    "mypy>=1.0",
 ]
 
 [tool.ruff]
 exclude = ["config.yaml"]
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]

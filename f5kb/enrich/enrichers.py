@@ -5,14 +5,14 @@ from __future__ import annotations
 import base64
 import re
 import sys
-from typing import Callable, Any
+from typing import Callable
 from urllib.parse import urlparse
 
-from f5kb.http.fetcher import HttpClient
-from f5kb.http.github import github_api, parse_github_url
 from f5kb.html.bugtracker import bug_tracker_url, parse_bug_content
 from f5kb.html.docpage import HOST_RULES, extract_doc_body
 from f5kb.html.nextdata import extract_next_data_body
+from f5kb.http.fetcher import HttpClient
+from f5kb.http.github import github_api, parse_github_url
 
 # Keys written by enrich — cleared on re-enrich so no stale values remain.
 STALE_KEYS = {"sections", "body_text", "bodyError", "bodySource", "fetchedAt"}
@@ -45,7 +45,10 @@ def enrich_github(article: dict, now_iso: str, http: HttpClient, github_token: s
     elif target.kind == "readme":
         data = github_api(target.api_path or "", github_token, http)
         b64 = (data.get("content") or "").replace("\n", "")
-        body = base64.b64decode(b64).decode("utf-8") if data.get("encoding") == "base64" else (data.get("content") or "")
+        if data.get("encoding") == "base64":
+            body = base64.b64decode(b64).decode("utf-8")
+        else:
+            body = data.get("content") or ""
     else:
         data = github_api(target.api_path or "", github_token, http)
         body = data.get("body") or ""
@@ -83,7 +86,8 @@ def enrich_doc_page(article: dict, now_iso: str, http: HttpClient, **_) -> dict:
         return {
             "bodySource": final_url,
             "fetchedAt": now_iso,
-            "bodyError": f"redirected into F5 KB {km.group(1) if km else final_url}; body captured under its Salesforce type",
+            "bodyError": (f"redirected into F5 KB {km.group(1) if km else final_url}; "
+                          "body captured under its Salesforce type"),
         }
 
     req_path = urlparse(url).path
@@ -111,7 +115,7 @@ def enrich_doc_page(article: dict, now_iso: str, http: HttpClient, **_) -> dict:
     if len(body_text) < 40:
         try:
             body_text = extract_doc_body(html, final_url, rule)
-        except Exception as e:
+        except Exception:
             if not (rule and getattr(rule, "next_data", False)):
                 raise
 

@@ -68,7 +68,7 @@ def test_post_retries_on_token_expired():
     ])
     client = httpx.Client(transport=transport)
     cc = CoveoClient(_make_config(), client=client, sleep=lambda _: None, refresh=fake_refresh)
-    data = cc.post({"q": "", "numberOfResults": 0, "searchHub": "myF5"})
+    cc.post({"q": "", "numberOfResults": 0, "searchHub": "myF5"})
     assert new_token_called
     assert len(transport.calls) == 2
 
@@ -80,7 +80,7 @@ def test_post_retries_on_5xx():
     ])
     client = httpx.Client(transport=transport)
     cc = CoveoClient(_make_config(), client=client, sleep=lambda _: None)
-    data = cc.post({"q": "", "numberOfResults": 0, "searchHub": "myF5"})
+    cc.post({"q": "", "numberOfResults": 0, "searchHub": "myF5"})
     assert len(transport.calls) == 2
 
 

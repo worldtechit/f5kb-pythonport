@@ -4,12 +4,22 @@ from __future__ import annotations
 
 import datetime
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
-from f5kb.lib.fsutil import id_of, sanitize_name, write_json
+from f5kb.config.types import normalize_type
+from f5kb.coveo.client import CoveoClient
+from f5kb.coveo.dates import date_aq, mod_ms_of
+from f5kb.coveo.fields import (
+    CatalogueEntry,
+    flatten_fields_safe,
+    split_entry,
+    update_catalogue,
+    write_catalogue,
+)
+from f5kb.coveo.paging import fetch_type_since
+from f5kb.lib.fsutil import id_of, sanitize_name
+from f5kb.lib.logger import NULL_LOGGER, Logger
 from f5kb.lib.progress import make_progress
 from f5kb.lib.staging import (
     PendingEntry,
@@ -17,17 +27,6 @@ from f5kb.lib.staging import (
     live_article,
     now_stamp,
     pending_path,
-)
-from f5kb.config.types import TypeConfig, normalize_type
-from f5kb.coveo.client import CoveoClient
-from f5kb.coveo.dates import date_aq, mod_ms_of
-from f5kb.coveo.paging import fetch_type_since
-from f5kb.coveo.fields import (
-    CatalogueEntry,
-    flatten_fields_safe,
-    split_entry,
-    update_catalogue,
-    write_catalogue,
 )
 from f5kb.track.hashing import sha256_obj
 
@@ -93,7 +92,8 @@ def dump_types(
     current_ids: dict[str, set[str]] = {}
     pending: list[PendingEntry] = []
     stamp = now_stamp(now_ms)
-    captured_iso = datetime.datetime.fromtimestamp(now_ms / 1000, tz=datetime.timezone.utc).isoformat().replace("+00:00", "Z")
+    captured_iso = (datetime.datetime.fromtimestamp(now_ms / 1000, tz=datetime.timezone.utc)
+                    .isoformat().replace("+00:00", "Z"))
 
     for type_key in type_keys:
         raw_cfg = type_configs.get(type_key) or {}
@@ -168,7 +168,8 @@ def dump_types(
                     "title": title,
                     "link": r.get("clickUri") or raw.get("clickableuri") or "",
                     "modifiedMs": mod_ms,
-                    "modified": datetime.datetime.fromtimestamp(mod_ms / 1000, tz=datetime.timezone.utc).isoformat().replace("+00:00", "Z") if mod_ms else None,
+                    "modified": (datetime.datetime.fromtimestamp(mod_ms / 1000, tz=datetime.timezone.utc)
+                                 .isoformat().replace("+00:00", "Z")) if mod_ms else None,
                     "capturedAt": captured_iso,
                     "metadata": metadata,
                     "content": content,
@@ -215,7 +216,8 @@ def dump_types(
 
                 if is_edited:
                     if changelog:
-                        changelog.record("edited", cfg.document_type, art_id, title=title, hashOld=prior, hashNew=mh, source="dump")
+                        changelog.record("edited", cfg.document_type, art_id,
+                                         title=title, hashOld=prior, hashNew=mh, source="dump")
                     if archive_on_overwrite and not dry_run:
                         arch = archive_replaced(out_dir, dir_name, art_id, stamp)
                         if arch:
@@ -242,7 +244,8 @@ def dump_types(
             skip = f" ({st.skipped} unchanged)" if st.skipped else ""
             stg = f" ({st.staged} staged for approval)" if st.staged else ""
             flag = f"  [{st.status.upper()}]" if st.status != "ok" else ""
-            progress.done(f"{st.written}{exp} written{skip}{stg} article{'s' if st.written != 1 else ''} -> {type_dir}/{flag}")
+            _plural = "s" if st.written != 1 else ""
+            progress.done(f"{st.written}{exp} written{skip}{stg} article{_plural} -> {type_dir}/{flag}")
 
         except Exception as e:
             st.status = "failed"
@@ -256,8 +259,10 @@ def dump_types(
     if not dry_run:
         Path(index_path).write_text(json.dumps({
             "mode": mode,
-            "cutoff": datetime.datetime.fromtimestamp(cutoff_ms / 1000, tz=datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
-            "generatedAt": datetime.datetime.fromtimestamp(now_ms / 1000, tz=datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
+            "cutoff": (datetime.datetime.fromtimestamp(cutoff_ms / 1000, tz=datetime.timezone.utc)
+                       .isoformat().replace("+00:00", "Z")),
+            "generatedAt": (datetime.datetime.fromtimestamp(now_ms / 1000, tz=datetime.timezone.utc)
+                            .isoformat().replace("+00:00", "Z")),
             "config": config_path,
             "totalArticles": total,
             "counts": {
@@ -285,4 +290,5 @@ def dump_types(
             ],
         }, indent=2))
 
-    return DumpTypesResult(manifest=manifest, index_path=index_path, total=total, current_ids=current_ids, pending=pending)
+    return DumpTypesResult(manifest=manifest, index_path=index_path, total=total,
+                           current_ids=current_ids, pending=pending)

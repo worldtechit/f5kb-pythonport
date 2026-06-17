@@ -9,12 +9,10 @@ from __future__ import annotations
 import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
 from f5kb.lib.fsutil import iso_now, list_type_dirs, path_exists, read_json, walk_article_files
+from f5kb.lib.logger import NULL_LOGGER, Logger
 from f5kb.track.hashing import Record_, to_record
-
 
 INIT_SQL = """
     CREATE TABLE IF NOT EXISTS articles (
@@ -259,7 +257,8 @@ def track_dump(
                             (run, rec.document_type, rec.id, "changed", ",".join(diff)),
                         )
                         if changelog:
-                            changelog.record("edited", rec.document_type, rec.id, title=rec.title, changed=diff, source="track")
+                            changelog.record("edited", rec.document_type, rec.id,
+                                             title=rec.title, changed=diff, source="track")
                     else:
                         last_changed = prev_dict.get("last_changed_run") or run
                         n_unchanged += 1
@@ -287,7 +286,8 @@ def track_dump(
         removed = len(removed_rows)
 
         conn.execute(
-            "INSERT OR REPLACE INTO runs (run_id,ran_at,dump_dir,types,scanned,new,changed,unchanged,removed) VALUES (?,?,?,?,?,?,?,?,?)",
+            "INSERT OR REPLACE INTO runs "
+            "(run_id,ran_at,dump_dir,types,scanned,new,changed,unchanged,removed) VALUES (?,?,?,?,?,?,?,?,?)",
             (run, iso_now(), dump_path, ",".join(type_keys), scanned, n_new, n_changed, n_unchanged, removed),
         )
 

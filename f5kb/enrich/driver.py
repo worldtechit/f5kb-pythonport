@@ -9,11 +9,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from threading import Lock
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
-from f5kb.lib.fsutil import path_exists, read_json, walk_article_files, write_json
-from f5kb.lib.staging import merge_pending, pending_dir, pending_path, PendingEntry
+from f5kb.enrich.enrichers import STALE_KEYS, TYPE_ENRICHERS, has_body
 from f5kb.http.fetcher import HttpClient
-from f5kb.enrich.enrichers import TYPE_ENRICHERS, STALE_KEYS, has_body
+from f5kb.lib.fsutil import path_exists, read_json, walk_article_files, write_json
+from f5kb.lib.logger import NULL_LOGGER, Logger
+from f5kb.lib.staging import PendingEntry, merge_pending, pending_dir, pending_path
 
 
 @dataclass
@@ -121,7 +121,8 @@ def enrich_type(
             done_count += 1
             total_done = done_count + report.skipped
             if total_done % 25 == 0:
-                log.info(f"  [{type_key}] {total_done}/{report.files} (ok={report.enriched} fail={report.failed} skip={report.skipped})")
+                log.info(f"  [{type_key}] {total_done}/{report.files} "
+                         f"(ok={report.enriched} fail={report.failed} skip={report.skipped})")
             if delay_ms:
                 sleep(delay_ms / 1000)
 
@@ -135,7 +136,8 @@ def enrich_type(
                 log.warn(f"  [{type_key}] worker error: {e}")
 
     stg = f" staged={report.staged}" if report.staged else ""
-    log.info(f"  [{type_key}] DONE: {report.files} files — enriched={report.enriched} failed={report.failed} skipped={report.skipped}{stg}")
+    log.info(f"  [{type_key}] DONE: {report.files} files — "
+             f"enriched={report.enriched} failed={report.failed} skipped={report.skipped}{stg}")
     return report
 
 
@@ -170,7 +172,8 @@ def enrich_dump(
     log.info(f"Enriching bodies in {dump} for: {', '.join(to_run)}")
     log.info(f"(concurrency={concurrency}, delay={delay_ms}ms, refetch={refetch})")
     if "F5_GitHub" in to_run:
-        log.info(f"GitHub auth: {'token present (5000/hr)' if github_token else 'UNAUTHENTICATED (60/hr) — set GITHUB_TOKEN to raise'}")
+        _gh_auth = "token present (5000/hr)" if github_token else "UNAUTHENTICATED (60/hr) — set GITHUB_TOKEN to raise"
+        log.info(f"GitHub auth: {_gh_auth}")
 
     staged: list[PendingEntry] = []
     reports: list[TypeReport] = []
@@ -236,7 +239,8 @@ def enrich_dump(
 
     if total_failed:
         failed_parts = ", ".join(f"{r.type_key}={r.failed}" for r in reports if r.failed)
-        log.warn(f"\nFAILURES ({total_failed}): {failed_parts} — see {report_path}; re-run with --refetch-errors after fixing.")
+        log.warn(f"\nFAILURES ({total_failed}): {failed_parts} — see {report_path}; "
+                 "re-run with --refetch-errors after fixing.")
 
     log.info("All done.")
     return reports

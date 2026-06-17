@@ -3,17 +3,16 @@
 from __future__ import annotations
 
 import datetime
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
-from f5kb.lib.changelog import Changelog
-from f5kb.lib.staging import merge_pending
-from f5kb.lib.dump import dump_types
-from f5kb.enrich.driver import enrich_dump
-from f5kb.track.db import load_hash_index, load_ids_by_type, track_dump
 from f5kb.coveo.client import CoveoClient
+from f5kb.enrich.driver import enrich_dump
 from f5kb.http.fetcher import HttpClient
-from f5kb.config.types import TypeConfig
+from f5kb.lib.changelog import Changelog
+from f5kb.lib.dump import dump_types
+from f5kb.lib.logger import NULL_LOGGER, Logger
+from f5kb.lib.staging import merge_pending
+from f5kb.track.db import load_hash_index, load_ids_by_type, track_dump
 
 ENRICHABLE = {"Bug_Tracker", "Manual", "Release_Note", "Supplemental_Document", "F5_GitHub"}
 
@@ -142,7 +141,8 @@ def sync_dump(
                     cl.record("deleted", document_type, art_id, source="sync",
                                detail="detected upstream (not removed; run `reconcile --apply` to remove)")
         if deletions_detected:
-            log.warn(f"{deletions_detected} upstream deletion(s) detected (reported, NOT removed). Run: f5kb reconcile --apply  to remove them.")
+            log.warn(f"{deletions_detected} upstream deletion(s) detected (reported, NOT removed). "
+                     "Run: f5kb reconcile --apply  to remove them.")
 
     cl.flush()
     by = cl.by_op()

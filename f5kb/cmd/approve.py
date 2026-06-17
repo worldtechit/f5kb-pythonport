@@ -8,8 +8,8 @@ import time
 
 import click
 
-from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 from f5kb.lib.approve import approve
+from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 from f5kb.track.db import track_dump
 
 
@@ -37,7 +37,9 @@ def approve_cmd(ctx, dump_dir, db, types, exclude_types, ids, list_only, reject,
     db_path = db or f"{dump_dir.rstrip('/')}/../articles.db"
     now_ms = int(time.time() * 1000)
 
-    cl_path = None if no_changelog else (None if (list_only or reject) else changelog_path_from_flag(changelog_flag if changelog_flag != "" else True, dump_dir))
+    _cl_flag = changelog_flag if changelog_flag != "" else True
+    _skip_cl = no_changelog or list_only or reject
+    cl_path = None if _skip_cl else changelog_path_from_flag(_cl_flag, dump_dir)
     import datetime
     run_id = datetime.datetime.fromtimestamp(now_ms / 1000, tz=datetime.timezone.utc).isoformat().replace("+00:00", "Z")
     changelog = Changelog(cl_path, run_id)

@@ -17,7 +17,6 @@ from f5kb.coveo.aura import fetch_coveo_config
 from f5kb.coveo.client import CoveoClient
 from f5kb.coveo.paging import fetch_type_since
 
-
 # ── fixtures ──────────────────────────────────────────────────────────────────
 
 @pytest.fixture(scope="module")
@@ -49,7 +48,6 @@ def test_list_facet_values_returns_types(coveo_client):
 @pytest.mark.live
 def test_fetch_type_since_returns_limit(coveo_client):
     """fetch_type_since with limit=3 returns exactly 3 Knowledge articles."""
-    import time
     results = fetch_type_since(
         coveo_client, "Knowledge",
         cutoff_ms=0,
@@ -95,7 +93,7 @@ def test_dump_cmd_writes_json_files(tmp_path):
         cwd=Path(__file__).parent.parent.parent,
     )
     assert result.returncode == 0, f"stderr: {result.stderr}"
-    written = list((tmp_path / "dump" / "Knowledge").glob("*.json"))
+    written = [f for f in (tmp_path / "dump" / "Knowledge").glob("*.json") if not f.name.startswith("_")]
     assert len(written) == 3
     for f in written:
         data = json.loads(f.read_text())

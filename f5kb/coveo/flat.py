@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Callable
 
 from f5kb.coveo.client import CoveoClient, CoveoResult
 
@@ -173,5 +173,5 @@ def fetch_flat_chunked(
         collected.extend(batch)
         return
 
-    fetch_flat_chunked(client, base_aq, start_ms, mid_ms, page_size, max_results, on_progress, collected, pause_ms, depth + 1)
-    fetch_flat_chunked(client, base_aq, mid_ms, end_ms, page_size, max_results, on_progress, collected, pause_ms, depth + 1)
+    fetch_flat_chunked(client, base_aq, start_ms, mid_ms, page_size, max_results, on_progress, collected, pause_ms, depth + 1)  # noqa: E501
+    fetch_flat_chunked(client, base_aq, mid_ms, end_ms, page_size, max_results, on_progress, collected, pause_ms, depth + 1)  # noqa: E501

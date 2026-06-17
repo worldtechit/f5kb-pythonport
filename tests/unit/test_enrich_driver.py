@@ -3,10 +3,9 @@
 import json
 from pathlib import Path
 
-import pytest
 import httpx
 
-from f5kb.enrich.driver import TypeReport, enrich_type
+from f5kb.enrich.driver import enrich_type
 from f5kb.http.fetcher import HttpClient
 
 
@@ -100,7 +99,7 @@ def test_enrich_type_refetch_replaces_body(tmp_path):
 def test_enrich_type_clears_stale_keys(tmp_path):
     _write_article(tmp_path, "Bug_Tracker", "ID-1", content={"bodyError": "old error"})
     http = _http([httpx.Response(200, text=BUG_HTML)])
-    report = enrich_type("Bug_Tracker", str(tmp_path), http, refetch_errors=True)
+    enrich_type("Bug_Tracker", str(tmp_path), http, refetch_errors=True)
     art = json.loads((tmp_path / "Bug_Tracker" / "ID-1.json").read_text())
     assert "bodyError" not in art["content"]
     assert "body_text" in art["content"]
