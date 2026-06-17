@@ -1,3 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
 # Output / generated data directories (article dumps, exports) — large, regenerable
 outputs/
 dump/
