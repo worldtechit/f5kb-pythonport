@@ -14,10 +14,13 @@ dump/
 output/
 last_week/
 
-# Local Claude Code settings (machine-specific permissions) + runtime files
+# Local Claude Code settings + memory/plans (machine-specific, not repo content)
 .claude/settings.local.json
 .claude/*.lock
 .claude/scheduled_tasks.lock
+.claude/memory/
+.claude/plans/
+.serena/
 
 # Embedded tracking DB (lives under outputs/, but ignore anywhere)
 *.db

@@ -1,1 +1,0 @@
-- [Python Port Progress](project_python_port.md) — f5kb Deno→Python conversion: status, decisions, layer order, gotchas
