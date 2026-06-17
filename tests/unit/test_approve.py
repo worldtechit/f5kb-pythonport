@@ -3,8 +3,6 @@
 import json
 from pathlib import Path
 
-import pytest
-
 from f5kb.lib.approve import ApproveResult, approve
 from f5kb.lib.staging import (
     PendingEntry,
@@ -14,7 +12,6 @@ from f5kb.lib.staging import (
     pending_path,
     save_pending_manifest,
 )
-
 
 NOW_MS = 1705315200000  # fixed timestamp for tests
 

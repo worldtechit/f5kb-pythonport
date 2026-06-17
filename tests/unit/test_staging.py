@@ -1,9 +1,6 @@
 """Tests for lib/staging.py."""
 
-import json
 from pathlib import Path
-
-import pytest
 
 from f5kb.lib.staging import (
     PendingEntry,
@@ -21,7 +18,6 @@ from f5kb.lib.staging import (
     replaced_path,
     save_pending_manifest,
 )
-
 
 # ---- path helpers ----
 

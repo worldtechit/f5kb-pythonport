@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import os
-import sys
 
 import click
 
-from f5kb.lib.changelog import Changelog, changelog_path_from_flag
-from f5kb.http.fetcher import HttpClient
 from f5kb.enrich.driver import enrich_dump
+from f5kb.http.fetcher import HttpClient
+from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 
 
 @click.command()

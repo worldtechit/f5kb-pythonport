@@ -5,14 +5,13 @@ from __future__ import annotations
 import dataclasses
 import json
 import sys
-import time
 
 import click
 
-from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 from f5kb.config.loader import load_config
 from f5kb.coveo.aura import fetch_coveo_config, refresh_config
 from f5kb.coveo.client import CoveoClient
+from f5kb.lib.changelog import Changelog, changelog_path_from_flag
 from f5kb.lib.reconcile import reconcile
 
 

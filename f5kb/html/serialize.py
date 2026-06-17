@@ -6,7 +6,7 @@ import re
 from typing import Callable
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import NavigableString, Tag
 
 
 def is_hidden(el: Tag) -> bool:

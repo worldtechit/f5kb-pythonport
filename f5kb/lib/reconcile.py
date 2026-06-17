@@ -4,16 +4,14 @@ from __future__ import annotations
 
 import re
 import shutil
-import sqlite3
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
-from f5kb.lib.fsutil import id_of, path_exists
-from f5kb.config.types import TypeConfig
 from f5kb.coveo.client import CoveoClient
 from f5kb.coveo.paging import fetch_ids
+from f5kb.lib.fsutil import id_of, path_exists
+from f5kb.lib.logger import NULL_LOGGER, Logger
 from f5kb.track.db import delete_rows, load_ids_by_type
 
 

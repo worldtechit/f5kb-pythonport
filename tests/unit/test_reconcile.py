@@ -8,13 +8,11 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import httpx
-import pytest
 
 from f5kb.coveo.aura import CoveoConfig
 from f5kb.coveo.client import CoveoClient
 from f5kb.lib.reconcile import reconcile
 from f5kb.track.db import init_db
-
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 

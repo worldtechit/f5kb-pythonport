@@ -1,7 +1,8 @@
 """f5kb status subcommand."""
 
-import json
 import dataclasses
+import json
+
 import click
 
 from f5kb.lib.status import compute_status, render_status

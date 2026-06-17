@@ -4,8 +4,6 @@ import json
 import sqlite3
 from pathlib import Path
 
-import pytest
-
 from f5kb.lib.status import (
     StatusReport,
     classify_error,
@@ -13,7 +11,6 @@ from f5kb.lib.status import (
     render_status,
 )
 from f5kb.track.db import init_db
-
 
 # ---- classify_error ----
 

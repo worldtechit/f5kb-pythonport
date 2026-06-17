@@ -2,20 +2,19 @@
 
 from __future__ import annotations
 
-import json
 import os
 import sys
 import time
 
 import click
 
-from f5kb.lib.changelog import changelog_path_from_flag
 from f5kb.config.loader import load_config
 from f5kb.coveo.aura import fetch_coveo_config, refresh_config
 from f5kb.coveo.client import CoveoClient
 from f5kb.http.fetcher import HttpClient
-from f5kb.track.db import load_last_run_at
+from f5kb.lib.changelog import changelog_path_from_flag
 from f5kb.lib.sync import sync_dump
+from f5kb.track.db import load_last_run_at
 
 
 @click.command()

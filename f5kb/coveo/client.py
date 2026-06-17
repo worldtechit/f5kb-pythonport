@@ -9,7 +9,7 @@ from typing import Any, Callable
 import httpx
 
 from f5kb.coveo.aura import CoveoConfig, refresh_config
-from f5kb.lib.logger import Logger, NULL_LOGGER
+from f5kb.lib.logger import NULL_LOGGER, Logger
 
 CoveoResult = dict[str, Any]
 MAX_RETRIES = 5

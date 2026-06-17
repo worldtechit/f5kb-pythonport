@@ -5,12 +5,11 @@ from __future__ import annotations
 import re
 import sqlite3
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
-from f5kb.lib.fsutil import list_type_dirs, path_exists, read_json
 from f5kb.lib.changelog import CHANGELOG_BASENAME
+from f5kb.lib.fsutil import list_type_dirs, path_exists, read_json
 from f5kb.lib.staging import load_pending_manifest
 
 STALE_MS = 7 * 24 * 60 * 60 * 1000  # 1 week

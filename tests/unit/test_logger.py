@@ -2,9 +2,7 @@
 
 import json
 
-import pytest
-
-from f5kb.lib.logger import NULL_LOGGER, Logger, make_logger
+from f5kb.lib.logger import NULL_LOGGER, make_logger
 
 
 def capture_logger(level="info", json_mode=False, scope=""):

@@ -2,6 +2,7 @@
 
 import json
 import sys
+
 import click
 
 from f5kb.coveo.aura import fetch_coveo_config, refresh_config

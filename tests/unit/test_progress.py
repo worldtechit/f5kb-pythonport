@@ -2,12 +2,7 @@
 
 from __future__ import annotations
 
-import time
-
-import pytest
-
 from f5kb.lib.progress import Progress, _fmt_duration
-
 
 # ── _fmt_duration ─────────────────────────────────────────────────────────────
 

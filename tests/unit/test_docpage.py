@@ -3,15 +3,14 @@
 from pathlib import Path
 
 import pytest
+from bs4 import BeautifulSoup
 
 from f5kb.html.docpage import (
     HOST_RULES,
-    STRIP_SELECTORS,
     HostRule,
     extract_doc_body,
     select_container,
 )
-from bs4 import BeautifulSoup
 
 
 def _load(name: str) -> str:

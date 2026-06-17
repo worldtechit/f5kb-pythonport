@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from f5kb.config.loader import load_config, load_field_descriptions_file
-from f5kb.config.types import AppConfig, TypeConfig, normalize_type
+from f5kb.config.types import AppConfig, normalize_type
 
 
 def test_normalize_type_defaults():
@@ -73,7 +73,6 @@ products:
 
 def test_load_real_config():
     """Smoke test against the actual config.yaml."""
-    import os
     cfg_path = Path(__file__).parent.parent.parent.parent / "config.yaml"
     if not cfg_path.exists():
         pytest.skip("config.yaml not found")

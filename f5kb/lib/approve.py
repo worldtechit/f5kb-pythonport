@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
 from f5kb.lib.fsutil import path_exists, read_json
+from f5kb.lib.logger import NULL_LOGGER, Logger
 from f5kb.lib.staging import (
-    PendingEntry,
     archive_replaced,
     change_kind,
     compute_risk,
@@ -153,7 +151,6 @@ def approve(
             )
 
     if not dry_run:
-        import time as _t
         import datetime
         data["entries"] = kept
         data["generatedAt"] = datetime.datetime.fromtimestamp(

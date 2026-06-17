@@ -9,7 +9,7 @@ import click
 
 from f5kb.coveo.aura import fetch_coveo_config, refresh_config
 from f5kb.coveo.client import CoveoClient
-from f5kb.coveo.flat import build_aq, fetch_flat_chunked, fetch_flat_paged, to_csv, COVEO_MAX_OFFSET
+from f5kb.coveo.flat import COVEO_MAX_OFFSET, build_aq, fetch_flat_chunked, fetch_flat_paged, to_csv
 from f5kb.lib.fsutil import sanitize_name
 
 EPOCH_START_MS = 946684800000  # 2000-01-01

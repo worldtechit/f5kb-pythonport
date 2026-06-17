@@ -5,7 +5,6 @@ import json
 import pytest
 
 from f5kb.track.hashing import (
-    VOLATILE_CONTENT_KEYS,
     canonical,
     content_for_hash,
     has_body,
@@ -150,7 +149,6 @@ def test_to_record_volatile_not_in_content_hash():
 
 def test_hash_compat_with_fixture(fixture_path=None):
     """Verify hash against dump_mini fixture. Run manually to check DB compat."""
-    import json
     from pathlib import Path
 
     fixture = Path(__file__).parent.parent / "fixtures" / "dump_mini" / "Knowledge"

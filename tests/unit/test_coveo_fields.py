@@ -1,13 +1,9 @@
 """Tests for coveo/fields.py."""
 
 import json
-from pathlib import Path
-
-import pytest
 
 from f5kb.config.types import TypeConfig
 from f5kb.coveo.fields import (
-    CatalogueEntry,
     flatten_fields,
     flatten_fields_safe,
     js_type,

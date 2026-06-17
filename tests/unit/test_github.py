@@ -2,7 +2,7 @@
 
 import pytest
 
-from f5kb.http.github import GhTarget, parse_github_url
+from f5kb.http.github import parse_github_url
 
 
 def test_parse_github_url_issue():

@@ -1,11 +1,9 @@
 """CLI smoke tests using the mini fixture dump."""
 
-from pathlib import Path
 import json
 import subprocess
 import sys
-
-import pytest
+from pathlib import Path
 
 FIXTURES = Path(__file__).parent.parent / "fixtures" / "dump_mini"
 

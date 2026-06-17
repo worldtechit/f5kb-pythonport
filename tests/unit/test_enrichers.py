@@ -1,15 +1,14 @@
 """Tests for enrich/enrichers.py."""
 
-import json
-import pytest
 import httpx
+import pytest
 
 from f5kb.enrich.enrichers import (
+    STALE_KEYS,
     TYPE_ENRICHERS,
-    has_body,
     enrich_bug_tracker,
     enrich_doc_page,
-    STALE_KEYS,
+    has_body,
 )
 from f5kb.http.fetcher import HttpClient
 

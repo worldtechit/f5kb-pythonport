@@ -3,16 +3,13 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import httpx
-import pytest
 
 from f5kb.coveo.aura import CoveoConfig
 from f5kb.coveo.client import CoveoClient
 from f5kb.lib.dump import dump_types
 from f5kb.track.hashing import sha256_obj
-
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -112,8 +109,8 @@ def test_unchanged_article_skipped(tmp_path):
     """Article with matching prior hash is skipped (incremental=True)."""
     art = _article_result("K99", "Unchanged")
     # compute the hash that dump_types would compute
-    from f5kb.coveo.fields import flatten_fields_safe, split_entry
     from f5kb.config.types import normalize_type
+    from f5kb.coveo.fields import flatten_fields_safe, split_entry
     cfg = normalize_type({"documentType": "Knowledge", "metadata": "*", "content": []})
     fields = flatten_fields_safe(art)
     split = split_entry(fields, cfg)

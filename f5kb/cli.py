@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import sys
 import click
 
-from f5kb.version import VERSION
 from f5kb.lib.logger import make_logger
+from f5kb.version import VERSION
 
 
 @click.group(invoke_without_command=True)
@@ -26,18 +25,18 @@ def cli(ctx, verbose, debug, quiet, json_logs):
 
 
 def _load_commands():
+    from f5kb.cmd.approve import approve_cmd
+    from f5kb.cmd.discover import discover_cmd
     from f5kb.cmd.dump import dump_cmd
     from f5kb.cmd.enrich import enrich_cmd
-    from f5kb.cmd.track import track_cmd
-    from f5kb.cmd.sync import sync_cmd
-    from f5kb.cmd.approve import approve_cmd
-    from f5kb.cmd.status import status_cmd
-    from f5kb.cmd.reconcile import reconcile_cmd
     from f5kb.cmd.fetch import fetch_cmd
-    from f5kb.cmd.recent import recent_cmd
-    from f5kb.cmd.list_types import list_types_cmd
     from f5kb.cmd.list_products import list_products_cmd
-    from f5kb.cmd.discover import discover_cmd
+    from f5kb.cmd.list_types import list_types_cmd
+    from f5kb.cmd.recent import recent_cmd
+    from f5kb.cmd.reconcile import reconcile_cmd
+    from f5kb.cmd.status import status_cmd
+    from f5kb.cmd.sync import sync_cmd
+    from f5kb.cmd.track import track_cmd
     cli.add_command(dump_cmd, "dump")
     cli.add_command(enrich_cmd, "enrich")
     cli.add_command(track_cmd, "track")

@@ -2,10 +2,7 @@
 
 import json
 import sqlite3
-import tempfile
 from pathlib import Path
-
-import pytest
 
 from f5kb.track.db import (
     TrackSummary,
@@ -18,7 +15,6 @@ from f5kb.track.db import (
     track_dump,
 )
 from f5kb.track.hashing import Record_
-
 
 # ---- helpers ----
 

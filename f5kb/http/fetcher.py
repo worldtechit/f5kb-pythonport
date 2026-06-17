@@ -8,7 +8,7 @@ from typing import Callable
 
 import httpx
 
-from f5kb.lib.logger import Logger, NULL_LOGGER
+from f5kb.lib.logger import NULL_LOGGER, Logger
 from f5kb.version import USER_AGENT
 
 REQUEST_TIMEOUT_S = 60.0

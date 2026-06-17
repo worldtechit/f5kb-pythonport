@@ -3,8 +3,6 @@
 import json
 from pathlib import Path
 
-import pytest
-
 from f5kb.lib.changelog import CHANGELOG_BASENAME, Changelog, changelog_path_from_flag
 
 

@@ -1,9 +1,6 @@
 """Tests for lib/fsutil.py."""
 
-import json
 from pathlib import Path
-
-import pytest
 
 from f5kb.lib.fsutil import (
     id_of,

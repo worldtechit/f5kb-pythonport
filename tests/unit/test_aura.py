@@ -6,7 +6,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from f5kb.coveo.aura import AURA_URL, CoveoConfig, fetch_coveo_config, refresh_config
+from f5kb.coveo.aura import CoveoConfig, fetch_coveo_config, refresh_config
 
 
 class _AuraTransport(httpx.BaseTransport):
