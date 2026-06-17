@@ -81,7 +81,7 @@ The access token is a JWT issued to the guest/community user, valid for 24 hours
 The script fetches a fresh one on every run — no need to cache it.
 
 Important: The Aura response is plain JSON (no `/.../` wrapper) when called
-from Deno/fetch. The `/.../ERROR*/` wrapper only appears in curl error responses.
+from Python/httpx. The `/.../ERROR*/` wrapper only appears in curl error responses.
 
 COVEO SEARCH API
 ----------------
@@ -147,10 +147,10 @@ hard way on the 2026-06 full dump). Two failure modes:
 Real fix: keyset (cursor) pagination by `@rowid` — the one sortable, unique,
 monotonic system field (`@permanentid`/`@urihash`/`@f5_kb_id` are NOT sortable —
 `InvalidSortField`). Sort `@rowid ascending`, page with `@rowid>=cursor`, no
-offset cap. `@rowid` (~1.8e18) exceeds JS safe-integer range, so JSON.parse rounds
+offset cap. `@rowid` (~1.8e18) exceeds Python float precision in JSON, so json.loads rounds
 it (ULP ~256); back the cursor off a margin (4096) and use `>=` + dedup by
-permanentid to avoid a boundary skip. `f5kb dump --all` (lib/coveo/paging.ts,
-`fetchKeyset`) now keyset-pages
+permanentid to avoid a boundary skip. `f5kb dump --all` (coveo/paging.py,
+`fetch_keyset()`) now keyset-pages
 the WHOLE type (no `@date` window at all), which also captures the null/out-of-
 window-`@date` articles; `--days` keeps date-chunking (recency is the point) and
 defers to keyset only for an irreducible sub-second window.
@@ -738,7 +738,7 @@ To match the UI result set more closely, add to `aq`:
 MULTI-PRODUCT/TYPE SUPPORT
 --------------------------
 
-Implemented in `f5kb fetch` (lib/coveo/flat.ts, `buildAq`). The `aq` field is built
+Implemented in `f5kb fetch` (coveo/flat.py, `build_aq()`). The `aq` field is built
 from `--product` and `--type` CLI flags:
 
     --product="NGINX Plus" --type="Security Advisory"
@@ -818,7 +818,7 @@ products for a specific document type:
     }
 
 Run the same query with each document type to build a complete product map.
-This technique is now automated: `f5kb discover` (cmd/discover.ts)
+This technique is now automated: `f5kb discover` (cmd/discover.py)
 iterates every document type, collects all hidden product names, then runs a
 count query for each to produce `discovered_products.yaml` (321 products total:
 73 global, 247 type-filtered, 1 facet-excluded); copy its `products:` block into
@@ -1520,7 +1520,7 @@ GAP 1 — numberOfValues slot starvation (fixed)
     2000            2000            62               true
     5000            2769            73               false
 
-  Fix: the facet helper (lib/coveo/client.ts, `listFacetValues`) requests
+  Fix: the facet helper (coveo/client.py, `list_facet_values()`) requests
   numberOfValues: 5000. The API is exhausted at 2,769 values, returning all 73
   top-level product names.
 
@@ -1565,7 +1565,7 @@ WORKAROUND — type-filtered facet for hidden products
 AUTOMATED DISCOVERY — f5kb discover
 
   The type-filtered facet technique is automated in `f5kb discover`
-  (cmd/discover.ts).
+  (cmd/discover.py).
 
   How it works:
     1. Fetches all document types from the global f5_document_type facet.
@@ -1626,7 +1626,7 @@ AUTOMATED DISCOVERY — f5kb discover
     }
 
   Run:
-    deno run --allow-net --allow-write f5kb.ts discover
+    uv run f5kb discover
 
   Takes ~3-4 minutes (~250 API calls). Use config.yaml's `products:` section as the
   authoritative list of all valid --product values instead of `f5kb list-products`.

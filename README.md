@@ -18,50 +18,30 @@ fetched at runtime — no key, no login required).
 - Optional `GITHUB_TOKEN` env raises the GitHub API limit (60 → 5,000 req/hr) for
   `f5kb enrich` on F5 GitHub articles
 
-The Python package lives in the `python/` subdirectory.
-
 ## Installation
 
-**Option A — uv (recommended, faster):**
-
-Install uv if you don't have it:
+Install [uv](https://docs.astral.sh/uv/) if you don't have it:
 
 ```
-# macOS (Homebrew) — recommended on macOS
+# macOS (Homebrew)
 brew install uv
 
-# macOS / Linux (curl installer)
+# macOS / Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-> **Note:** Do not use `pip install uv` on macOS — Homebrew manages the system Python
-> and pip will refuse. Use `brew install uv` or the curl installer instead.
-
-Then install and run:
+Then clone and sync:
 
 ```
-cd python
+git clone https://github.com/worldtechit/f5kb-pythonport
+cd f5kb-pythonport
 uv sync
 ```
 
-After `uv sync`, run commands with `uv run f5kb <sub>` — no venv activation needed.
-
-**Option B — standard pip + venv:**
-
-```
-cd python
-python3 -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install -e .
-f5kb --version
-```
-
-After activating the venv, use `f5kb <sub>` directly (no `uv run` prefix).
-
-All examples below use `uv run f5kb`. If you installed via pip, drop the `uv run` prefix.
+Run commands with `uv run f5kb <sub>` — no venv activation needed.
 
 ## Quick start — the pipeline
 
@@ -71,7 +51,6 @@ reads the dump directory, so enrich and track can re-run anytime without re-hitt
 search API.
 
 ```
-cd python
 uv run f5kb dump --all --out=outputs/dump
 uv run f5kb enrich --dump=outputs/dump
 uv run f5kb track --dump=outputs/dump
@@ -89,13 +68,14 @@ that subcommand's flag synopsis.
 ## Running tests
 
 ```
-cd python
-uv run pytest tests/ -q           # all 275 offline tests
+uv run pytest                     # all 301 offline tests
 uv run pytest tests/unit/ -q      # unit tests only
 uv run pytest tests/integration/  # CLI smoke tests
+uv run pytest -m live             # live/network tests (require my.f5.com access)
 ```
 
-No network required — all tests use injected transports and local fixtures.
+No network required for the default suite — all tests use injected httpx transports
+and local fixtures.
 
 ## Selecting types (`--types` / `--exclude-types`)
 
@@ -633,12 +613,12 @@ Other notes:
 
 - **README.md** — this file: CLI usage guide (subcommands, flags, examples, outputs,
   config, API limits).
-- **python/** — the Python package (source, tests, pyproject.toml).
-- **FINDINGS.txt** — discoveries about the scraped system (Coveo token flow, API limits,
+- **FINDINGS.md** — discoveries about the scraped system (Coveo token flow, API limits,
   field meanings, counts). Appendix A is the full field inventory.
-- **OUTLINE.txt** — the code: module tree, the dump→enrich→track flow, the
+- **OUTLINE.md** — the code: module tree, the dump→enrich→track flow, the
   dependency-injection design, pagination strategy, and decisions.
-- **MEMORIES.md** — durable project memory & handoff: current state, credentials/token
-  flow, gotchas, and data layout.
+- **HOWTO.md** — task-oriented user guide: quick start + common workflows with examples.
+- **MEMORIES.md** — durable project memory & handoff: current state, credentials,
+  gotchas, and data layout.
 - **config.yaml** — machine config the CLI reads (`types:` + `field_descriptions:` +
   `products:`).

@@ -26,4 +26,11 @@ markers = ["live: requires live Coveo network access (use pytest -m live to run)
 dev = [
     "pytest>=8.0",
     "pytest-mock>=3.12",
+    "ruff>=0.4",
 ]
+
+[tool.ruff]
+exclude = ["config.yaml"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
